@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+    /* CSS style for the canvas elements */
+    canvas {
+      border: 1px solid black;
+      margin: 10px;
+    }
+
+    /* CSS style for the span elements */
+    span {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <form action="index.html">
+    <input type="submit" value="domov" />
+</form>
+  <h1>Logopedická hra</h1>
+  <p>V tejto hre musíš vysloviť "pšššššt" a uspať draka.</p>
+  <button id="startButton">Start</button>
+  <p id="result"></p>
+  <p>Frekvencia: <span id="frequencyValue"></span></p>
+  <canvas id="frequencyCanvas" width="300" height="50"></canvas>
+  <p>Trvanie: <span id="durationValue"></span></p>
+  <canvas id="durationCanvas" width="300" height="50"></canvas>
+  <script src="testik.js"></script>
+</body>
+</html>

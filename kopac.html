@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Miner Jožko</title>
+  <link rel="stylesheet" href="index.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+
+  <style>
+  canvas {
+  display: block;
+  margin: 0 auto;
+  border: 1px solid #000;
+  justify-content: center;
+  align-items: center;
+}
+  </style>
+</head>
+<body>
+  <div class="hra">
+   <div class="menu-hra">
+    <div class="menu-buttons">
+          <a href="index.html">
+            <img src="images/menu.png" alt="Menu">
+          </a>
+          <a href="kopac.html">
+            <img src="images/restart.png" alt="Reštart">
+          </a>
+    </div>
+    <div class="menu-golds">
+      <h1> </h1>
+      <div class="golds-container"></div>
+    </div>
+
+    <div class="menu-diamonds">
+      <h1></h1>
+      <div class="diamonds-container"></div>
+    </div>
+
+   </div>
+   <canvas id="gameCanvas" width="800" height="800"></canvas>
+  </div>
+  
+  <div id="info-dialog" class="info-dialog">
+    <div class="dialog-box">
+        <h1>Sú slová rovnaké?</h1>
+        <p>Sú slová rovnaké?</p>
+        <div id="buttonsContainer"></div>
+    </div>
+  </div>
+
+
+
+  <button onclick="openCvicenie()">Otvoriť dialogové okno</button>
+
+  <div id="cvicenie" class="cvicenie">
+    <div class="cvicenie-content">
+      <span class="close" onclick="closeCvicenie()">&times;</span>
+      <center><img id="cvicenie-image" src="images/traktor.png" alt="Obrázok" style="width: 240px; height: auto; display: block; margin-top: 20px; "></center>
+      <p id="cvicenie-text" style="text-align: center;">TRAKTOR</p>
+      <center><button id="rozpoznanie" class="tlacidlo"> </button></center>
+    </div>
+  </div>
+
+
+  
+<script src="game copy.js"></script>
+</body>
+</html>

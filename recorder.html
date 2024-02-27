@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Audio Recorder</title>
+</head>
+<body>
+  <h1>Nahrávanie zvuku:</h1>
+  <button id="startButton">Štart Nahrávania</button>
+  <button id="stopButton">Stop Nahrávania</button><p></p>
+  <p>Zoznam nahrávok: <select id="recordingsList"></select></p>
+  <button id="playSelectedButton">Prehrať Vybrané</button>
+  <button id="analyzeword">Vyhodnotiť Nahrávku</button>
+  <audio controls id="audioPlayer" style="display: none;"></audio>
+  <p id="evaluationResult"></p>
+
+</br>
+  <button onclick="testik()">Test rozpoznávania reči</button>
+  <button id="rozpoznanie">Rozpoznanie slova test</button>
+
+
+  <script>
+  function testik() {
+    if ('webkitSpeechRecognition' in window) {
+      alert('Rozpoznávanie reči je podporované vo vašom prehliadači.');
+    } else {
+      alert('Rozpoznávanie reči nie je podporované vo vašom prehliadači. Prosím, skúste to v inom prehliadači.');
+    }
+  }
+  </script>
+  
+
+  <form action="index.html">
+    <input type="submit" value="domov" />
+</form>
+
+  
+  <script src="recorder.js"></script>
+</body>
+</html>
+
+
+

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="description" content="Adam Reňak - Web Developer">
+    <meta name="author" content="Adam Reňak - Joj_Dobre">
+    <meta name="keywords" content="Adam Reňak, Joj_Dobre, Developer, Website, Portfolio">
+
+    <title>Bakalárska práca</title>
+    <link rel="stylesheet" type="text/css" href="index.css" />
+    <link rel="icon" type="image/png" href="images/icons/favicon-192x192.png">
+    <link rel="shortcut icon" href="images/icons/favicon.ico">
+  </head>
+  <body>
+    <div class="container">
+      <div class="menu">
+        <ul>
+          <li>
+            <a href="kopac.html">
+              <img src="images/spustithru.png" alt="ŠTART">
+            </a>
+          </li>
+          <li><img src="images/Akohrat.png" alt="INFORMACIE" class="show-info"></li>
+
+          <form action="recorder.html">
+            <input type="submit" value="recorder" />
+        </form>
+      <form action="okno.html">
+        <input type="submit" value="okno" />
+      </form>
+        </ul>
+      </div>
+      <div class="right-section">
+        <img src="images/kopac.png" alt="Obrázok v pravej sekcii" class="rotate-enlarge">
+      </div>
+  
+      <div id="info-dialog" class="info-dialog">
+
+        <div class="dialog-box">
+          <h1>INFORMÁCIE</h1>
+        <p>Táto hra je určená pre deti s logopedickými problémami. Cieľom hry je vykopať všetky diamanty a zlata z bane. Pre úspešne vykopanie 
+          diamantov musí hráč splniť rečové cvičenia. Navyše, baňu stráži drak, ktorého kopánim zobúdzame. Rečovým cvičením ho musí hráč uspať.</p>
+
+          <span class="close">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        </div>
+      </div>
+      
+    </div>
+    <script>
+      const infoButton = document.querySelector('.show-info');
+      const infoDialog = document.getElementById('info-dialog');
+      const closeBtn = document.querySelector('.close');
+      infoButton.addEventListener('click', function() {
+        infoDialog.style.display = 'block';
+      });
+
+      closeBtn.addEventListener('click', function() {
+        infoDialog.style.display = 'none';
+      });
+    </script>
+  </body>
+</html>
+

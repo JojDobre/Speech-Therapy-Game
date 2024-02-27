@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Bakalárska práca</title>
+    <link rel="stylesheet" type="text/css" href="index.css" />
+    <link rel="icon" type="image/png" href="img/icons/favicon-192x192.png">
+    <link rel="shortcut icon" href="img/icons/favicon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zvuková hra</title>
+    <script src="https://unpkg.com/howler@2.2.3/dist/howler.min.js"></script>
+</head>
+<body>
+    <form action="index.html">
+        <input type="submit" value="domov" />
+    </form>
+    <button id="startButton" class="show-info">Spusti hru</button>
+    
+    <div id="info-dialog" class="info-dialog">
+        <div class="dialog-box">
+            <h1>Sú slová rovnaké?</h1>
+            <p>Sú slová rovnaké?</p>
+            <div id="buttonsContainer"></div>
+        </div>
+    </div>
+
+</body>
+<script>
+    const infoButton = document.querySelector('.show-info');
+    const infoDialog = document.getElementById('info-dialog');
+    infoButton.addEventListener('click', function() {
+      infoDialog.style.display = 'block';
+    });
+
+    closeBtn.addEventListener('click', function() {
+      infoDialog.style.display = 'none';
+    });
+  </script>
+  <script src="minihra.js"></script>
+</html>
+

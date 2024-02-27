@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dialogové okno</title>
+<link rel="stylesheet" href="okno.css">
+</head>
+<body>
+
+  <button onclick="openCvicenie()">Otvoriť dialogové okno</button>
+
+  <div id="cvicenie" class="cvicenie">
+    <div class="cvicenie-content">
+      <span class="close" onclick="closeCvicenie()">&times;</span>
+      <center><img id="cvicenie-image" src="images/traktor.png" alt="Obrázok" style="width: 240px; height: auto; display: block; margin-top: 20px; "></center>
+      <p class="cvicenie-text" id="word-display" style="text-align: center;">TRAKTOR</p>
+      <center><button id="rozpoznanie" class="tlacidlo"> </button></center>
+    </div>
+  </div>
+
+<div id="blur-background"></div>
+
+<script src="okno.js"></script>
+</body>
+</html>
+
