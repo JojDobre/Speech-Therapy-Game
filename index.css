@@ -69,12 +69,12 @@ body {
 }
 /*obrazok*/
 .right-section img {
-  height: 30%;
-  max-height: 600px;
-  width: auto;
+  max-height: 60vh;
+  max-width: 100%; 
   transform: rotate(5deg);
   transition: transform 0.3s ease, scale 0.3s ease;
   z-index: 0;
+  margin-left: -30px;
 }
 .right-section img:hover {
   transform: rotate(10deg) scale(1.05);
@@ -450,3 +450,128 @@ body {
 .cvicenie-open #blur-background {
   filter: blur(8px) grayscale(50%); /* Aplikuj rozmazanie a zosvetlenie pozadia, keď je dialogové okno otvorené */
 }
+
+
+
+
+
+
+@media only screen and (max-width: 768px) {
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.menu ul li img {
+  width: 100%;
+  max-width: 350px;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.menu ul li img:hover {
+  transform: scale(1.1);
+}
+.right-section{
+  display: none;
+}
+
+.informacie-okno {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%; /* Šírka dialogového okna bude 80% šírky obrazovky */
+  max-width: 750px; /* Maximálna šírka pre zachovanie pomeru strán */
+  height: auto; /* Výška sa bude automaticky prispôsobovať obsahu */
+  max-height: 90%; /* Maximálna výška pre zachovanie pomeru strán */
+  background-image: url(images/cvicenie.png);
+  background-size: contain; /* Zabezpečí zachovanie pomeru strán */
+  background-repeat: no-repeat;
+  background-position: center;
+  overflow: auto;
+  z-index: 500;
+}
+
+.informacie-okno-content {
+  padding: 70px;
+}
+.informacie-okno p {
+  font-family: 'MPLUSRounded1c-ExtraBold';
+  color: transparent; 
+  background-image: linear-gradient(to top, #dfdcdc, #ffffff);
+  -webkit-background-clip: text;
+  background-clip: text; 
+  text-align: center;
+  font-size: 16px;
+  -webkit-text-stroke: 1px #000000; /* Šírka a farba textovej ohraničujúcej čiary */
+  text-stroke: 1px rgb(255, 255, 255);
+}
+.informacie-okno h1 {
+  font-family: 'MPLUSRounded1c-Black';
+  color: transparent; 
+  background-image: linear-gradient(to top, #8f8d8d, #ffffff);
+  -webkit-background-clip: text;
+  background-clip: text; 
+  text-align: center;
+  border: #000;
+  font-size: 32px;
+}
+
+
+
+}
+
+@media only screen and (max-width: 992px) {
+  .informacie-okno {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 510px;
+    height: 391px;
+    transform: translate(-50%, -50%);
+    width: 80%; /* Šírka dialogového okna bude 80% šírky obrazovky */
+    max-width: 750px; /* Maximálna šírka pre zachovanie pomeru strán */
+    height: auto; /* Výška sa bude automaticky prispôsobovať obsahu */
+    max-height: 90%; /* Maximálna výška pre zachovanie pomeru strán */
+    background-image: url(images/cvicenie.png);
+    background-size: contain; /* Zabezpečí zachovanie pomeru strán */
+    background-repeat: no-repeat;
+    background-position: center;
+    overflow: auto;
+    z-index: 500;
+  }
+  .informacie-okno-content {
+    padding: 70px;
+    padding-top: 70px;
+  }
+  .informacie-okno p {
+    font-family: 'MPLUSRounded1c-ExtraBold';
+    color: transparent; 
+    background-image: linear-gradient(to top, #dfdcdc, #ffffff);
+    -webkit-background-clip: text;
+    background-clip: text; 
+    text-align: center;
+    font-size: 18px;
+    -webkit-text-stroke: 1px #000000; /* Šírka a farba textovej ohraničujúcej čiary */
+    text-stroke: 1px rgb(255, 255, 255);
+  }
+  .informacie-okno h1 {
+    font-family: 'MPLUSRounded1c-Black';
+    color: transparent; 
+    background-image: linear-gradient(to top, #8f8d8d, #ffffff);
+    -webkit-background-clip: text;
+    background-clip: text; 
+    text-align: center;
+    border: #000;
+    font-size: 32px;
+  }
+}
+
+@media only screen and (max-width: 1200px) {
+  /* Pre zariadenia s menšou šírkou ako 1200px*/
+}
+
