@@ -31,8 +31,12 @@
 /*BODY*/
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  margin: 20px;
+  margin: 00px;
   padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
   background-image: url('images/pozadieg.jpg');
 }
 .container {
@@ -47,47 +51,75 @@ body {
 .menu ul {
   padding: 0;
   text-align: center;
+  list-style-type: none;
 }
-
 .menu ul li {
   margin-bottom: 10px;
 }
-
 .menu ul li img {
-  width: 350px;
+  width: 60%;
+  max-width: 350px;
   height: auto;
   cursor: pointer;
   transition: transform 0.3s ease;
 }
-
 .menu ul li img:hover,
 .right-section img:hover {
   transform: scale(1.1);
 }
-
+/*obrazok*/
 .right-section img {
-  width: 85%;
-  height: auto;
-  transform: rotate(15deg);
+  height: 30%;
+  max-height: 600px;
+  width: auto;
+  transform: rotate(5deg);
   transition: transform 0.3s ease, scale 0.3s ease;
   z-index: 0;
 }
-
 .right-section img:hover {
-  transform: rotate(20deg) scale(1.1);
+  transform: rotate(10deg) scale(1.05);
 }
-
-
-.blur-background {
+/*Dialogove okno - menu */
+.informacie-okno {
+  display: none;
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  backdrop-filter: blur(5px); /* Rozmazanie pozadia */
-  z-index: 9998; /* Menšie číslo ako z-index dialogového okna */
-  display: none; /* Na začiatku nezobrazovať */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 750px;
+  height: 627.5px;
+  background-image: url(images/informacie-okno.png);
+  overflow: auto;
+  z-index: 1000;
 }
+.informacie-okno-content {
+  padding: 70px;
+  padding-top: 150px;
+}
+.informacie-okno p {
+  font-family: 'MPLUSRounded1c-ExtraBold';
+  color: transparent; 
+  background-image: linear-gradient(to top, #dfdcdc, #ffffff);
+  -webkit-background-clip: text;
+  background-clip: text; 
+  text-align: center;
+  font-size: 24px;
+  -webkit-text-stroke: 1px #000000; /* Šírka a farba textovej ohraničujúcej čiary */
+  text-stroke: 1px rgb(255, 255, 255);
+}
+.informacie-okno h1 {
+  font-family: 'MPLUSRounded1c-Black';
+  color: transparent; 
+  background-image: linear-gradient(to top, #8f8d8d, #ffffff);
+  -webkit-background-clip: text;
+  background-clip: text; 
+  text-align: center;
+  border: #000;
+  font-size: 32px;
+}
+
+
+
 
 
 /*DIALOGOVÉ OKNO - PREHRAVANIE ZVUKOV*/
@@ -136,6 +168,9 @@ body {
   height: 50px;
   cursor: pointer; /* Zmení kurzor na ruku, aby bolo jasné, že ide o interaktívny element */
 }
+
+
+
 /*OKNO HRY*/
 .hra {
   width: 1125px;
