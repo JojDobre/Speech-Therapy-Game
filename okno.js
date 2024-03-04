@@ -10,9 +10,14 @@ function openCvicenie() {
   .then(response => response.text())
   .then(obsah => {
     const riadky = obsah.split('\n');
-    for (let i = 0; i < pocetcviceni; i++) {
+    let vybraneSlova = []; // Seznam již vybraných slov
+    while (wordList.length < pocetcviceni) {
       const nahodnyIndex = Math.floor(Math.random() * riadky.length);
-      wordList.push(riadky[nahodnyIndex].trim());
+      const slovo = riadky[nahodnyIndex].trim();
+      if (!vybraneSlova.includes(slovo)) { // Pokud slovo není již vybráno
+        wordList.push(slovo);
+        vybraneSlova.push(slovo);
+      }
     }
     startExercise();
   })
@@ -32,7 +37,9 @@ function startExercise() {
 
 // Funkcia na zobrazenie aktuálneho slova na vyslovenie
 function displayWord() {
-  document.getElementById("word-display").innerText = wordList[currentWordIndex];
+  document.getElementById("word-display").innerText = wordList[currentWordIndex].toUpperCase();
+  const imageName = wordList[currentWordIndex] + ".png"; 
+  document.getElementById("cvicenie-image").src = "images/slova/" + imageName;
 }
 
 function rozpoznanieS() {
@@ -57,17 +64,25 @@ function rozpoznanieS() {
 
       if (transcript.toLowerCase() === currentWord.toLowerCase()) {
         console.log('Bolo správne vyslovené slovo "' + currentWord + '".');
+        document.getElementById("vysledok").innerHTML = '<center><img src="images/spravne.png" alt="Správne" style="width: 435px; height: 342px;"></center>';
         currentWordIndex++;
+        setTimeout(() => {
+        document.getElementById("vysledok").innerHTML = ''; 
         if (currentWordIndex < wordList.length) {
           displayWord(); // Zobraziť ďalšie slovo
         } else {
           closeCvicenie(); // Ukončiť cvičenie
         }
+        }, 2000);
       } else {
         console.log('Slovo "' + currentWord + '" nebolo správne vyslovené.');
         console.log('Skús ho vysloviť znova');
+        document.getElementById("vysledok").innerHTML = '<center><img src="images/nespravne.png" alt="Nesprávne" style="width: 435px; height: 342px;"></center>';
       }
+      setTimeout(() => {
+        document.getElementById("vysledok").innerHTML = ''; // Vymazanie obrázka po 2 sekundách
       resolve();  //resolve na splnenie promisy
+      }, 2000);
     };
   });
 
