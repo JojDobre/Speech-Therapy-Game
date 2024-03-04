@@ -411,7 +411,6 @@ body {
 .close:hover {
   color: red;
 }
-/* Tlacidlo */
 .tlacidlo {
   margin-top: -20px;
   background-color: rgba(255, 228, 196, 0);
@@ -434,27 +433,38 @@ body {
   background-color: rgba(255, 228, 196, 0);
   background-image: url(images/tlacidlo2.png); /* Zmeňte obrázok na váš vlastný pre stav kliknutia */
 }
-/*Rozpazanie pozadia*/
 #blur-background {
-  display: none; /* Skryjeme rozmazané pozadie pri načítaní stránky */
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url(images/pozadie.jpg); /* Zmeňte obrázok na váš vlastný */
-  background-size: cover;
-  filter: blur(8px); /* Rozmazanie zvyšku stránky */
-  z-index: 999; /* Zabezpečí, aby bol za dialogovým oknom */
+  backdrop-filter: blur(4px); /* Rozmazanie všetkého pod #blur-background */
+  z-index: 999; 
 }
 .cvicenie-open #blur-background {
-  filter: blur(8px) grayscale(50%); /* Aplikuj rozmazanie a zosvetlenie pozadia, keď je dialogové okno otvorené */
+  filter: blur(4px) grayscale(50%); /* Aplikuj rozmazanie a zosvetlenie pozadia, keď je dialogové okno otvorené */
+}
+#vysledok {
+  width: 435px;
+  height: 342px;
+  height: auto; 
+  display: block; 
+  margin-left: 38px; 
+  margin-top: 25px;
+  margin-right: 38px;
+  margin-bottom: 26px;
+  position: absolute;
+  background-size: cover;
+  backdrop-filter: blur(2px); /* Rozmazání efektu */
+  z-index: 9999; /* Zde můžete použít libovolné číslo, které zajistí, že bude obrázek nad všemi ostatními vrstvami */
 }
 
 
 
 
-
+/* MEDIA Q*/
 
 @media only screen and (max-width: 768px) {
 .container {

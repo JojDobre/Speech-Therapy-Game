@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dialogové okno</title>
-<link rel="stylesheet" href="okno.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="description" content="Logopedická hra pre najmenších">
+  <meta name="author" content="Adam Reňak">
+  <meta name="keywords" content="Adam Reňak, Joj_Dobre, Bakalárska práca, Logopedická hra,">
+  <title>Baníkovo dobrodružstvo: Rozvíjanie reči - Bakalárska práca</title>
+  <link rel="stylesheet" type="text/css" href="okno.css" />
+
+  <link rel="icon" type="image/png" href="images/banik.ico">
+  <link rel="shortcut icon" href="images/icons/banik.ico">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
 </head>
 <body>
 
   <button onclick="openCvicenie()">Otvoriť dialogové okno</button>
 
   <div id="cvicenie" class="cvicenie">
+    <div id="vysledok" class="vysledok"></div>
     <div class="cvicenie-content">
-      <div id="vysledok" class="vysledok"></div>
       <span class="close" onclick="closeCvicenie()">&times;</span>
-      <center><img id="cvicenie-image" src="images/traktor.png" alt="Obrázok" style="width: 240px; height: auto; display: block; margin-top: 20px; "></center>
+      <center><img id="cvicenie-image" src="images/slova/traktor.png" alt="Obrázok" style="width: 240px; height: auto; display: block; margin-top: 20px; "></center>
       <p class="cvicenie-text" id="word-display" style="text-align: center;">TRAKTOR</p>
       <center><button id="rozpoznanie" class="tlacidlo"> </button></center>
     </div>

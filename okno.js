@@ -4,6 +4,13 @@ let currentWordIndex = 0; // Index aktuálneho slova
 let wordList = []; // Pole slov na vyslovenie
 const pocetcviceni = 2;
 
+const EffectssoundFolder = `zvuky/effects`;
+let  effectVyhra = new Howl({ src: [`zvuky/effects/vyhra.mp3`] });
+let effectZle = new Howl({ src: [`zvuky/effects/zle.mp3`] });
+let effectSpravne = new Howl({ src: [`zvuky/effects/spravne.mp3`] });
+
+
+
 // Funkcia na otvorenie cvičenia a výber náhodných slov
 function openCvicenie() {
   fetch(url)
@@ -65,6 +72,7 @@ function rozpoznanieS() {
       if (transcript.toLowerCase() === currentWord.toLowerCase()) {
         console.log('Bolo správne vyslovené slovo "' + currentWord + '".');
         document.getElementById("vysledok").innerHTML = '<center><img src="images/spravne.png" alt="Správne" style="width: 435px; height: 342px;"></center>';
+        effectSpravne.play();
         currentWordIndex++;
         setTimeout(() => {
         document.getElementById("vysledok").innerHTML = ''; 
@@ -78,6 +86,7 @@ function rozpoznanieS() {
         console.log('Slovo "' + currentWord + '" nebolo správne vyslovené.');
         console.log('Skús ho vysloviť znova');
         document.getElementById("vysledok").innerHTML = '<center><img src="images/nespravne.png" alt="Nesprávne" style="width: 435px; height: 342px;"></center>';
+        effectZle.play();
       }
       setTimeout(() => {
         document.getElementById("vysledok").innerHTML = ''; // Vymazanie obrázka po 2 sekundách
@@ -105,6 +114,7 @@ function rozpoznanieS() {
 
 // Funkcia na zatvorenie cvičenia
 function closeCvicenie() {
+  transcript += event.results[0][0].transcript.trim();
   document.getElementById("cvicenie").style.display = "none";
   document.getElementById("blur-background").style.display = "none";
   document.body.classList.remove("cvicenie-open");

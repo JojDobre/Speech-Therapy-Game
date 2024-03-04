@@ -282,7 +282,7 @@ function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawPlayer();
     drawClay();
-    drawDragon();
+    /*drawDragon();*/
     drawDiamonds();
     drawGolds();
     displayStats(); // Zobraz štatistiky
@@ -329,7 +329,7 @@ function destroyBlock() {
       if (blockX === targetBlockX && blockY === targetBlockY && !diamond.destroyed) {
         spaceBarPressed++;
         if (spaceBarPressed === 3) {
-          showInfoDialog();
+          openCvicenie();
           diamond.destroyed = true;
           diamondsCollected++;
           updateDiamondCount();
@@ -381,6 +381,7 @@ function checkWinCondition() {
       setTimeout(() => {
         diamondsCollected = 0;
         goldsCollected = 0;
+        effectVyhra.play();
         const winConfirm = confirm('Gratulujem, vyhral si hru! Chceš hrať znova?');
         if (winConfirm) {
           // Znovu spustiť hru
@@ -473,7 +474,7 @@ function updateDiamondsCollected(count) {
 
 
 
-// Funkcia na aktualizáciu počtu vykopaných diamantov
+// Funkcia na aktualizáciu počtu vykopaných goldov
 function updateGoldCount() {
   const goldCountElement = document.getElementById('goldCount');
   if (goldCountElement) {
@@ -481,7 +482,7 @@ function updateGoldCount() {
   }
 }
 
-// Funkcia na inicializáciu zobrazenia diamantov
+// Funkcia na inicializáciu zobrazenia goldou
 function initializeGolds(count) {
   const goldsContainer = document.querySelector('.golds-container');
   // Vymažte všetky existujúce diamantové položky
@@ -506,7 +507,7 @@ function initializeGolds(count) {
   }
 }
 
-// Funkcia na aktualizáciu zobrazenia diamantov po získaní nového diamantu
+// Funkcia na aktualizáciu zobrazenia diamantov po získaní nového goldu
 function updategoldsCollected(count) {
   const golds = document.querySelectorAll('.gold-item');
   // Aktualizujte triedy pre všetky diamanty po získaní nového diamantu
@@ -514,27 +515,6 @@ function updategoldsCollected(count) {
     golds[i].classList.add('collected');
   }
 }
-
-
-
-/* POVOLENIE MIKROFONU PRI NAČITANÍ STRÁNKY */
-document.addEventListener("DOMContentLoaded", function() {
-  // Overiť, či je mikrofón k dispozícii v prehliadači
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      // Požiadať o prístup k mikrofónu
-      navigator.mediaDevices.getUserMedia({ audio: true })
-          .then(function(stream) {
-              console.log('Mikrofón je povolený.');
-              // Stream mikrofónu je úspešne získaný, môžete vykonať ďalšie kroky
-          })
-          .catch(function(error) {
-              console.error('Chyba pri povolení mikrofónu:', error);
-          });
-  } else {
-      console.error('Mikrofón nie je k dispozícii v tomto prehliadači.');
-  }
-});
-
 
 
 
@@ -681,19 +661,63 @@ function showInfoDialog() {
 }
 
 
+
+
+
+
+
+
+
+
+
+
 /* MINIGAME VYSLOVNOSŤ SLOVA*/
+const url = 'slova.txt'; // Upravte na skutočnú URL vášho API, ktoré poskytuje obsah súboru
+let currentWordIndex = 0; // Index aktuálneho slova
+let wordList = []; // Pole slov na vyslovenie
+const pocetcviceni = 2;
+
+const EffectssoundFolder = `zvuky/effects`;
+let  effectVyhra = new Howl({ src: [`zvuky/effects/vyhra.mp3`] });
+let effectZle = new Howl({ src: [`zvuky/effects/zle.mp3`] });
+let effectSpravne = new Howl({ src: [`zvuky/effects/spravne.mp3`] });
+
+// Funkcia na otvorenie cvičenia a výber náhodných slov
 function openCvicenie() {
+  fetch(url)
+  .then(response => response.text())
+  .then(obsah => {
+    const riadky = obsah.split('\n');
+    let vybraneSlova = []; // Seznam již vybraných slov
+    while (wordList.length < pocetcviceni) {
+      const nahodnyIndex = Math.floor(Math.random() * riadky.length);
+      const slovo = riadky[nahodnyIndex].trim();
+      if (!vybraneSlova.includes(slovo)) { // Pokud slovo není již vybráno
+        wordList.push(slovo);
+        vybraneSlova.push(slovo);
+      }
+    }
+    startExercise();
+  })
+  .catch(error => {
+    console.error('Chyba pri načítaní obsahu súboru: ' + error);
+  });
+}
+/* Spustenie Cvicenia*/
+function startExercise() {
   document.getElementById("cvicenie").style.display = "block";
   document.getElementById("blur-background").style.display = "block";
   document.body.classList.add("cvicenie-open");
-  document.body.style.overflow = "hidden"; // Zabrániť posúvaniu stránky
+  document.body.style.overflow = "hidden"; // Zabrániť posúvaní stránky
+  displayWord();
 }
-function closeCvicenie() {
-  document.getElementById("cvicenie").style.display = "none";
-  document.getElementById("blur-background").style.display = "none";
-  document.body.classList.remove("cvicenie-open");
-  document.body.style.overflow = "auto"; // Povoliť posúvanie stránky
+// Funkcia na zobrazenie aktuálneho slova na vyslovenie
+function displayWord() {
+  document.getElementById("word-display").innerText = wordList[currentWordIndex].toUpperCase();
+  const imageName = wordList[currentWordIndex] + ".png"; 
+  document.getElementById("cvicenie-image").src = "images/slova/" + imageName;
 }
+/* Samotna funckia */
 function rozpoznanieS() {
   const recognition = new webkitSpeechRecognition();
   recognition.lang = 'sk-SK';     //jazyk
@@ -712,36 +736,62 @@ function rozpoznanieS() {
       console.log('Nahrávanie ukončené.');
       console.log('Rozpoznaný text:', transcript);
 
-      if (transcript.toLowerCase().includes('traktor')) {
-        console.log('Bolo správne vyslovené slovo "traktor".');
+      const currentWord = wordList[currentWordIndex];
+
+      if (transcript.toLowerCase() === currentWord.toLowerCase()) {
+        console.log('Bolo správne vyslovené slovo "' + currentWord + '".');
+        document.getElementById("vysledok").innerHTML = '<center><img src="images/spravne.png" alt="Správne" style="width: 435px; height: 342px;"></center>';
+        effectSpravne.play();
+        currentWordIndex++;
+        setTimeout(() => {
+        document.getElementById("vysledok").innerHTML = ''; 
+        if (currentWordIndex < wordList.length) {
+          displayWord(); // Zobraziť ďalšie slovo
+        } else {
+          closeCvicenie(); // Ukončiť cvičenie
+        }
+        }, 2000);
       } else {
-        console.log('Slovo nebolo správne vyslovené.');
+        console.log('Slovo "' + currentWord + '" nebolo správne vyslovené.');
+        console.log('Skús ho vysloviť znova');
+        document.getElementById("vysledok").innerHTML = '<center><img src="images/nespravne.png" alt="Nesprávne" style="width: 435px; height: 342px;"></center>';
+        effectZle.play();
       }
+      setTimeout(() => {
+        document.getElementById("vysledok").innerHTML = ''; // Vymazanie obrázka po 2 sekundách
       resolve();  //resolve na splnenie promisy
+      }, 2000);
     };
   });
 
   recognition.onresult = function(event) {
-    transcript += event.results[0][0].transcript.trim();  // Pridanie rozpoznaného textu do premennej transcript
+    transcript += event.results[0][0].transcript.trim();  // Rozpoznaný text
   };
-
   //upozornenie na chybu
   recognition.onerror = function(event) {
     console.error('Chyba pri rozpoznávaní reči:', event.error);
   };
-
   // Zastavenie nahrávania po 5 sekundách
   setTimeout(() => {
     recognition.stop();
   }, 5000);
-
   // Počkáme na ukončenie nahrávania pomocou promisy
   waitForEnd.then(() => {
     console.log('Vyhodnotenie hotové.');
   });
 }
+// Funkcia na zatvorenie cvičenia
+function closeCvicenie() {
+  currentWordIndex = 0;
+  wordList = [];
+  document.getElementById("cvicenie").style.display = "none";
+  document.getElementById("blur-background").style.display = "none";
+  document.body.classList.remove("cvicenie-open");
+  document.body.style.overflow = "auto"; // Povoliť posúvanie stránky
+}
 const rozpoznanie = document.getElementById('rozpoznanie');
 rozpoznanie.addEventListener('click', rozpoznanieS);
+
 
 /*Generovanie predmetov a GameLoop*/
 generateDiamonds();

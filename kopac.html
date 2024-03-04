@@ -25,6 +25,15 @@
 </head>
 <body>
   <div class="hra">
+    <div id="cvicenie" class="cvicenie">
+      <div id="vysledok" class="vysledok"></div>
+      <div class="cvicenie-content">
+        <span class="close" onclick="closeCvicenie()">&times;</span>
+        <center><img id="cvicenie-image" src="images/slova/traktor.png" alt="Obrázok" style="width: 240px; height: auto; display: block; margin-top: 20px; "></center>
+        <p class="cvicenie-text" id="word-display" style="text-align: center;">TRAKTOR</p>
+        <center><button id="rozpoznanie" class="tlacidlo"> </button></center>
+      </div>
+    </div>
    <div class="menu-hra">
     <div class="menu-buttons">
           <a href="index.html">
@@ -56,21 +65,7 @@
     </div>
   </div>
 
-
-
-  <button onclick="openCvicenie()">Otvoriť dialogové okno</button>
-
-  <div id="cvicenie" class="cvicenie">
-    <div class="cvicenie-content">
-      <span class="close" onclick="closeCvicenie()">&times;</span>
-      <center><img id="cvicenie-image" src="images/traktor.png" alt="Obrázok" style="width: 240px; height: auto; display: block; margin-top: 20px; "></center>
-      <p id="cvicenie-text" style="text-align: center;">TRAKTOR</p>
-      <center><button id="rozpoznanie" class="tlacidlo"> </button></center>
-    </div>
-  </div>
-
-
-  
+<div id="blur-background"></div>
 <script src="game copy.js"></script>
 </body>
 </html>
