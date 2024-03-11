@@ -411,16 +411,11 @@ function destroyBlock() {
     diamonds.forEach((diamond, diamondIndex) => {
       blockX = diamond.x / blockSize;
       blockY = diamond.y / blockSize;
-  
       if (blockX === targetBlockX && blockY === targetBlockY && !diamond.destroyed) {
         spaceBarPressed++;
         if (spaceBarPressed === 3) {
-          console.log('dblockX: ' +blockX +' blockY: ' +blockY);
-          console.log('diamond: ' +diamond +' Index diamond: ' +diamondIndex);
-
           openCvicenie();
         }
-        
       }
     });
 
@@ -446,19 +441,11 @@ function destroyBlock() {
     kov.forEach((kov, kovIndex) => {
       const blockX = kov.x / blockSize;
       const blockY = kov.y / blockSize;
-  
       if (blockX === targetBlockX && blockY === targetBlockY && !kov.destroyed) {
         spaceBarPressed++;
         if (spaceBarPressed === 4) {
-          kov.destroyed = true;
-          kovCollected++;
-          effectzlato.play();
-          updateKovCount();
-          updateKovCollected(kovCollected);
-          checkWinCondition();
-          spaceBarPressed = 0; // Reset počtu stlačení pre ďalšie diamanty
+          showInfoDialog();
         }
-        
       }
     });
 }
@@ -547,7 +534,6 @@ function updateDiamondCount() {
       diamondCountElement.textContent = diamondsCollected;
   }
 }
-
 // Funkcia na inicializáciu zobrazenia diamantov
 function initializeDiamonds(count) {
   const diamondsContainer = document.querySelector('.diamonds-container');
@@ -572,7 +558,6 @@ function initializeDiamonds(count) {
     diamondsContainer.appendChild(diamondItem);
   }
 }
-
 // Funkcia na aktualizáciu zobrazenia diamantov po získaní nového diamantu
 function updateDiamondsCollected(count) {
   const diamonds = document.querySelectorAll('.diamond-item');
@@ -581,7 +566,6 @@ function updateDiamondsCollected(count) {
     diamonds[i].classList.add('collected');
   }
 }
-
 // Funkcia na aktualizáciu počtu vykopaných diamantov
 function updateKovCount() {
   const kovCountElement = document.getElementById('kovCount');
@@ -589,7 +573,6 @@ function updateKovCount() {
       kovCountElement.textContent = kovCollected;
   }
 }
-
 // Funkcia na inicializáciu zobrazenia diamantov
 function initializeKov(count) {
   const kovContainer = document.querySelector('.kov-container');
@@ -614,7 +597,6 @@ function initializeKov(count) {
     kovContainer.appendChild(kovItem);
   }
 }
-
 // Funkcia na aktualizáciu zobrazenia diamantov po získaní nového diamantu
 function updateKovCollected(count) {
   const kov = document.querySelectorAll('.kov-item');
@@ -623,9 +605,6 @@ function updateKovCollected(count) {
     kov[i].classList.add('collected');
   }
 }
-
-
-
 // Funkcia na aktualizáciu počtu vykopaných goldov
 function updateGoldCount() {
   const goldCountElement = document.getElementById('goldCount');
@@ -633,7 +612,6 @@ function updateGoldCount() {
       goldCountElement.textContent = goldsCollected;
   }
 }
-
 // Funkcia na inicializáciu zobrazenia goldou
 function initializeGolds(count) {
   const goldsContainer = document.querySelector('.golds-container');
@@ -658,7 +636,6 @@ function initializeGolds(count) {
     goldsContainer.appendChild(goldItem);
   }
 }
-
 // Funkcia na aktualizáciu zobrazenia diamantov po získaní nového goldu
 function updategoldsCollected(count) {
   const golds = document.querySelectorAll('.gold-item');
@@ -790,6 +767,24 @@ function minigame(){
 
   function endGame(hasWon = false) {
     const message = hasWon ? 'Vyhral si!' : 'Koniec hry, prehral si.';
+    if (hasWon){
+      kov.forEach((kov, kovIndex) => {
+        blockX = kov.x / blockSize;
+        blockY = kov.y / blockSize;
+        if (blockX === targetBlockX && blockY === targetBlockY && !kov.destroyed) {
+          kov.destroyed = true;
+          kovCollected++;
+          effectzlato.play();
+          updateKovCount();
+          updateKovCollected(kovCollected);
+          checkWinCondition();
+          spaceBarPressed = 0; // Reset počtu stlačení pre ďalšie diamanty
+        }
+      });
+    }
+    else{
+      spaceBarPressed = 0;
+    }
     currentLevel = 1;
     correctGuesses = 0;
     buttonsContainer.innerHTML = '';
@@ -829,11 +824,6 @@ let currentWordIndex = 0; // Index aktuálneho slova
 let wordList = []; // Pole slov na vyslovenie
 const pocetcviceni = 2;
 let kontrolacvicenia = 0;
-
-
-
-
-
 // Funkcia na otvorenie cvičenia a výber náhodných slov
 function openCvicenie() {
   fetch(url)
@@ -940,19 +930,25 @@ function rozpoznanieS() {
   });
 }
 // Funkcia na zatvorenie cvičenia
-function closeCvicenie(diamond, diamondIndex) {
+function closeCvicenie() {
   if (kontrolacvicenia === 1) {
+    diamonds.forEach((diamond, diamondIndex) => {
+      blockX = diamond.x / blockSize;
+      blockY = diamond.y / blockSize;
+      if (blockX === targetBlockX && blockY === targetBlockY && !diamond.destroyed) {
+      console.log('dblockX: ' +blockX +' blockY: ' +blockY);
+      console.log('diamond: ' +diamond +' Index diamond: ' +diamondIndex);
       diamond.destroyed = true; // Zničení diamantu
       diamondsCollected++;
       effectzlato.play();
       updateDiamondCount();
       updateDiamondsCollected(diamondsCollected);
       checkWinCondition();
-      spaceBarPressed = 0;
-  } else if (kontrolacvicenia === 2) {
+      spaceBarPressed = 0;}     
+  })}
+  else if (kontrolacvicenia === 2) {
       spaceBarPressed = 0;
   }
-
   slovicka = 0;
   kontrolacvicenia = 0;
   currentWordIndex = 0;
@@ -964,14 +960,6 @@ function closeCvicenie(diamond, diamondIndex) {
 }
 const rozpoznanie = document.getElementById('rozpoznanie');
 rozpoznanie.addEventListener('click', rozpoznanieS);
-
-
-
-
-/* MENU HRY */
-let destroyedDiamond = null;
-
-
 
 /*Generovanie predmetov a GameLoop*/
 generateDiamonds();
