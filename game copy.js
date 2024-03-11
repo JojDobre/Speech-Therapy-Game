@@ -7,7 +7,7 @@ const playerSize = blockSize; // Veľkosť hráča
 const diamondSize = blockSize; // Veľkosť diamantu
 const GoldSize = blockSize; // Veľkosť diamantu
 const claySize = blockSize; // Veľkosť hliny
-
+const kovSize = blockSize; // Veľkosť diamantu
 const mapWidth = 16; // Počet blokov na šírku
 const mapHeight = 10; // Počet blokov na výšku
 
@@ -15,17 +15,21 @@ let playerX = blockSize; // Začiatočná pozícia hráča na osi X
 let playerY = blockSize; // Začiatočná pozícia hráča na osi Y
 
 const diamonds = [];
+const kov = [];
 const golds = [];
 const clay = [];
 let PocetGenDiamant = 4;
-let PocetGenGolds = 15;
+let PocetGenKov = 4;
+let PocetGenGolds = 6;
 
 let diamondsDestroyed = 0; // Počet zničených diamantov
+let kovDestroyed = 0; // Počet zničených diamantov
 let goldsDestroyed = 0; // Počet zničených goldov
 let isDestroying = false; // Premenná určujúca, či hráč zničí blok
 let playerRotation = 0; // Úvodná rotácia hráča
 let spaceBarPocitadlo1 = 0; // Počet stlačení medzerníka
 let diamondsCollected = 0; // Počet zozbieraných diamantov
+let kovCollected = 0; // Počet zozbieraných diamantov
 let goldsCollected = 0; // Počet zozbieraných diamantov
 let dragonSleeping = true;
 
@@ -39,6 +43,8 @@ const goldImg = new Image();
 goldImg.src = 'images/gold.png';
 const diamondImg = new Image();
 diamondImg.src = 'images/diamond.png';
+const kovImg = new Image();
+kovImg.src = 'images/kov.png';
 const clayImg = new Image();
 clayImg.src = 'images/stone.png';
 const playerImg = new Image();
@@ -56,13 +62,21 @@ hracKopaVlavoImg.src = 'images/hrac-kope-vlavo.png';
 let playerDirection = 'front';
 let kope = false;
 
+const EffectssoundFolder = `zvuky/effects`;
+let  effectVyhra = new Howl({ src: [`zvuky/effects/vyhra.mp3`] });
+let effectZle = new Howl({ src: [`zvuky/effects/zle.mp3`] });
+let effectSpravne = new Howl({ src: [`zvuky/effects/spravne.mp3`] });
+let effectkopanie = new Howl({ src: [`zvuky/effects/kopanie.wav`] });
+let effectzlato = new Howl({ src: [`zvuky/effects/zlato.wav`] });
+
 //Zobrazenie stats
 function displayStats() {
     ctx.font = '20px Arial';
     ctx.fillStyle = 'black';
     ctx.fillText(`Stlačenia medzerníka: ${spaceBarPocitadlo1}`, 10, 30);
     ctx.fillText(`Počet diamantov: ${diamondsCollected}`, 10, 60);
-    ctx.fillText(`Počet goldov: ${goldsCollected}`, 10, 90);
+    ctx.fillText(`Počet kovov: ${kovCollected}`, 10, 90);
+    ctx.fillText(`Počet goldov: ${goldsCollected}`, 10, 120);
 }
 
 //Generovanie diamantov
@@ -82,6 +96,23 @@ function generateDiamonds() {
   }
   initializeDiamonds(PocetGenDiamant);
 } 
+//Generovanie diamantov
+function generateKov() {
+  const generatedPositions = []; // Pole na uchovanie už vygenerovaných pozícií
+  while (kov.length != PocetGenKov) {
+    const kovX = Math.floor(Math.random() * mapWidth) * blockSize;
+    const kovY = (Math.floor(Math.random() * mapHeight) + 6) * blockSize; // Generovanie o 10 nižšie
+    const newPosition = { x: kovX, y: kovY };
+    // Zkontrolujeme, či je pozícia už obsadená diamantom
+    const positionExists = generatedPositions.some (pos => pos.x === kovX && pos.y === kovY); 
+    // Ak pozícia nie je obsadená, pridáme diamant
+    if (!positionExists) {
+      kov.push(newPosition);
+      generatedPositions.push(newPosition);
+    }
+  }
+  initializeKov(PocetGenKov);
+} 
 //Generovanie zlata
 function generateGolds() {
   const generatedPositions = []; // Pole na uchovanie už vygenerovaných pozícií
@@ -93,7 +124,8 @@ function generateGolds() {
 
     // Zkontrolujeme, či je pozícia už obsadená zlatom alebo diamantom
     const positionExists = generatedPositions.some(pos => pos.x === goldX && pos.y === goldY) ||
-                           diamonds.some(diamond => diamond.x === goldX && diamond.y === goldY);
+                           diamonds.some(diamond => diamond.x === goldX && diamond.y === goldY) || 
+                           kov.some(kov => kov.x === goldX && kov.y === goldY);
 
     // Ak pozícia nie je obsadená, pridáme zlato
     if (!positionExists) {
@@ -112,6 +144,11 @@ function generateClay() {
         // Zkontrolujeme, či je pozícia už obsadená diamantom
         diamonds.forEach(diamond => {
           if (diamond.x === x * blockSize && diamond.y === (y + 6) * blockSize) { // Generovanie o 10 nižšie
+            isPositionEmpty = false;
+          }
+        });
+        kov.forEach(kov => {
+          if (kov.x === x * blockSize && kov.y === (y + 6) * blockSize) { // Generovanie o 10 nižšie
             isPositionEmpty = false;
           }
         });
@@ -163,6 +200,14 @@ function drawDiamonds() {
       }
     });
 }
+function drawKov() {
+  //ctx.strokeStyle = 'black';
+  kov.forEach(kov => {
+    if (!kov.destroyed) {
+      ctx.drawImage(kovImg, kov.x, kov.y, kovSize, kovSize);
+    }
+  });
+}
 function drawGolds() {
   //ctx.strokeStyle = 'black';
   golds.forEach(gold => {
@@ -201,67 +246,97 @@ function checkDragon() {
     dragonSleeping = true;
   }
 }
-//Ovládanie WASD
 window.addEventListener('keydown', (e) => {
-    const newPlayerX = playerX;
-    const newPlayerY = playerY;
-    switch (e.key) {
+  const newPlayerX = playerX;
+  const newPlayerY = playerY;
+  switch (e.key) {
       case 'w':
-        playerY -= blockSize;
-        playerRotation = 0; // Rotácia smeru hore
-        playerDirection = 'front';
-        break;
+      case 'ArrowUp':
+          if (playerY - blockSize >= 0) { // Kontrola pohybu nahor
+              playerY -= blockSize;
+              playerRotation = 0; // Rotácia smeru hore
+              playerDirection = 'front';
+          }
+          break;
       case 'a':
-        playerX -= blockSize;
-        playerRotation = 270; // Rotácia smeru doľava
-        playerDirection = 'vlavo';
-        break;
+      case 'ArrowLeft':
+          if (playerX - blockSize >= 0) { // Kontrola pohybu doľava
+              playerX -= blockSize;
+              playerRotation = 270; // Rotácia smeru doľava
+              playerDirection = 'vlavo';
+          }
+          break;
       case 's':
-        playerY += blockSize;
-        playerRotation = 180; // Rotácia smeru dole
-        playerDirection = 'front';
-        break;
+      case 'ArrowDown':
+          if (playerY + blockSize < 800) { // Kontrola pohybu dole
+              playerY += blockSize;
+              playerRotation = 180; // Rotácia smeru dole
+              playerDirection = 'front';
+          }
+          break;
       case 'd':
-        playerX += blockSize;
-        playerRotation = 90; // Rotácia smeru doprava
-        playerDirection = 'vpravo';
-        break;
+      case 'ArrowRight':
+          if (playerX + blockSize < 800) { // Kontrola pohybu doprava
+              playerX += blockSize;
+              playerRotation = 90; // Rotácia smeru doprava
+              playerDirection = 'vpravo';
+          }
+          break;
+  }
+
+  // Kontrola kolízií s hlinou, diamantom a goldom sa bude vykonávať len v prípade, že hráč sa nevyrazil mimo svet
+
+  // Kontrola kolízií s hlinou
+  clay.forEach((clayBlock, clayIndex) => {
+      const blockX = clayBlock.x;
+      const blockY = clayBlock.y;
+      if (playerX === blockX && playerY === blockY) {
+          if (isDestroying) {
+              clay.splice(clayIndex, 1);
+              isDestroying = false;
+          } else {
+              // Nastavenie hráča späť na pôvodné miesto, keď sa snaží prejsť cez blok
+              playerX = newPlayerX;
+              playerY = newPlayerY;
+          }
+      }
+  });
+
+  // Kontrola kolízií s diamantom
+  diamonds.forEach((diamond, diamondIndex) => {
+      const blockX = diamond.x;
+      const blockY = diamond.y;
+      if (playerX === blockX && playerY === blockY && !diamond.destroyed) {
+          if (isDestroying) {
+              diamond.destroyed = true;
+              isDestroying = false;
+          } else {
+              // Nastavenie hráča späť na pôvodné miesto, keď sa snaží prejsť cez diamant
+              playerX = newPlayerX;
+              playerY = newPlayerY;
+          }
+      }
+  });
+
+  // Kontrola kolízií s diamantom
+  kov.forEach((kov, kovIndex) => {
+    const blockX = kov.x;
+    const blockY = kov.y;
+    if (playerX === blockX && playerY === blockY && !kov.destroyed) {
+        if (isDestroying) {
+            kov.destroyed = true;
+            isDestroying = false;
+        } else {
+            // Nastavenie hráča späť na pôvodné miesto, keď sa snaží prejsť cez diamant
+            playerX = newPlayerX;
+            playerY = newPlayerY;
+        }
     }
+});
 
-    // Kontrola kolízií s hlinou
-    clay.forEach((clayBlock, clayIndex) => {
-        const blockX = clayBlock.x;
-        const blockY = clayBlock.y;
-        if (playerX === blockX && playerY === blockY) {
-            if (isDestroying) {
-                clay.splice(clayIndex, 1);
-                isDestroying = false;
-            } else {
-                // Nastavenie hráča späť na pôvodné miesto, keď sa snaží prejsť cez blok
-                playerX = newPlayerX;
-                playerY = newPlayerY;
-            }
-        }
-    });
 
-    // Kontrola kolízií s diamantom
-    diamonds.forEach((diamond, diamondIndex) => {
-        const blockX = diamond.x;
-        const blockY = diamond.y;
-        if (playerX === blockX && playerY === blockY && !diamond.destroyed) {
-            if (isDestroying) {
-                diamond.destroyed = true;
-                isDestroying = false;
-            } else {
-                // Nastavenie hráča späť na pôvodné miesto, keď sa snaží prejsť cez diamant
-                playerX = newPlayerX;
-                playerY = newPlayerY;
-            }
-        }
-    });
-
-    // Kontrola kolízií s goldom
-    golds.forEach((gold, goldIndex) => {
+  // Kontrola kolízií s goldom
+  golds.forEach((gold, goldIndex) => {
       const blockX = gold.x;
       const blockY = gold.y;
       if (playerX === blockX && playerY === blockY && !gold.destroyed) {
@@ -269,7 +344,7 @@ window.addEventListener('keydown', (e) => {
               gold.destroyed = true;
               isDestroying = false;
           } else {
-              // Nastavenie hráča späť na pôvodné miesto, keď sa snaží prejsť cez diamant
+              // Nastavenie hráča späť na pôvodné miesto, keď sa snaží prejsť cez gold
               playerX = newPlayerX;
               playerY = newPlayerY;
           }
@@ -284,17 +359,28 @@ function gameLoop() {
     drawClay();
     /*drawDragon();*/
     drawDiamonds();
+    drawKov();
     drawGolds();
     displayStats(); // Zobraz štatistiky
     requestAnimationFrame(gameLoop);
 }
 let spaceBarPressed = 0; // Počet stlačení medzerníka
-function destroyBlock() {
-    const playerBlockX = Math.floor(playerX / blockSize);
-    const playerBlockY = Math.floor(playerY / blockSize);
+let playerBlockX;
+let playerBlockY;
 
-    let targetBlockX = playerBlockX;
-    let targetBlockY = playerBlockY;
+let targetBlockX;
+let targetBlockY;
+let blockX;
+let blockY;
+
+
+
+function destroyBlock() {
+    playerBlockX = Math.floor(playerX / blockSize);
+    playerBlockY = Math.floor(playerY / blockSize);
+
+    targetBlockX = playerBlockX;
+    targetBlockY = playerBlockY;
 
     // Zistí smer hráča a určí cieľový blok podľa toho
     switch (playerRotation) {
@@ -323,19 +409,16 @@ function destroyBlock() {
     });
   
     diamonds.forEach((diamond, diamondIndex) => {
-      const blockX = diamond.x / blockSize;
-      const blockY = diamond.y / blockSize;
+      blockX = diamond.x / blockSize;
+      blockY = diamond.y / blockSize;
   
       if (blockX === targetBlockX && blockY === targetBlockY && !diamond.destroyed) {
         spaceBarPressed++;
         if (spaceBarPressed === 3) {
+          console.log('dblockX: ' +blockX +' blockY: ' +blockY);
+          console.log('diamond: ' +diamond +' Index diamond: ' +diamondIndex);
+
           openCvicenie();
-          diamond.destroyed = true;
-          diamondsCollected++;
-          updateDiamondCount();
-          updateDiamondsCollected(diamondsCollected);
-          checkWinCondition();
-          spaceBarPressed = 0; // Reset počtu stlačení pre ďalšie diamanty
         }
         
       }
@@ -350,8 +433,28 @@ function destroyBlock() {
         if (spaceBarPressed === 2) {
           gold.destroyed = true;
           goldsCollected++;
+          effectzlato.play();
           updateGoldCount();
           updategoldsCollected(goldsCollected);
+          checkWinCondition();
+          spaceBarPressed = 0; // Reset počtu stlačení pre ďalšie diamanty
+        }
+        
+      }
+    });
+
+    kov.forEach((kov, kovIndex) => {
+      const blockX = kov.x / blockSize;
+      const blockY = kov.y / blockSize;
+  
+      if (blockX === targetBlockX && blockY === targetBlockY && !kov.destroyed) {
+        spaceBarPressed++;
+        if (spaceBarPressed === 4) {
+          kov.destroyed = true;
+          kovCollected++;
+          effectzlato.play();
+          updateKovCount();
+          updateKovCollected(kovCollected);
           checkWinCondition();
           spaceBarPressed = 0; // Reset počtu stlačení pre ďalšie diamanty
         }
@@ -362,6 +465,7 @@ function destroyBlock() {
 function animateDigging() {
     kope = true;
     drawPlayer();
+    effectkopanie.play();
     setTimeout(() => {
        // Vrátime sa k pôvodnému obrázku
         kope = false;
@@ -377,9 +481,10 @@ document.addEventListener('keydown', (e) => {
     }
 });
 function checkWinCondition() {
-    if (diamondsCollected === PocetGenDiamant && goldsCollected === PocetGenGolds) {
+    if (diamondsCollected === PocetGenDiamant && goldsCollected === PocetGenGolds && kovCollected === PocetGenKov) {
       setTimeout(() => {
         diamondsCollected = 0;
+        kovCollected = 0;
         goldsCollected = 0;
         effectVyhra.play();
         const winConfirm = confirm('Gratulujem, vyhral si hru! Chceš hrať znova?');
@@ -399,26 +504,31 @@ function resetGame() {
    playerY = blockSize; // Začiatočná pozícia hráča na osi Y
     
    diamonds.length = 0;
+   kov.length = 0;
    clay.length = 0;
    golds.length = 0;
     
     diamondsDestroyed = 0; // Počet zničených diamantov
+    kovsDestroyed = 0; // Počet zničených diamantov
     goldsDestroyed = 0;
     isDestroying = false; // Premenná určujúca, či hráč zničí blok
     playerRotation = 0; // Úvodná rotácia hráča
     spaceBarPocitadlo1 = 0; // Počet stlačení medzerníka
     diamondsCollected = 0; // Počet zozbieraných diamantov
+    kovCollected = 0; // Počet zozbieraných diamantov
     goldsCollected = 0;
     dragonSleeping = true;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     generateDiamonds();
+    generateKov();
     generateGolds();
     generateClay();
     drawPlayer();
     drawClay();
     drawDragon();
     drawDiamonds();
+    drawKov();
     drawGolds();
     displayStats(); // Zobraz štatistiky
     requestAnimationFrame(gameLoop);
@@ -469,6 +579,48 @@ function updateDiamondsCollected(count) {
   // Aktualizujte triedy pre všetky diamanty po získaní nového diamantu
   for (let i = 0; i < count; i++) {
     diamonds[i].classList.add('collected');
+  }
+}
+
+// Funkcia na aktualizáciu počtu vykopaných diamantov
+function updateKovCount() {
+  const kovCountElement = document.getElementById('kovCount');
+  if (kovCountElement) {
+      kovCountElement.textContent = kovCollected;
+  }
+}
+
+// Funkcia na inicializáciu zobrazenia diamantov
+function initializeKov(count) {
+  const kovContainer = document.querySelector('.kov-container');
+  // Vymažte všetky existujúce diamantové položky
+  kovContainer.innerHTML = '';
+  
+  // Vytvorte a pridajte diamantové položky na základe počtu diamantov
+  for (let i = 0; i < count; i++) {
+    const kovItem = document.createElement('div');
+    kovItem.classList.add('kov-item');
+    
+    const kovImage = document.createElement('img');
+    kovImage.src = 'images/kov.png';
+    kovImage.alt = 'Kov';
+    kovImage.classList.add('kov-image');
+    
+    const kovOverlay = document.createElement('div');
+    kovOverlay.classList.add('kov-overlay');
+    
+    kovItem.appendChild(kovImage);
+    kovItem.appendChild(kovOverlay);
+    kovContainer.appendChild(kovItem);
+  }
+}
+
+// Funkcia na aktualizáciu zobrazenia diamantov po získaní nového diamantu
+function updateKovCollected(count) {
+  const kov = document.querySelectorAll('.kov-item');
+  // Aktualizujte triedy pre všetky diamanty po získaní nového diamantu
+  for (let i = 0; i < count; i++) {
+    kov[i].classList.add('collected');
   }
 }
 
@@ -676,11 +828,11 @@ const url = 'slova.txt'; // Upravte na skutočnú URL vášho API, ktoré poskyt
 let currentWordIndex = 0; // Index aktuálneho slova
 let wordList = []; // Pole slov na vyslovenie
 const pocetcviceni = 2;
+let kontrolacvicenia = 0;
 
-const EffectssoundFolder = `zvuky/effects`;
-let  effectVyhra = new Howl({ src: [`zvuky/effects/vyhra.mp3`] });
-let effectZle = new Howl({ src: [`zvuky/effects/zle.mp3`] });
-let effectSpravne = new Howl({ src: [`zvuky/effects/spravne.mp3`] });
+
+
+
 
 // Funkcia na otvorenie cvičenia a výber náhodných slov
 function openCvicenie() {
@@ -717,6 +869,7 @@ function displayWord() {
   const imageName = wordList[currentWordIndex] + ".png"; 
   document.getElementById("cvicenie-image").src = "images/slova/" + imageName;
 }
+let slovicka = 0;
 /* Samotna funckia */
 function rozpoznanieS() {
   const recognition = new webkitSpeechRecognition();
@@ -748,18 +901,24 @@ function rozpoznanieS() {
         if (currentWordIndex < wordList.length) {
           displayWord(); // Zobraziť ďalšie slovo
         } else {
+          kontrolacvicenia = 1;
           closeCvicenie(); // Ukončiť cvičenie
         }
         }, 2000);
       } else {
         console.log('Slovo "' + currentWord + '" nebolo správne vyslovené.');
-        console.log('Skús ho vysloviť znova');
+        slovicka++;
+        console.log('Skús ho vysloviť znova, slovicka: ' +slovicka);
         document.getElementById("vysledok").innerHTML = '<center><img src="images/nespravne.png" alt="Nesprávne" style="width: 435px; height: 342px;"></center>';
         effectZle.play();
       }
       setTimeout(() => {
         document.getElementById("vysledok").innerHTML = ''; // Vymazanie obrázka po 2 sekundách
-      resolve();  //resolve na splnenie promisy
+        if (slovicka === 3) {
+          kontrolacvicenia = 2;
+          closeCvicenie(); // Ukončiť cvičenie
+        }
+        resolve();  //resolve na splnenie promisy
       }, 2000);
     };
   });
@@ -781,7 +940,21 @@ function rozpoznanieS() {
   });
 }
 // Funkcia na zatvorenie cvičenia
-function closeCvicenie() {
+function closeCvicenie(diamond, diamondIndex) {
+  if (kontrolacvicenia === 1) {
+      diamond.destroyed = true; // Zničení diamantu
+      diamondsCollected++;
+      effectzlato.play();
+      updateDiamondCount();
+      updateDiamondsCollected(diamondsCollected);
+      checkWinCondition();
+      spaceBarPressed = 0;
+  } else if (kontrolacvicenia === 2) {
+      spaceBarPressed = 0;
+  }
+
+  slovicka = 0;
+  kontrolacvicenia = 0;
   currentWordIndex = 0;
   wordList = [];
   document.getElementById("cvicenie").style.display = "none";
@@ -793,8 +966,16 @@ const rozpoznanie = document.getElementById('rozpoznanie');
 rozpoznanie.addEventListener('click', rozpoznanieS);
 
 
+
+
+/* MENU HRY */
+let destroyedDiamond = null;
+
+
+
 /*Generovanie predmetov a GameLoop*/
 generateDiamonds();
+generateKov();
 generateGolds();
 generateClay();
 gameLoop();

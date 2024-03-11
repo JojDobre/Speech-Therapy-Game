@@ -25,47 +25,67 @@
 </head>
 <body>
   <div class="hra">
-    <div id="cvicenie" class="cvicenie">
-      <div id="vysledok" class="vysledok"></div>
-      <div class="cvicenie-content">
-        <span class="close" onclick="closeCvicenie()">&times;</span>
-        <center><img id="cvicenie-image" src="images/slova/traktor.png" alt="Obrázok" style="width: 240px; height: auto; display: block; margin-top: 20px; "></center>
-        <p class="cvicenie-text" id="word-display" style="text-align: center;">TRAKTOR</p>
-        <center><button id="rozpoznanie" class="tlacidlo"> </button></center>
-      </div>
-    </div>
    <div class="menu-hra">
-    <div class="menu-buttons">
-          <a href="index.html">
-            <img src="images/menu.png" alt="Menu">
-          </a>
-          <a href="kopac.html">
-            <img src="images/restart.png" alt="Reštart">
-          </a>
+    <button onclick="openDialog1()" class="kruhove-tlacidlo" id="menuButton"></button>
+    
+       
+    <div class="menu-kov">
+      <h1></h1><div class="kov-container"></div>
     </div>
     <div class="menu-golds">
-      <h1> </h1>
-      <div class="golds-container"></div>
+      <h1></h1><div class="golds-container"></div>
     </div>
-
     <div class="menu-diamonds">
-      <h1></h1>
-      <div class="diamonds-container"></div>
+      <h1></h1><div class="diamonds-container"></div>
     </div>
-
    </div>
    <canvas id="gameCanvas" width="800" height="800"></canvas>
   </div>
   
-  <div id="info-dialog" class="info-dialog">
-    <div class="dialog-box">
-        <h1>Sú slová rovnaké?</h1>
-        <p>Sú slová rovnaké?</p>
-        <div id="buttonsContainer"></div>
+  <div id="cvicenie" class="cvicenie">
+    <div id="vysledok" class="vysledok"></div>
+    <div class="cvicenie-content">
+      <span class="close" onclick="closeCvicenie()">&times;</span>
+      <center><img id="cvicenie-image" src="images/slova/traktor.png" alt="Obrázok" style="width: 240px; height: auto; display: block; margin-top: 20px; "></center>
+      <p class="cvicenie-text" id="word-display" style="text-align: center;">TRAKTOR</p>
+      <center><button id="rozpoznanie" class="tlacidlo"> </button></center>
     </div>
   </div>
 
+  <div id="info-dialog" class="info-dialog">
+    <div class="dialog-box">
+      <h1>Sú slová rovnaké?</h1>
+      <p>Sú slová rovnaké?</p>
+      <div id="buttonsContainer"></div>
+    </div>
+  </div>
+
+  <div id="dialogove-okno" class="dialogove-okno">
+    <div class="dialogove-okno-content">
+      <span class="close" onclick="closeDialog1()">&times;</span>
+      <a href="index.html"><img src="images/menu.png" alt="Menu"></a>
+      <a href="kopac.html"><img src="images/restart.png" alt="Reštart"></a>
+    </div>
+  </div>
+
+
+
 <div id="blur-background"></div>
 <script src="game copy.js"></script>
+<script>
+  function openDialog1() {
+  document.getElementById("dialogove-okno").style.display = "block";
+  document.getElementById("blur-background").style.display = "block";
+  document.body.classList.add("dialog-open");
+  document.body.style.overflow = "hidden"; // Zabrániť posúvaniu stránky
+}
+
+function closeDialog1() {
+  document.getElementById("dialogove-okno").style.display = "none";
+  document.getElementById("blur-background").style.display = "none";
+  document.body.classList.remove("dialog-open");
+  document.body.style.overflow = "auto"; // Povoliť posúvanie stránky
+}
+</script>
 </body>
 </html>

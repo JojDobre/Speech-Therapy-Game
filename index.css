@@ -184,7 +184,9 @@ body {
 }
 /*CANVAS*/
 #gameCanvas {
-  border: 1px solid #000;
+  /*border: 1px solid #000;*/
+  border: 18px solid transparent; /* Nastavíme hrúbku rámčeka */
+  border-image: url("images/hra.png") 30 round; /* Cesta k obrázku rámčeka, počet pixelov (9-pixelová hrúbka rámu, zvyšok bude plnený obrázkom) */
   background-image: url("images/pozadie.jpg");
 }
 /*HRÁČ*/
@@ -284,6 +286,70 @@ body {
 
 
 
+/*menu button*/
+#menuButton {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 43px;
+  height: 43px;
+  border-radius: 50%;
+  background-image: url("images/menubutton.png");
+  background-size: cover;
+  background-position: center;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+.kruhove-tlacidlo {
+  width: 43px;
+  height: 43px;
+  border-radius: 50%; /* Tvar kruhu */
+  background-image: url("images/menubutton.png"); /* Cesta k obrázku, ktorý chceš použiť ako pozadie */
+  background-size: cover; /* Upravuje veľkosť obrázku na takú, aby pokrýval celé tlačidlo */
+  background-position: center; /* Zarovnáva obrázok na strede */
+  border: none; /* Bez ohraničenia */
+  cursor: pointer; /* Zmení kurzor na ukazovateľ, aby naznačil interaktívnosť */
+  outline: none; /* Odstráni ohraničenie po kliknutí */
+}
+.kruhove-tlacidlo:focus {
+  outline: none; /* Odstráni ohraničenie po získaní zaostrenia */
+}
+/*Dialogové okno pre menu */
+.dialogove-okno {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 510px;
+  height: 391px;
+  background-image: url(images/cvicenie.png);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Shadow pre rozmazanie pozadia */
+  overflow: hidden;
+  z-index: 1000;
+  margin-bottom: 30px;
+}
+.dialogove-okno-content{
+  height: 391px;
+  width: 510px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column; 
+  text-align: center;
+  margin-bottom: 87px;
+}
+.dialogove-okno-content a img {
+  max-width: 100%;
+  transition: transform 0.3s ease;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+.dialogove-okno-content a:hover img {
+  transform: scale(1.1);
+}
 
 /*BOČNÝ PANEL*/
 .menu-hra{
@@ -329,6 +395,14 @@ body {
   position: relative;
   background-image: url("images/pozadiemenudiamant.png");
 }
+/* PANEL DIAMANTY, GOLDY*/
+.menu-kov{  
+  margin-top: -18px;
+  height: 252px;
+  width: 300px;
+  position: relative;
+  background-image: url("images/pozadiemenuzlato.png");
+}
 .menu-golds{
   height: 252px;
   width: 300px;
@@ -351,7 +425,7 @@ body {
   font-size: 18px; /* Veľkosť písma */
   color: #fff; /* Biela farba písma */
 }
-.diamonds-container, .golds-container {
+.diamonds-container, .golds-container, .kov-container {
   padding-left: 35px;
   padding-right: 30px;
   padding-top: 90px;
@@ -360,14 +434,14 @@ body {
   align-items: center;
   justify-content: center;
 }
-.diamond-item, .gold-item {
+.diamond-item, .gold-item, .kov-item {
   margin-right: 10px; /* Medzera medzi jednotlivými diamantmi */
 }
-.diamond-image, .gold-image {
+.diamond-image, .gold-image, .kov-image {
   width: 30px; /* Šírka obrázka diamantu */
   height: auto;
 }
-.diamond-item:not(.collected) .diamond-image, .gold-item:not(.collected) .gold-image {
+.diamond-item:not(.collected) .diamond-image, .gold-item:not(.collected) .gold-image, .kov-item:not(.collected) .kov-image {
   filter: grayscale(100%);
 }
 
