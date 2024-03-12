@@ -18,9 +18,9 @@ const diamonds = [];
 const kov = [];
 const golds = [];
 const clay = [];
-let PocetGenDiamant = 4;
-let PocetGenKov = 4;
-let PocetGenGolds = 6;
+let PocetGenDiamant = 0;
+let PocetGenKov = 0;
+let PocetGenGolds = 1;
 
 let diamondsDestroyed = 0; // Počet zničených diamantov
 let kovDestroyed = 0; // Počet zničených diamantov
@@ -396,12 +396,9 @@ function checkWinCondition() {
         kovCollected = 0;
         goldsCollected = 0;
         effectVyhra.play();
-        const winConfirm = confirm('Gratulujem, vyhral si hru! Chceš hrať znova?');
-        if (winConfirm) {
-          resetGame();
-        } else {
-          window.close(); 
-        }
+        document.getElementById("endgame").style.display = "block";
+        document.getElementById("blur-background").style.display = "block";
+        document.body.style.overflow = "hidden"; 
       }, 100); // Oneskorí upozornenie o 0,1 sekundu (100 milisekúnd)
     }
 }
