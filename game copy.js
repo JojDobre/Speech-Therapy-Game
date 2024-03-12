@@ -661,7 +661,8 @@ function minigame(){
   function startGame() {
     if (currentLevel <= totalLevels) {
         playRandomSounds();
-        displayMessage('PREHRAVA SA ZVUK');
+        displayMessage('FONOLOGICKÉ CVIČENIE');
+        displayMessage('Sú slová rovnaké?');
         createButtons();
     } else {
         endGame();
@@ -679,9 +680,11 @@ function minigame(){
 
     console.log('Prehrávajú sa zvuky pre kolo: ' + currentLevel);
     sound1.play();
+    displayMessage('PREHRAVA SA ZVUK');
     sound1.on('end', () => {
         setTimeout(() => {
             sound2.play();
+            
         }, 500); 
     });
   }
@@ -702,8 +705,12 @@ function minigame(){
   function displayMessage(message) {
     console.log(message);
 
-    const dialogBox = document.querySelector('.dialog-box');
-    dialogBox.innerHTML = `<h1>Sú slová rovnaké?</h1><p>${message}</p><div id="buttonsContainer"></div><span class="close">&times;</span>`;
+    const dialogBox = document.querySelector('.cvicenie-content-2');
+    document.getElementById("blur-background").style.display = "block";
+    document.body.style.overflow = "hidden"; // Zabrániť posúvaniu stránky
+    dialogBox.innerHTML = `<p>ROZPOZNAJ SLOVÁ</p>
+    <p style="font-size:20px;">${message}</p>
+    <center><div id="buttonsContainer"></div></center>`;
   }
 
   function createButtons() {
@@ -766,7 +773,7 @@ function minigame(){
   }
 
   function endGame(hasWon = false) {
-    const message = hasWon ? 'Vyhral si!' : 'Koniec hry, prehral si.';
+    const message = hasWon ? 'Správne!' : 'Skús to ešte raz.';
     if (hasWon){
       kov.forEach((kov, kovIndex) => {
         blockX = kov.x / blockSize;
@@ -790,8 +797,10 @@ function minigame(){
     buttonsContainer.innerHTML = '';
     displayMessage(message);
     setTimeout(() => {
-        const infoDialog = document.getElementById('info-dialog');
+        const infoDialog = document.getElementById('zvuky');
         infoDialog.style.display = 'none';
+        document.getElementById("blur-background").style.display = "none";
+        document.body.style.overflow = "auto"; // Povoliť posúvanie stránky
     }, 1000);   
   }
 
@@ -802,7 +811,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 }
 function showInfoDialog() {
-  const infoDialog = document.getElementById('info-dialog');
+  const infoDialog = document.getElementById('zvuky');
   infoDialog.style.display = 'block'; // Zobraziť dialogové okno
   minigame();
 }
