@@ -3,6 +3,8 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const blockSize = 50; // Veľkosť jednej blokovej kocky
 
+getLocalStream();
+
 const playerSize = blockSize; // Veľkosť hráča
 const diamondSize = blockSize; // Veľkosť diamantu
 const GoldSize = blockSize; // Veľkosť diamantu
@@ -18,9 +20,9 @@ const diamonds = [];
 const kov = [];
 const golds = [];
 const clay = [];
-let PocetGenDiamant = 0;
-let PocetGenKov = 0;
-let PocetGenGolds = 1;
+let PocetGenDiamant = 3;
+let PocetGenKov = 1;
+let PocetGenGolds = 4;
 
 let diamondsDestroyed = 0; // Počet zničených diamantov
 let kovDestroyed = 0; // Počet zničených diamantov
@@ -197,10 +199,269 @@ function drawClay() {
       ctx.drawImage(clayImg, clayObj.x, clayObj.y, claySize, claySize);
     });
 }
+document.getElementById('up').addEventListener('click', function() {
+  const newPlayerX = playerX;
+  const newPlayerY = playerY;
+  if (playerY - blockSize >= 0) { // Kontrola pohybu nahor
+    playerY -= blockSize;
+    playerRotation = 0; // Rotácia smeru hore
+    playerDirection = 'front';
+  }
+  clay.forEach((clayBlock, clayIndex) => {
+    const blockX = clayBlock.x;
+    const blockY = clayBlock.y;
+    if (playerX === blockX && playerY === blockY) {
+        if (isDestroying) {
+            clay.splice(clayIndex, 1);
+            isDestroying = false;
+        } else {
+            // Nastavenie hráča späť na pôvodné miesto, keď sa snaží prejsť cez blok
+            playerX = newPlayerX;
+            playerY = newPlayerY;
+        }
+    }
+});
+diamonds.forEach((diamond, diamondIndex) => {
+    const blockX = diamond.x;
+    const blockY = diamond.y;
+    if (playerX === blockX && playerY === blockY && !diamond.destroyed) {
+        if (isDestroying) {
+            diamond.destroyed = true;
+            isDestroying = false;
+        } else {
+            playerX = newPlayerX;
+            playerY = newPlayerY;
+        }
+    }
+});
+kov.forEach((kov, kovIndex) => {
+  const blockX = kov.x;
+  const blockY = kov.y;
+  if (playerX === blockX && playerY === blockY && !kov.destroyed) {
+      if (isDestroying) {
+          kov.destroyed = true;
+          isDestroying = false;
+      } else {
+          playerX = newPlayerX;
+          playerY = newPlayerY;
+      }
+  }
+});
+golds.forEach((gold, goldIndex) => {
+    const blockX = gold.x;
+    const blockY = gold.y;
+    if (playerX === blockX && playerY === blockY && !gold.destroyed) {
+        if (isDestroying) {
+            gold.destroyed = true;
+            isDestroying = false;
+        } else {
+            playerX = newPlayerX;
+            playerY = newPlayerY;
+        }
+    }
+});
+});
+
+document.getElementById('left').addEventListener('click', function() {
+  const newPlayerX = playerX;
+  const newPlayerY = playerY;
+  if (playerX - blockSize >= 0) {
+    playerX -= blockSize;
+    playerRotation = 270;
+    playerDirection = 'vlavo';
+}
+  clay.forEach((clayBlock, clayIndex) => {
+    const blockX = clayBlock.x;
+    const blockY = clayBlock.y;
+    if (playerX === blockX && playerY === blockY) {
+        if (isDestroying) {
+            clay.splice(clayIndex, 1);
+            isDestroying = false;
+        } else {
+            // Nastavenie hráča späť na pôvodné miesto, keď sa snaží prejsť cez blok
+            playerX = newPlayerX;
+            playerY = newPlayerY;
+        }
+    }
+});
+diamonds.forEach((diamond, diamondIndex) => {
+    const blockX = diamond.x;
+    const blockY = diamond.y;
+    if (playerX === blockX && playerY === blockY && !diamond.destroyed) {
+        if (isDestroying) {
+            diamond.destroyed = true;
+            isDestroying = false;
+        } else {
+            playerX = newPlayerX;
+            playerY = newPlayerY;
+        }
+    }
+});
+kov.forEach((kov, kovIndex) => {
+  const blockX = kov.x;
+  const blockY = kov.y;
+  if (playerX === blockX && playerY === blockY && !kov.destroyed) {
+      if (isDestroying) {
+          kov.destroyed = true;
+          isDestroying = false;
+      } else {
+          playerX = newPlayerX;
+          playerY = newPlayerY;
+      }
+  }
+});
+golds.forEach((gold, goldIndex) => {
+    const blockX = gold.x;
+    const blockY = gold.y;
+    if (playerX === blockX && playerY === blockY && !gold.destroyed) {
+        if (isDestroying) {
+            gold.destroyed = true;
+            isDestroying = false;
+        } else {
+            playerX = newPlayerX;
+            playerY = newPlayerY;
+        }
+    }
+});
+});
+
+document.getElementById('down').addEventListener('click', function() {
+  const newPlayerX = playerX;
+  const newPlayerY = playerY;
+  if (playerY + blockSize < 800) {
+    playerY += blockSize;
+    playerRotation = 180;
+    playerDirection = 'front';
+}
+  clay.forEach((clayBlock, clayIndex) => {
+    const blockX = clayBlock.x;
+    const blockY = clayBlock.y;
+    if (playerX === blockX && playerY === blockY) {
+        if (isDestroying) {
+            clay.splice(clayIndex, 1);
+            isDestroying = false;
+        } else {
+            // Nastavenie hráča späť na pôvodné miesto, keď sa snaží prejsť cez blok
+            playerX = newPlayerX;
+            playerY = newPlayerY;
+        }
+    }
+});
+diamonds.forEach((diamond, diamondIndex) => {
+    const blockX = diamond.x;
+    const blockY = diamond.y;
+    if (playerX === blockX && playerY === blockY && !diamond.destroyed) {
+        if (isDestroying) {
+            diamond.destroyed = true;
+            isDestroying = false;
+        } else {
+            playerX = newPlayerX;
+            playerY = newPlayerY;
+        }
+    }
+});
+kov.forEach((kov, kovIndex) => {
+  const blockX = kov.x;
+  const blockY = kov.y;
+  if (playerX === blockX && playerY === blockY && !kov.destroyed) {
+      if (isDestroying) {
+          kov.destroyed = true;
+          isDestroying = false;
+      } else {
+          playerX = newPlayerX;
+          playerY = newPlayerY;
+      }
+  }
+});
+golds.forEach((gold, goldIndex) => {
+    const blockX = gold.x;
+    const blockY = gold.y;
+    if (playerX === blockX && playerY === blockY && !gold.destroyed) {
+        if (isDestroying) {
+            gold.destroyed = true;
+            isDestroying = false;
+        } else {
+            playerX = newPlayerX;
+            playerY = newPlayerY;
+        }
+    }
+});
+});
+
+document.getElementById('right').addEventListener('click', function() {
+  const newPlayerX = playerX;
+  const newPlayerY = playerY;
+  if (playerX + blockSize < 800) { 
+    playerX += blockSize;
+    playerRotation = 90; 
+    playerDirection = 'vpravo';
+}
+  clay.forEach((clayBlock, clayIndex) => {
+    const blockX = clayBlock.x;
+    const blockY = clayBlock.y;
+    if (playerX === blockX && playerY === blockY) {
+        if (isDestroying) {
+            clay.splice(clayIndex, 1);
+            isDestroying = false;
+        } else {
+            // Nastavenie hráča späť na pôvodné miesto, keď sa snaží prejsť cez blok
+            playerX = newPlayerX;
+            playerY = newPlayerY;
+        }
+    }
+});
+diamonds.forEach((diamond, diamondIndex) => {
+    const blockX = diamond.x;
+    const blockY = diamond.y;
+    if (playerX === blockX && playerY === blockY && !diamond.destroyed) {
+        if (isDestroying) {
+            diamond.destroyed = true;
+            isDestroying = false;
+        } else {
+            playerX = newPlayerX;
+            playerY = newPlayerY;
+        }
+    }
+});
+kov.forEach((kov, kovIndex) => {
+  const blockX = kov.x;
+  const blockY = kov.y;
+  if (playerX === blockX && playerY === blockY && !kov.destroyed) {
+      if (isDestroying) {
+          kov.destroyed = true;
+          isDestroying = false;
+      } else {
+          playerX = newPlayerX;
+          playerY = newPlayerY;
+      }
+  }
+});
+golds.forEach((gold, goldIndex) => {
+    const blockX = gold.x;
+    const blockY = gold.y;
+    if (playerX === blockX && playerY === blockY && !gold.destroyed) {
+        if (isDestroying) {
+            gold.destroyed = true;
+            isDestroying = false;
+        } else {
+            playerX = newPlayerX;
+            playerY = newPlayerY;
+        }
+    }
+});
+});
+
+document.getElementById('pickaxe').addEventListener('click', function() {
+    destroyBlock();
+    animateDigging();
+
+});
+
 //POHYB
 window.addEventListener('keydown', (e) => {
   const newPlayerX = playerX;
   const newPlayerY = playerY;
+  
   switch (e.key) {
       case 'w':
       case 'ArrowUp':
@@ -235,6 +496,7 @@ window.addEventListener('keydown', (e) => {
           }
           break;
   }
+  
   // Kontrola kolízií 
   clay.forEach((clayBlock, clayIndex) => {
       const blockX = clayBlock.x;
@@ -701,6 +963,18 @@ function startExercise() {
   document.body.style.overflow = "hidden"; 
   displayWord();
 }
+function getLocalStream() {
+  navigator.mediaDevices
+    .getUserMedia({ video: false, audio: true })
+    .then((stream) => {
+      window.localStream = stream;
+      window.localAudio.srcObject = stream;
+      window.localAudio.autoplay = true;
+    })
+    .catch((err) => {
+      console.error(`you got an error: ${err}`);
+    });
+}
 // Funkcia na zobrazenie aktuálneho slova na vyslovenie
 function displayWord() {
   document.getElementById("word-display").innerText = wordList[currentWordIndex].toUpperCase();
@@ -722,7 +996,9 @@ function rozpoznanieS() {
       console.log('Nahrávanie ukončené.');
       console.log('Rozpoznaný text:', transcript);
       const currentWord = wordList[currentWordIndex];
-      if (transcript.toLowerCase() === currentWord.toLowerCase()) {
+      const cleanedTranscript = transcript.trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,""); // Odstránenie interpunkčných znamienok a prevod na malé písmená
+      console.log('Rozpoznaný text:', cleanedTranscript);
+      if (cleanedTranscript === currentWord.toLowerCase()) {
         console.log('Bolo správne vyslovené slovo "' + currentWord + '".');
         document.getElementById("vysledok").innerHTML = '<center><img src="images/spravne.png" alt="Správne" style="width: 435px; height: 342px;"></center>';
         effectSpravne.play();
@@ -773,8 +1049,6 @@ function closeCvicenie() {
       blockX = diamond.x / blockSize;
       blockY = diamond.y / blockSize;
       if (blockX === targetBlockX && blockY === targetBlockY && !diamond.destroyed) {
-      console.log('dblockX: ' +blockX +' blockY: ' +blockY);
-      console.log('diamond: ' +diamond +' Index diamond: ' +diamondIndex);
       diamond.destroyed = true; 
       diamondsCollected++;
       effectzlato.play();
