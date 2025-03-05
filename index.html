@@ -19,6 +19,9 @@
         <ul>
           <li><a href="game.html"><img src="images/spustithru.png" alt="ŠTART"></a></li>
           <li><img src="images/Akohrat.png" alt="INFORMACIE" class="show-info"></li>
+          <li><a href="menu-pexeso.html"><img src="images/menu1.png" alt="PEXESO"></a></li>
+          <li><a href="cvicenie.html"><img src="images/menu1.png" alt="cvicenie"></a></li>
+
         </ul>
       </div>
 
@@ -65,6 +68,34 @@
       closeBtn.addEventListener('click', function() {
         infoDialog.style.display = 'none';
       });
+    </script>
+
+
+    <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Skontroluj, či už bolo povolenie udelené
+    if (localStorage.getItem('microphonePermission') === 'granted') {
+        console.log('Mikrofón už bol povolený.');
+        return;
+    }
+
+    // Požiadaj o povolenie na používanie mikrofónu
+    navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(function(stream) {
+            // Povolenie bolo udelené
+            localStorage.setItem('microphonePermission', 'granted');
+            console.log('Mikrofón bol povolený.');
+            // Tu môžeš pridať ďalší kód, ktorý sa má spustiť po udelení povolenia
+        })
+        .catch(function(err) {
+            // Povolenie nebolo udelené
+            localStorage.setItem('microphonePermission', 'denied');
+            document.body.innerHTML = '<p>Bez povolenia na používanie mikrofónu sa aplikácia nedá ďalej používať.</p>';
+            console.error('Chyba pri získavaní prístupu k mikrofónu:', err);
+        });
+});
+
     </script>
   </body>
 </html>
