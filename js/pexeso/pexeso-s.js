@@ -10,7 +10,6 @@ const images = [
     { src: 'images/slova/šip.png', word: 'šíp' },
     { src: 'images/slova/štipec.png', word: 'štipec' },
     { src: 'images/slova/švihadlo.png', word: 'švihadlo' },
-    { src: 'images/slova/šmolinka.png', word: 'šmolinka' },
     { src: 'images/slova/pištoľ.png', word: 'pištoľ' },
     { src: 'images/slova/fľaša.png', word: 'fľaša' },
     { src: 'images/slova/mašľa.png', word: 'mašľa' },
