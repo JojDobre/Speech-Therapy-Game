@@ -1,0 +1,923 @@
+/* ====================================
+   LEVEL SELECTOR - CSS ŠTÝLY
+   Štýly pre výber levelov v rámci sveta
+==================================== */
+
+/* Základné resetovanie */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-image: url('../images/pozadieg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: 'MPLUSRounded1c-Medium', Arial, sans-serif;
+    overflow-x: hidden;
+}
+
+/* ====================================
+   NAVIGÁCIA
+==================================== */
+
+.navigation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(15px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+    z-index: 1000;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 12px 20px;
+    border-radius: 50px;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateX(-5px);
+}
+
+.back-icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* Informácie o svete v navigácii */
+.world-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: white;
+}
+
+.world-icon-nav {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.world-icon-nav img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.world-letter-nav {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'MPLUSRounded1c-Black', Arial, sans-serif;
+    font-size: 24px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.world-details-nav h2 {
+    margin: 0 0 5px 0;
+    font-size: 24px;
+    font-family: 'MPLUSRounded1c-Bold', Arial, sans-serif;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.world-progress-nav {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.stars-nav {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255, 215, 0, 0.2);
+    padding: 4px 10px;
+    border-radius: 15px;
+}
+
+.star-icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* Ovládacie tlačidlá */
+.controls-nav {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-btn {
+    width: 45px;
+    height: 45px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.nav-btn img {
+    width: 24px;
+    height: 24px;
+}
+
+/* ====================================
+   HLAVNÝ OBSAH
+==================================== */
+
+.main-content {
+    margin-top: 120px; /* priestor pre navigáciu */
+    padding: 20px 30px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ====================================
+   FILTER TYPOV HIER
+==================================== */
+
+.game-type-filter {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-family: 'MPLUSRounded1c-Medium', Arial, sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.filter-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+.filter-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.filter-btn.active {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.6);
+    font-weight: bold;
+}
+
+/* ====================================
+   KONTAJNER LEVELOV
+==================================== */
+
+.levels-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+/* ====================================
+   KARTA LEVELU
+==================================== */
+
+.level-card {
+    position: relative;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    backdrop-filter: blur(10px);
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.level-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Zamknutý level */
+.level-card.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: linear-gradient(145deg, rgba(100, 100, 100, 0.1), rgba(50, 50, 50, 0.05));
+}
+
+.level-card.locked:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Dokončený level */
+.level-card.completed {
+    border-color: #FFD700;
+    background: linear-gradient(145deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+}
+
+/* Číslo levelu */
+.level-number {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #4CAF50, #45a049);
+    color: white;
+    font-family: 'MPLUSRounded1c-Bold', Arial, sans-serif;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.level-card.locked .level-number {
+    background: linear-gradient(145deg, #666, #555);
+}
+
+/* Ikona typu hry */
+.level-game-type {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 10px auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.level-game-type img {
+    width: 30px;
+    height: 30px;
+}
+
+/* Názov levelu */
+.level-name {
+    font-family: 'MPLUSRounded1c-Bold', Arial, sans-serif;
+    font-size: 16px;
+    color: white;
+    margin: 10px 0 5px 0;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+/* Obtiažnosť levelu */
+.level-difficulty {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    margin: 8px 0;
+}
+
+.difficulty-star {
+    width: 12px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.3);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.difficulty-star.filled {
+    background: #FFD700;
+}
+
+/* Hviezdy hráča */
+.level-user-stars {
+    display: flex;
+    justify-content: center;
+    gap: 3px;
+    margin: 8px 0;
+}
+
+.user-star {
+    width: 16px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.3);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.user-star.earned {
+    background: #FFD700;
+    animation: starGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes starGlow {
+    0% { filter: brightness(1); }
+    100% { filter: brightness(1.3); }
+}
+
+/* Najlepší čas */
+.level-best-time {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 5px;
+}
+
+/* Indikátor zamknutia */
+.locked-indicator {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 35px;
+    height: 35px;
+    background: rgba(255, 0, 0, 0.8);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+}
+
+/* Časový limit indikátor */
+.time-limit-indicator {
+    position: absolute;
+    bottom: -5px;
+    right: 10px;
+    background: rgba(255, 165, 0, 0.9);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+/* ====================================
+   LOADING OBRAZOVKA
+==================================== */
+
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    color: white;
+}
+
+.loading.hidden {
+    display: none;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top: 5px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+/* ====================================
+   MODALS
+==================================== */
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(145deg, #d67d3a, #e29e52);
+    border: 6px solid #72321f;
+    border-radius: 20px;
+    padding: 0;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow: hidden;
+}
+
+.modal-header {
+    background: rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: white;
+    font-family: 'MPLUSRounded1c-Bold', Arial, sans-serif;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.close-modal {
+    font-size: 28px;
+    color: white;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.close-modal:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    padding: 25px;
+    color: white;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.modal-footer {
+    padding: 20px;
+    border-top: 2px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* Tlačidlá v modaloch */
+.btn-primary, .btn-secondary, .btn-danger {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'MPLUSRounded1c-Medium', Arial, sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: #4CAF50;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #45a049;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.btn-danger {
+    background: #f44336;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #da190b;
+}
+
+/* ====================================
+   LEVEL INFO MODAL ŠPECIFICKÉ ŠTÝLY
+==================================== */
+
+.level-info-content {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.level-icon-large {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.level-icon-large img {
+    width: 50px;
+    height: 50px;
+}
+
+.level-details {
+    flex: 1;
+}
+
+.level-details h3 {
+    margin: 0 0 10px 0;
+    font-family: 'MPLUSRounded1c-Bold', Arial, sans-serif;
+}
+
+.level-stats {
+    margin: 15px 0;
+}
+
+.level-stats .stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.stat-label {
+    font-weight: bold;
+}
+
+/* Náhľad slov */
+.words-preview {
+    margin-top: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.words-preview h4 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.words-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.word-tag {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    color: white;
+}
+
+/* ====================================
+   NASTAVENIA MODAL
+==================================== */
+
+.settings-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.setting-item label {
+    font-weight: bold;
+    color: white;
+}
+
+.setting-item input, .setting-item select {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+/* ====================================
+   RESPONZÍVNY DIZAJN
+==================================== */
+
+/* Tablet */
+@media (max-width: 768px) {
+    .navigation {
+        height: auto;
+        min-height: 70px;
+        padding: 10px 20px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .world-info {
+        gap: 10px;
+        order: 3;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .back-button {
+        order: 1;
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+    
+    .controls-nav {
+        order: 2;
+        gap: 8px;
+    }
+    
+    .nav-btn {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .nav-btn img {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .world-icon-nav {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .world-letter-nav {
+        font-size: 16px;
+    }
+    
+    .world-details-nav h2 {
+        font-size: 16px;
+        margin-bottom: 3px;
+    }
+    
+    .world-progress-nav {
+        font-size: 12px;
+        gap: 10px;
+    }
+    
+    .main-content {
+        margin-top: 120px; /* Zvýšené kvôli wrap navigácii */
+        padding: 15px 20px;
+    }
+    
+    .levels-container {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 15px;
+    }
+    
+    .level-card {
+        min-height: 180px;
+        padding: 15px;
+    }
+    
+    .level-name {
+        font-size: 14px;
+    }
+    
+    .game-type-filter {
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .filter-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    
+    .filter-btn img {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .level-info-content {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+/* Mobil */
+@media (max-width: 480px) {
+    .navigation {
+        height: auto;
+        min-height: 60px;
+        padding: 8px 15px;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .back-button {
+        align-self: flex-start;
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    .back-button span {
+        display: none;
+    }
+    
+    .world-info {
+        gap: 8px;
+        align-self: center;
+    }
+    
+    .world-icon-nav {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .world-letter-nav {
+        font-size: 14px;
+    }
+    
+    .world-details-nav h2 {
+        font-size: 14px;
+        margin: 0;
+    }
+    
+    .world-progress-nav {
+        font-size: 11px;
+        gap: 8px;
+    }
+    
+    .controls-nav {
+        align-self: flex-end;
+        position: absolute;
+        top: 8px;
+        right: 15px;
+        gap: 5px;
+    }
+    
+    .nav-btn {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .nav-btn img {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .main-content {
+        margin-top: 100px;
+        padding: 10px 15px;
+    }
+    
+    .game-type-filter {
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 15px;
+    }
+    
+    .filter-btn {
+        justify-content: center;
+        padding: 10px;
+        font-size: 11px;
+    }
+    
+    .filter-btn img {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .levels-container {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+    }
+    
+    .level-card {
+        min-height: 160px;
+        padding: 10px;
+    }
+    
+    .level-name {
+        font-size: 12px;
+        margin: 8px 0 3px 0;
+    }
+    
+    .level-number {
+        width: 25px;
+        height: 25px;
+        font-size: 12px;
+        top: -8px;
+        left: -8px;
+    }
+    
+    .level-game-type {
+        width: 35px;
+        height: 35px;
+        margin-bottom: 8px;
+    }
+    
+    .level-game-type img {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .difficulty-star, .user-star {
+        width: 10px;
+        height: 10px;
+    }
+    
+    .level-best-time {
+        font-size: 10px;
+    }
+    
+    .locked-indicator {
+        width: 25px;
+        height: 25px;
+        font-size: 14px;
+        top: -8px;
+        right: -8px;
+    }
+    
+    .modal-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+    
+    .modal-footer {
+        flex-direction: column;
+    }
+    
+    .btn-primary, .btn-secondary, .btn-danger {
+        width: 100%;
+        padding: 10px;
+        font-size: 12px;
+    }
+    
+    .level-info-content {
+        gap: 15px;
+    }
+    
+    .words-list {
+        justify-content: center;
+    }
+    
+    .word-tag {
+        font-size: 10px;
+        padding: 2px 6px;
+    }
+}

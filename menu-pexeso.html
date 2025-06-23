@@ -2,83 +2,169 @@
 <html lang="sk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tlačidlá s písmenami</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            min-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 90vh;
-            background-image: url('images/pozadieg.jpg');
-        }
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="description" content="Logopedická hra pre najmenších">
+    <meta name="author" content="Adam Reňak">
+    <meta name="keywords" content="Adam Reňak, Joj_Dobre, Bakalárska práca, Logopedická hra,">
+    <title>Baníkovo dobrodružstvo: Pexeso</title>
+    <link rel="stylesheet" type="text/css" href="css/pexeso-menu.css" />
 
-        .back-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            text-decoration: none;
-            font-size: 24px;
-            color: black;
-        }
-
-        .buttons-container {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-            max-width: 900px;
-        }
-
-        .square-button {
-            min-width: 150px;
-            min-height: 150px;
-            background-image: url('images/hra.png'); /* Tu doplň cestu k svojmu obrázku */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 36px;
-            font-weight: bold;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s;
-        }
-
-        .square-button:hover {
-            transform: scale(1.1);
-        }
-
-        .nadpis {
-            font-size: 36px;
-            font-weight: bold;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            display: flex;
-        }
-
-    </style>
+    <link rel="icon" type="image/png" href="images/banik.ico">
+    <link rel="shortcut icon" href="images/icons/banik.ico">
 </head>
 <body>
     <a href="index.html" class="back-button">←</a>
     <div class="nadpis">
         <p>VYBER SI LEVEL</p>
-     </div>
-    <div class="buttons-container">
-        <button class="square-button" onclick="location.href='pexeso-s.html'">Š</button>
-        <button class="square-button" onclick="location.href='pexeso.html'">Z</button>
-        <button class="square-button" onclick="location.href='pexeso.html'">S</button>
-        <button class="square-button" onclick="location.href='pexeso.html'">B</button>
-        <button class="square-button" onclick="location.href='pexeso.html'">P</button>
-        <button class="square-button" onclick="location.href='pexeso.html'">V</button>
     </div>
+    <div class="buttons-container">
+        <button class="square-button" data-letter="Š" onclick="location.href='pexeso.html?letter=Š'">(v3)</button>
+        <button class="square-button" data-letter="Š" onclick="location.href='pexeso-s.html?letter=Š'">(v2)</button>
+        <button class="square-button" data-letter="Š" onclick="location.href='pexeso-stare.html?letter=Š'">(v1)</button>
+        <button class="square-button" data-letter="R" onclick="location.href='pexeso.html?letter=B'">R(v3)</button>
+        <button class="square-button" data-letter="Custom" onclick="openCustomLevel()"></button>
+    </div>
+
+    <div id="customLevelModal">
+        <h2>Vytvoriť vlastný level</h2>
+        <div class="word-list" id="wordList">
+        </div>
+        <div>
+            <strong>Vybrané slová: <span id="selectedWordsCount">0</span></strong>
+        </div>
+
+        <div class="player-setup">
+            <h3>Nastavení hráčů</h3>
+            <div id="playerInputs">
+                <input type="text" placeholder="Hráč 1" value="Hráč 1">
+            </div>
+            <button onclick="addPlayer()">Přidat hráče</button>
+            <button onclick="removePlayer()">Odebrat hráče</button>
+        </div>
+        
+        <button onclick="startCustomGame()">Začať hru</button>
+        <button onclick="closeCustomLevel()">Zrušit</button>
+    </div>
+
+
+
+
+    <script>
+        let allWords = [];
+    
+        function addPlayer() {
+            const playerInputs = document.getElementById('playerInputs');
+            const playerCount = playerInputs.children.length;
+            
+            if (playerCount < 4) {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.placeholder = `Hráč ${playerCount + 1}`;
+                input.value = `Hráč ${playerCount + 1}`;
+                playerInputs.appendChild(input);
+            }
+        }
+    
+        function removePlayer() {
+            const playerInputs = document.getElementById('playerInputs');
+            if (playerInputs.children.length > 1) {
+                playerInputs.removeChild(playerInputs.lastChild);
+            }
+        }
+    
+        function startCustomGame() {
+            const playerInputs = document.querySelectorAll('#playerInputs input');
+            const players = Array.from(playerInputs)
+                .filter(input => input.value.trim() !== '')
+                .map(input => ({
+                    name: input.value,
+                    score: 0
+                }));
+    
+            if (players.length < 1) {
+                alert('Musíte zadat alespoň jednoho hráče');
+                return;
+            }
+    
+            const selectedWords = allWords.filter(word => word.selected);
+    
+            if (selectedWords.length < 2) {
+                alert('Vyberte alespoň 2 slova');
+                return;
+            }
+    
+            const customWordsParam = encodeURIComponent(JSON.stringify(selectedWords));
+            const playersParam = encodeURIComponent(JSON.stringify(players));
+    
+            window.location.href = `pexesocustom.html?custom=true&words=${customWordsParam}&players=${playersParam}`;
+        }
+    
+        async function loadAllWords() {
+            try {
+                const response = await fetch('js/pexeso/words.json');
+                const data = await response.json();
+                allWords = Object.values(data).flat().map(word => ({
+                    ...word,
+                    selected: false
+                }));
+    
+                renderWordList();
+            } catch (error) {
+                console.error('Chyba pri načítaní slov:', error);
+            }
+        }
+    
+        function renderWordList() {
+            const wordList = document.getElementById('wordList');
+            wordList.innerHTML = '';
+    
+            allWords.forEach((word, index) => {
+                const wordItem = document.createElement('div');
+                wordItem.className = 'word-item';
+    
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `word-${index}`;
+                checkbox.checked = word.selected;
+                checkbox.addEventListener('change', () => toggleWordSelection(index));
+    
+                const img = document.createElement('img');
+                img.src = word.src;
+                img.alt = word.word;
+    
+                const label = document.createElement('label');
+                label.htmlFor = `word-${index}`;
+                label.textContent = word.word;
+    
+                wordItem.appendChild(checkbox);
+                wordItem.appendChild(img);
+                wordItem.appendChild(label);
+    
+                wordList.appendChild(wordItem);
+            });
+        }
+    
+        function toggleWordSelection(index) {
+            allWords[index].selected = !allWords[index].selected;
+            updateSelectedWordsCount();
+        }
+    
+        function updateSelectedWordsCount() {
+            const selectedWords = allWords.filter(word => word.selected);
+            document.getElementById('selectedWordsCount').textContent = selectedWords.length;
+        }
+    
+        function closeCustomLevel() {
+            document.getElementById('customLevelModal').style.display = 'none';
+        }
+    
+        function openCustomLevel() {
+            document.getElementById('customLevelModal').style.display = 'flex';
+        }
+    
+        // Načtení slov při inicializaci
+        document.addEventListener('DOMContentLoaded', loadAllWords);
+    </script>
+    
 </body>
 </html>
