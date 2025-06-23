@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tlačidlá s písmenami</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 90vh;
+            background-image: url('images/pozadieg.jpg');
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            font-size: 24px;
+            color: black;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 900px;
+        }
+
+        .square-button {
+            min-width: 150px;
+            min-height: 150px;
+            background-image: url('images/hra.png'); /* Tu doplň cestu k svojmu obrázku */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .square-button:hover {
+            transform: scale(1.1);
+        }
+
+        .nadpis {
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            display: flex;
+        }
+
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">←</a>
+    <div class="nadpis">
+        <p>VYBER SI LEVEL</p>
+     </div>
+    <div class="buttons-container">
+        <button class="square-button" onclick="location.href='pexeso-s.html'">Š</button>
+        <button class="square-button" onclick="location.href='pexeso.html'">Z</button>
+        <button class="square-button" onclick="location.href='pexeso.html'">S</button>
+        <button class="square-button" onclick="location.href='pexeso.html'">B</button>
+        <button class="square-button" onclick="location.href='pexeso.html'">P</button>
+        <button class="square-button" onclick="location.href='pexeso.html'">V</button>
+    </div>
+</body>
+</html>

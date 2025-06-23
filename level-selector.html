@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Výber levelu - Logopedická hra</title>
+    <link rel="stylesheet" href="css/level-selector.css">
+    <link rel="stylesheet" href="index.css"> <!-- základné štýly -->
+    <link rel="icon" type="image/png" href="images/banik.ico">
+</head>
+<body>
+    <!-- Navigácia -->
+    <div class="navigation">
+        <a href="worlds-menu.html" class="back-button">
+            <img src="images/spat.png" alt="Späť" class="back-icon">
+            <span>Späť na svety</span>
+        </a>
+        
+        <!-- Informácie o svete -->
+        <div class="world-info">
+            <div class="world-icon-nav">
+                <img id="worldIconNav" src="" alt="">
+                <div class="world-letter-nav" id="worldLetterNav">R</div>
+            </div>
+            <div class="world-details-nav">
+                <h2 id="worldTitleNav">Svet písmena R</h2>
+                <div class="world-progress-nav">
+                    <span id="worldProgressNav">0/20 levelov</span>
+                    <div class="stars-nav">
+                        <img src="images/hviezda.png" alt="Hviezdy" class="star-icon">
+                        <span id="worldStarsNav">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Ovládanie -->
+        <div class="controls-nav">
+            <button id="worldInfoBtn" class="nav-btn">
+                <img src="images/info.png" alt="Info">
+            </button>
+            <button id="settingsBtn" class="nav-btn">
+                <img src="images/nastavenia.png" alt="Nastavenia">
+            </button>
+        </div>
+    </div>
+
+    <!-- Hlavný obsah -->
+    <div class="main-content">
+        <!-- Filter levely podľa typu hry -->
+        <div class="game-type-filter">
+            <button class="filter-btn active" data-type="all">Všetky levely</button>
+            <button class="filter-btn" data-type="banik">
+                <img src="images/banik-icon.png" alt="Baník">
+                Baník
+            </button>
+            <button class="filter-btn" data-type="pexeso">
+                <img src="images/pexeso-icon.png" alt="Pexeso">
+                Pexeso
+            </button>
+            <button class="filter-btn" data-type="mario">
+                <img src="images/mario-icon.png" alt="Mario">
+                Mario
+            </button>
+        </div>
+
+        <!-- Kontajner pre levely -->
+        <div class="levels-container" id="levelsContainer">
+            <!-- Levely sa vygenerujú pomocou JavaScriptu -->
+        </div>
+    </div>
+
+    <!-- Loading obrazovka -->
+    <div class="loading" id="loadingScreen">
+        <div class="loading-spinner"></div>
+        <p>Načítavam levely...</p>
+    </div>
+
+    <!-- Modal pre zamknutý level -->
+    <div id="lockedLevelModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Level je zamknutý!</h2>
+                <span class="close-modal" id="closeLockModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <img src="images/zamok.png" alt="Zamknuté" class="lock-icon">
+                <p id="lockLevelMessage">Na odomknutie tohto levelu musíš dokončiť predchádzajúci level.</p>
+                <div class="requirements" id="levelRequirementInfo">
+                    <!-- Dynamicky sa vypĺňa -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="closeLockModalBtn">Zavrieť</button>
+                <button class="btn-primary" id="goToPreviousLevel">Pokračovať v hraní</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal s informáciami o leveli -->
+    <div id="levelInfoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="levelInfoTitle">Informácie o leveli</h2>
+                <span class="close-modal" id="closeLevelInfoModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="level-info-content">
+                    <div class="level-icon-large">
+                        <img id="levelTypeIcon" src="" alt="">
+                        <div class="level-number" id="levelNumberInfo">1</div>
+                    </div>
+                    <div class="level-details">
+                        <h3 id="levelNameInfo">Názov levelu</h3>
+                        <p id="levelDescriptionInfo">Popis levelu</p>
+                        
+                        <div class="level-stats">
+                            <div class="stat">
+                                <span class="stat-label">Typ hry:</span>
+                                <span id="levelGameType">Baník</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Obtiažnosť:</span>
+                                <div id="levelDifficulty" class="difficulty-stars">
+                                    <!-- Hviezdy obtiažnosti -->
+                                </div>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Tvoje hviezdy:</span>
+                                <div id="levelUserStars" class="user-stars">
+                                    <!-- Hviezdy hráča -->
+                                </div>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Najlepší čas:</span>
+                                <span id="levelBestTime">--:--</span>
+                            </div>
+                        </div>
+
+                        <!-- Slová na precvičovanie -->
+                        <div class="words-preview">
+                            <h4>Slová na precvičovanie:</h4>
+                            <div id="wordsPreviewList" class="words-list">
+                                <!-- Dynamicky sa vypĺňa -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="closeLevelInfoModalBtn">Zavrieť</button>
+                <button class="btn-primary" id="playLevelBtn">Hrať level</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal s nastaveniami sveta -->
+    <div id="worldSettingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nastavenia sveta</h2>
+                <span class="close-modal" id="closeSettingsModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="settings-content">
+                    <div class="setting-item">
+                        <label for="soundEnabled">Zvukové efekty:</label>
+                        <input type="checkbox" id="soundEnabled" checked>
+                    </div>
+                    <div class="setting-item">
+                        <label for="musicEnabled">Hudba:</label>
+                        <input type="checkbox" id="musicEnabled" checked>
+                    </div>
+                    <div class="setting-item">
+                        <label for="difficultyLevel">Obtiažnosť:</label>
+                        <select id="difficultyLevel">
+                            <option value="easy">Ľahká</option>
+                            <option value="normal" selected>Normálna</option>
+                            <option value="hard">Ťažká</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <button id="resetWorldProgress" class="btn-danger">
+                            Resetovať pokrok sveta
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="closeSettingsModalBtn">Zavrieť</button>
+                <button class="btn-primary" id="saveSettingsBtn">Uložiť</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript súbory -->
+    <script src="config/worlds.js"></script>
+    <script src="config/levels.js"></script>
+    <script src="js/managers/progressManager.js"></script>
+    <script src="js/managers/gameRouter.js"></script>
+    <script src="js/level-selector.js"></script>
+</body>
+</html>

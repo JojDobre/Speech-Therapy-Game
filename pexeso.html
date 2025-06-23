@@ -2,177 +2,52 @@
 <html lang="sk">
 <head>
     <meta charset="UTF-8">
-    <title>Logopedické Pexeso</title>
-    <style>
-        body {
-  height: 90vh;
-  background-image: url('images/pozadieg.jpg');
-}
-        .game-container {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 10px;
-            max-width: 900px;
-            margin: 20px auto;
-        }
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="description" content="Logopedická hra pre najmenších">
+    <meta name="author" content="Adam Reňak">
+    <meta name="keywords" content="Adam Reňak, Joj_Dobre, Bakalárska práca, Logopedická hra,">
+    <title>Baníkovo dobrodružstvo: Pexeso</title>
+    <link rel="stylesheet" type="text/css" href="css/pexeso.css" />
 
-        .card {
-    aspect-ratio: 1;
-    background-image: url("images/hra.png");
-    background-size: cover;     /* prispôsobí obrázok tak, aby pokryl celú kartu */
-    background-position: center; /* vycentruje obrázok */
-    background-repeat: no-repeat; /* zabráni opakovaniu obrázka */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: transform 0.3s;
-    position: relative;
-}
-
-        .card.flipped {
-            transform: rotateY(180deg);
-        }
-
-        .card img {
-            max-width: 90%;
-            max-height: 90%;
-            display: none;
-        }
-
-        .card.flipped img {
-            display: block;
-        }
-
-        .stats {
-            text-align: center;
-            margin: 20px;
-            font-size: 1.2em;
-        }
-
-        .speech-indicator {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            display: none;
-        }
-
-        .card {
-        transform-style: preserve-3d;
-        transition: transform 0.6s;
-    }
-
-    .card.flipped {
-        transform: rotateY(180deg);
-    }
-
-    .card-front, .card-back {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        backface-visibility: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .card-front {
-        background-color: #ddd;
-    }
-
-    .card-back {
-        transform: rotateY(180deg);
-    }
-
-    .recording-animation {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background-color: red;
-        animation: pulse 1s infinite;
-        display: none;
-    }
-
-    @keyframes pulse {
-        0% {
-            transform: scale(1);
-            opacity: 1;
-        }
-        50% {
-            transform: scale(1.2);
-            opacity: 0.7;
-        }
-        100% {
-            transform: scale(1);
-            opacity: 1;
-        }
-    }
-
-    .feedback-image {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 150px;
-        height: 150px;
-        z-index: 1000;
-        display: none;
-        animation: fadeInOut 1s ease-in-out;
-    }
-
-    .back-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            text-decoration: none;
-            font-size: 24px;
-            color: black;
-        }
-
-    @keyframes fadeInOut {
-        0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-        50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
-        100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
-    }
-    </style>
+    <link rel="icon" type="image/png" href="images/banik.ico">
+    <link rel="shortcut icon" href="images/icons/banik.ico">
 </head>
 <body>
     <a href="menu-pexeso.html" class="back-button">←</a>
     <div class="stats">
         <div>Skóre: <span id="score">0</span></div>
         <div>Pokusy: <span id="attempts">0</span></div>
+        <div>Čas: <span id="timer">00:00</span></div>
     </div>
+    
     <div class="game-container" id="gameContainer"></div>
-    <div class="speech-indicator" id="speechIndicator">
-        Povedz, čo vidíš na obrázku!
+    
+    <div class="speech-container" id="speechContainer">
+        <div class="match-text" id="matchText">Vyslovte slovo "šálka"</div>
+        <div class="mic-indicator">
+            <div class="recording-status" id="recordingStatus"></div>
+            <button id="micButton">🎤</button>
+        </div>
     </div>
+
+    <div class="modal" id="gameEndModal">
+        <div class="modal-content">
+            <h2>Gratulujeme!</h2>
+            <p>Celkový čas: <span id="totalTime">0</span></p>
+            <p>Počet pokusů: <span id="finalAttempts">0</span></p>
+            <p>Správně vyslovené slová: <span id="correctWords">0</span></p>
+            <p>Nesprávně vyslovené slová: <span id="incorrectWords">0</span></p>
+            <button onclick="window.location.reload()">Hrát znovu</button>
+            <button onclick="window.location.href='menu-pexeso.html'">Hlavní menu</button>
+        </div>
+    </div>
+
+    <!-- Audio elementy pro zvukové efekty -->
+    <audio id="cardFlipSound" src="zvuky/effects/kopanie.wav"></audio>
+    <audio id="correctMatchSound" src="zvuky/effects/spravne.mp3"></audio>
+    <audio id="incorrectMatchSound" src="zvuky/effects/zle.mp3"></audio>
+    <audio id="gameWinSound" src="zvuky/effects/vyhra.mp3"></audio>
+
     <script src="js/pexeso/pexeso.js"></script>
-
-    <!-- End hry -->
-<div id="gameEndModal" style="display: none; position: fixed; top: 50%; left: 50%; 
-transform: translate(-50%, -50%); background: white; padding: 20px; 
-border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.5); z-index: 1000;">
-<h2>Gratulujeme!</h2>
-<div id="gameStats">
-   <p>Celkový čas: <span id="totalTime">0</span></p>
-   <p>Počet pokusov: <span id="finalAttempts">0</span></p>
-   <p>Správne vyslovené slová: <span id="correctWords">0</span></p>
-   <p>Nesprávne vyslovené slová: <span id="incorrectWords">0</span></p>
-</div>
-<button onclick="window.location.reload()">Hrať znova</button>
-<button onclick="window.location.href='index.html'">Hlavná stránka</button>
-</div>
-
-<div class="recording-animation" id="recordingAnimation"></div>
-<img src="images/spravne.png" class="feedback-image" id="correctFeedback">
-<img src="images/nespravne.png" class="feedback-image" id="incorrectFeedback">
 </body>
 </html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperJozino</title>
+    <link rel="stylesheet" href="css/superjozino.css">
+</head>
+<body>
+    <a href="index.html" class="back-button">←</a>
+    <div class="game-container">
+        <canvas id="gameCanvas" width="800" height="800"></canvas>
+        <div id="debugPanel" class="debug-panel">
+            <button id="toggleDebug">Debug Mode: OFF</button>
+            <div id="debugInfo"></div>
+        </div>
+
+        <div class="mobile-controls">
+            <button id="leftBtn">←</button>
+            <button id="rightBtn">→</button>
+            <button id="jumpBtn">↑</button>
+        </div>
+    </div>
+    <script src="js/superjozino/game.js"></script>
+    <script src="js/superjozino/levels.js"></script>
+
+</body>
+</html>

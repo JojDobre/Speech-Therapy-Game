@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="description" content="Logopedická hra pre najmenších">
+    <meta name="author" content="Adam Reňak">
+    <meta name="keywords" content="Adam Reňak, Joj_Dobre, Bakalárska práca, Logopedická hra,">
+    <title>Baníkovo dobrodružstvo: Pexeso</title>
+    <link rel="stylesheet" type="text/css" href="css/pexeso.css" />
+
+    <link rel="icon" type="image/png" href="images/banik.ico">
+    <link rel="shortcut icon" href="images/icons/banik.ico">
+</head>
+<body>
+    <div class="game-wrapper">
+    <a href="index.html" class="back-button">←</a>
+    <div class="stats">
+        <!--<div>Skóre: <span id="score">0</span></div>-->
+        <div>Čas: <span id="timer">00:00</span></div>
+        <div>Počet ťahov: <span id="attempts">0</span></div>
+
+        <div class="players-container">
+            OKNO
+            <!-- Dynamicky se vygeneruje v JS -->
+        </div>
+    </div>
+    
+    <div class="game-container" id="gameContainer"></div>
+    
+    <div class="speech-container" id="speechContainer">
+        <img id="wordImage" class="word-image" src="" alt="">
+        <div class="match-text" id="matchText">šálka</div>
+        <div class="mic-indicator">
+            <div class="recording-status" id="recordingStatus"></div>
+            <button id="micButton">Začni hovoriť 🎤</button>
+        </div>
+        <div class="attempts-left">Počet zostávajúcich pokusov: 3</div>
+    </div>
+
+    <div id="gameEndModal" class="modal">
+        <div class="modal-content">
+            <h2>Koniec hry! 🎉</h2>
+            <div id="winnerInfo">
+                <h3 id="winnerText"></h3>
+                <p>Skóre: <span id="finalScore"></span></p>
+            </div>
+            <div class="game-stats">
+                <p>Celkový čas: <span id="totalTime"></span></p>
+                <p>Počet pokusov: <span id="finalAttempts"></span></p>
+            </div>
+            <div class="modal-buttons">
+                <button id="restartGameBtn" class="modal-button">Hrať znova</button>
+                <button id="backToMenuBtn" class="modal-button">Späť do menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio elementy pro zvukové efekty -->
+    <audio id="cardFlipSound" src="zvuky/effects/kopanie.wav"></audio>
+    <audio id="correctMatchSound" src="zvuky/effects/spravne.mp3"></audio>
+    <audio id="incorrectMatchSound" src="zvuky/effects/zle.mp3"></audio>
+    <audio id="gameWinSound" src="zvuky/effects/vyhra.mp3"></audio>
+
+    <script src="js/pexeso/pexesocustom.js"></script>
+
+</div>
+</body>
+</html>

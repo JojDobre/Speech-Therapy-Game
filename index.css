@@ -1,0 +1,999 @@
+/* FONTY */
+@font-face {
+  font-family: 'MPLUSRounded1c-Black';
+  src: url('fonts/MPLUSRounded1c-Black.ttf') format('truetype');
+  /* Možné ďalšie formáty fontov (woff, woff2, svg) a ich cesty by sa tiež mali uviesť */
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'MPLUSRounded1c-Medium';
+  src: url('fonts/MPLUSRounded1c-Medium.ttf') format('truetype');
+  /* Možné ďalšie formáty fontov (woff, woff2, svg) a ich cesty by sa tiež mali uviesť */
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'MPLUSRounded1c-ExtraBold';
+  src: url('fonts/MPLUSRounded1c-ExtraBold.ttf') format('truetype');
+  /* Možné ďalšie formáty fontov (woff, woff2, svg) a ich cesty by sa tiež mali uviesť */
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'MPLUSRounded1c-Bold';
+  src: url('fonts/MPLUSRounded1c-Bold.ttf') format('truetype');
+  /* Možné ďalšie formáty fontov (woff, woff2, svg) a ich cesty by sa tiež mali uviesť */
+  font-weight: normal;
+  font-style: normal;
+}
+
+/*BODY*/
+body {
+  margin: 0;
+  padding: clamp(10px, 2vw, 20px);
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  font-family: 'MPLUSRounded1c-Medium', sans-serif;
+  overflow-x: hidden;
+}
+.container {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+/* MENU */
+.menu ul {
+  padding: 0;
+  text-align: center;
+  list-style-type: none;
+}
+.menu ul li {
+  margin-bottom: 10px;
+}
+.menu ul li img {
+  width: 60%;
+  max-width: 350px;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.menu ul li img:hover,
+.right-section img:hover {
+  transform: scale(1.1);
+}
+/*obrazok*/
+.right-section img {
+  max-height: 60vh;
+  max-width: 100%; 
+  transform: rotate(5deg);
+  transition: transform 0.3s ease, scale 0.3s ease;
+  z-index: 0;
+  margin-left: -30px;
+}
+.right-section img:hover {
+  transform: rotate(10deg) scale(1.05);
+}
+/* Dialogove okno - menu */
+.informacie-okno {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%; 
+  max-width: 750px; 
+  height: 80%; 
+  background-color: #b89344e8; 
+  overflow: auto;
+  z-index: 1000;
+  border-radius: 10px; /* zaoblené rohy pre lepší vzhľad */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* tieň pre lepší vzhľad */
+}
+
+.informacie-okno-content {
+  padding: 20px; /* menší padding pre mobilné zariadenia */
+}
+
+.informacie-okno p {
+  font-family: 'MPLUSRounded1c-ExtraBold';
+  color: #333; /* farba textu */
+  text-align: center;
+  font-size: 18px; /* menší font pre mobilné zariadenia */
+  line-height: 1.5; /* riadkovanie pre lepší čitateľnosť */
+}
+
+.informacie-okno h2 {
+  font-family: 'MPLUSRounded1c-Black';
+  color: #333; /* farba textu */
+  text-align: center;
+  font-size: 24px; /* menší font pre mobilné zariadenia */
+  margin-bottom: -15px; /* menší odstup od nadpisu k obsahu */
+}
+.informacie-okno h1 {
+  font-family: 'MPLUSRounded1c-Black';
+  color: #333; /* farba textu */
+  text-align: center;
+  font-size: 26px; /* menší font pre mobilné zariadenia */
+  margin-bottom: 15px; /* menší odstup od nadpisu k obsahu */
+}
+
+
+
+
+
+
+/*DIALOGOVÉ OKNO - PREHRAVANIE ZVUKOV*/
+.dialog-box {
+  position: relative;
+  background-image: linear-gradient(to top, #d67d3a, #e29e52);
+  border: 6px solid #72321f;
+  border-radius: 15px;
+  padding: 20px;
+}
+.info-dialog {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 10px;
+  background-image: linear-gradient(to top, #d67d3a, #e29e52);
+  box-shadow: 0px 5px 0px #e29e52;
+  text-align: center;
+  border-radius: 15px;
+}
+.dialog-box h1 {
+  font-family: 'MPLUSRounded1c-Black';
+  color: transparent; 
+  background-image: linear-gradient(to top, #612a1c, #883722);
+  -webkit-background-clip: text;
+  background-clip: text; 
+  text-align: center;
+  border: #000;
+}
+.dialog-box p {
+  font-family: 'MPLUSRounded1c-ExtraBold';
+  color: transparent; 
+  background-image: linear-gradient(to top, #612a1c, #883722);
+  -webkit-background-clip: text;
+  background-clip: text; 
+ text-align: center;
+ font-size: 22px;
+ -webkit-text-stroke: 1px #8f4c2b; /* Šírka a farba textovej ohraničujúcej čiary */
+  text-stroke: 1px black;
+}
+#buttonsContainer img {
+  width: 50px;  /* Prispôsobte veľkosť podľa potreby */
+  padding: 20px;
+  height: 50px;
+  cursor: pointer; /* Zmení kurzor na ruku, aby bolo jasné, že ide o interaktívny element */
+}
+
+
+
+/*OKNO HRY*/
+.hra {
+  width: 1125px;
+  margin: 0 auto; 
+  background-color: #17284900;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 325px 800px;
+  justify-content: center;
+  text-align: center;
+}
+/*CANVAS*/
+#gameCanvas {
+  /*border: 1px solid #000;*/
+  border: 18px solid transparent; /* Nastavíme hrúbku rámčeka */
+  border-image: url("images/hra.png") 30 round; /* Cesta k obrázku rámčeka, počet pixelov (9-pixelová hrúbka rámu, zvyšok bude plnený obrázkom) */
+  background-image: url("images/pozadie.jpg");
+}
+/*HRÁČ*/
+.player {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background-color: red;
+  transition: transform 0.3s ease; /* Animácia rotácie */
+}
+/* Rotácia hráča na základe smeru */
+.player.up {
+  transform: rotate(0deg);
+}
+.player.right {
+  transform: rotate(90deg);
+}
+.player.down {
+  transform: rotate(180deg);
+}
+.player.left {
+  transform: rotate(270deg);
+}
+.player::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10px 7px 0 7px;
+  border-color: black transparent transparent transparent;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+/* Štýly pre šípku hráča */
+.player::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10px 7px 0 7px;
+  border-color: black transparent transparent transparent;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+/* Šípka pre každý smer */
+.player.up::before {
+  border-width: 0 7px 10px 7px;
+  border-color: transparent transparent black transparent;
+  top: auto;
+  bottom: -5px;
+}
+.player.down::before {
+  border-width: 10px 7px 0 7px;
+  border-color: black transparent transparent transparent;
+  top: -5px;
+  bottom: auto;
+}
+.player.left::before {
+  border-width: 7px 10px 7px 0;
+  border-color: transparent black transparent transparent;
+  left: -5px;
+}
+.player.right::before {
+  border-width: 7px 0 7px 10px;
+  border-color: transparent transparent transparent black;
+  left: auto;
+  right: -5px;
+}
+
+.buttons {
+  background-image: url('images/menu1.png'); /* Nahraďte 'cesta_k_obrazku.jpg' cestou k vášmu obrázku */
+  background-size: cover; /* Obrázok sa prispôsobí veľkosti tlačidla */
+  background-repeat: no-repeat; /* Obrázok sa nebude opakovať */
+  width: 200px; /* Šírka tlačidla */
+  height: 58.9394px; /* Výška tlačidla */
+  border: none; /* Bez ohraničenia */
+  cursor: pointer; /* Kurzor sa zmení na ruku pri najazdení */
+}
+
+
+
+.close {
+  width: 30px;
+  height: 30px;
+  background-image: url('images/close.png');
+  background-size: cover;
+  background-position: center;
+  text-indent: -9999px;
+  cursor: pointer;
+  font-size: 30px;
+}
+
+
+
+
+/*menu button*/
+#menuButton {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 43px;
+  height: 43px;
+  border-radius: 50%;
+  background-image: url("images/menubutton.png");
+  background-size: cover;
+  background-position: center;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+.kruhove-tlacidlo {
+  width: 43px;
+  height: 43px;
+  border-radius: 50%; /* Tvar kruhu */
+  background-image: url("images/menubutton.png"); /* Cesta k obrázku, ktorý chceš použiť ako pozadie */
+  background-size: cover; /* Upravuje veľkosť obrázku na takú, aby pokrýval celé tlačidlo */
+  background-position: center; /* Zarovnáva obrázok na strede */
+  border: none; /* Bez ohraničenia */
+  cursor: pointer; /* Zmení kurzor na ukazovateľ, aby naznačil interaktívnosť */
+  outline: none; /* Odstráni ohraničenie po kliknutí */
+}
+.kruhove-tlacidlo:focus {
+  outline: none; /* Odstráni ohraničenie po získaní zaostrenia */
+}
+/*Dialogové okno pre menu */
+.dialogove-okno {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 510px;
+  height: 391px;
+  background-image: url(images/cvicenie.png);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Shadow pre rozmazanie pozadia */
+  overflow: hidden;
+  z-index: 1000;
+  margin-bottom: 30px;
+}
+.gameend{
+  height: auto;
+  width: auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column; 
+  text-align: center;
+}
+.gameend a img {
+  max-width: 100%;
+  transition: transform 0.3s ease;
+  margin-bottom: 10px;
+  margin-top: 0px;
+}
+.dialogove-okno-content{
+  height: 391px;
+  width: 510px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column; 
+  text-align: center;
+  margin-bottom: 87px;
+}
+.dialogove-okno-content a img {
+  max-width: 100%;
+  transition: transform 0.3s ease;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+.dialogove-okno-content a:hover img, .gameend a:hover img {
+  transform: scale(1.1);
+}
+
+/*BOČNÝ PANEL*/
+.menu-hra{
+  background-color: #d67e3a00;
+  height: 802px;
+}
+.menu-hra h1 {
+  font-family: 'MPLUSRounded1c-Black';
+  color: transparent; 
+  background-image: linear-gradient(to top, #612a1c, #883722);
+  -webkit-background-clip: text;
+  background-clip: text; 
+  text-align: left;
+  border: #000;
+}
+.menu-buttons {
+  height: 250px;
+  width: 300px;
+  position: relative;
+  background-image: url("images/pozadiemenu.png");
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column; 
+  text-align: center;
+  margin-bottom: 27px;
+}
+.menu-buttons a {
+  margin: 10px; /* Medzera medzi obrázkami */
+  position: relative;
+}
+.menu-buttons a img {
+  max-width: 100%;
+  transition: transform 0.3s ease;
+}
+.menu-buttons a:hover img {
+  transform: scale(1.1);
+}
+/* PANEL DIAMANTY, GOLDY*/
+.menu-diamonds{
+  height: 252px;
+  width: 300px;
+  position: relative;
+  background-image: url("images/pozadiemenudiamant.png");
+}
+/* PANEL DIAMANTY, GOLDY*/
+.menu-kov{  
+  margin-top: 0px;
+  height: 252px;
+  width: 300px;
+  position: relative;
+  background-image: url("images/pozadiemenukov.png");
+}
+.menu-golds{
+  margin-top: -18px;
+  height: 252px;
+  width: 300px;
+  position: relative;
+  background-image: url("images/pozadiemenuzlato.png");
+}
+/* Štýly pre jednotlivé položky v menu */
+.item {
+  display: flex; /* Zarovnanie obsahu vodorovne */
+  align-items: center; /* Zarovnanie obsahu do stredu podľa výšky */
+  margin-bottom: 10px; /* Medzera medzi jednotlivými položkami */
+}
+.item img {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+.item span {
+  font-weight: bold;
+  font-size: 18px; /* Veľkosť písma */
+  color: #fff; /* Biela farba písma */
+}
+.diamonds-container, .golds-container, .kov-container {
+  padding-left: 35px;
+  padding-right: 30px;
+  padding-top: 90px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+.diamond-item, .gold-item, .kov-item {
+  margin-right: 10px; /* Medzera medzi jednotlivými diamantmi */
+}
+.diamond-image, .gold-image, .kov-image {
+  width: 30px; /* Šírka obrázka diamantu */
+  height: auto;
+}
+.diamond-item:not(.collected) .diamond-image, .gold-item:not(.collected) .gold-image, .kov-item:not(.collected) .kov-image {
+  filter: grayscale(100%);
+}
+
+
+/* Cvičenie na výslovnosť */
+/*Dialogové okno */
+.cvicenie {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 510px;
+  height: 391px;
+  background-image: url(images/cvicenie.png);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Shadow pre rozmazanie pozadia */
+  overflow: hidden;
+  z-index: 1000;
+}
+.cvicenie-content {
+  padding: 20px;
+}
+.cvicenie-content-2 {
+  padding: 20px;
+}
+.cvicenie p {
+  font-family: 'MPLUSRounded1c-ExtraBold';
+  color: transparent; 
+  background-image: linear-gradient(to top, #8f8d8d, #ffffff);
+  -webkit-background-clip: text;
+  background-clip: text; 
+ text-align: center;
+ font-size: 32px;
+ -webkit-text-stroke: 1px #000000; /* Šírka a farba textovej ohraničujúcej čiary */
+  text-stroke: 1px rgb(255, 255, 255);
+}
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+.close:hover {
+  color: red;
+}
+.tlacidlo {
+  margin-top: -20px;
+  background-color: rgba(255, 228, 196, 0);
+  width: 300px;
+  height: 63.5px;
+  background-image: url(images/tlacidlo.png); /* Zmeňte obrázok na váš vlastný */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  outline: none; /* Odstráňte ohraničenie */
+  transition: transform 0.2s ease; /* Animácia pre plynulé zväčšenie */
+}
+.tlacidlo:hover {
+  background-color: rgba(255, 228, 196, 0);
+  transform: scale(1.1); /* Zväčšenie tlačidla na 110% veľkosti pri prejdení myšou */
+  background-image: url(images/tlacidlo2.png);
+}
+.tlacidlo:active {
+  background-color: rgba(255, 228, 196, 0);
+  background-image: url(images/tlacidlo2.png); /* Zmeňte obrázok na váš vlastný pre stav kliknutia */
+}
+#blur-background {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(4px); /* Rozmazanie všetkého pod #blur-background */
+  z-index: 999; 
+}
+.cvicenie-open #blur-background {
+  filter: blur(4px) grayscale(50%); /* Aplikuj rozmazanie a zosvetlenie pozadia, keď je dialogové okno otvorené */
+}
+#vysledok {
+  width: 435px;
+  height: 342px;
+  height: auto; 
+  display: block; 
+  margin-left: 38px; 
+  margin-top: 25px;
+  margin-right: 38px;
+  margin-bottom: 26px;
+  position: absolute;
+  background-size: cover;
+  backdrop-filter: blur(2px); /* Rozmazání efektu */
+  z-index: 9999; /* Zde můžete použít libovolné číslo, které zajistí, že bude obrázek nad všemi ostatními vrstvami */
+}
+
+
+
+
+.joystick {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  display: none;
+}
+
+.controls {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: none;
+}
+
+.arrow {
+  display: inline-block;
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  border: 1px solid #000;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.arrow:hover {
+  background-color: #f0f0f0;
+}
+
+.tool {
+  display: inline-block;
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  border: 1px solid #000;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.tool:hover {
+  background-color: #f0f0f0;
+}
+
+
+
+
+
+
+/* MEDIA Q*/
+@media only screen and (min-width: 469px) and (max-width: 768px) {
+  .joystick {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: block;
+  }
+  
+  .controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: block;
+  }
+  body {
+  background-repeat: no-repeat;
+}
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.menu ul li img {
+  width: 100%;
+  max-width: 350px;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.menu ul li img:hover {
+  transform: scale(1.1);
+}
+.right-section{
+  display: none;
+}
+.hra {
+  width: 98%;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 100%; /* Základne nastavenie jedného stĺpca */
+  grid-template-rows: auto;
+}
+#gameCanvas {
+  width: 90%;
+}
+/*BOČNÝ PANEL*/
+.menu-hra {
+  display: flex;
+  grid-template-columns: repeat(3, 1fr); /* Tri stĺpce s rovnakým podielom dostupného miesta */
+  justify-content: space-around;
+  align-items: center;
+  height: inherit;
+  margin-top: 50px;
+  margin-bottom: 20px;
+}
+
+/* PANEL DIAMANTY, GOLDY*/
+.menu-kov, .menu-diamonds, .menu-golds {
+  height: 126px;
+  width: 150px;
+  position: relative;
+  background-size: cover;
+}
+
+.menu-diamonds {
+  margin-right: 0px; /* Pridané pre oddelenie blokov */
+}
+
+.menu-golds {
+  margin-top: 0px;
+  margin-right: 0px; /* Pridané pre oddelenie blokov */
+}
+
+.diamonds-container, .golds-container, .kov-container {
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 25px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+.diamond-item, .gold-item, .kov-item {
+  margin-right: 5px;
+  margin-left: 5px; /* Medzera medzi jednotlivými diamantmi */
+}
+.diamond-image, .gold-image, .kov-image {
+  width: 20px; /* Šírka obrázka diamantu */
+  height: auto;
+}
+
+
+}
+
+@media only screen and (max-width: 468px) {
+
+  .joystick {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: block;
+  }
+  
+  .controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: block;
+  }
+  body {
+    background-repeat: no-repeat;
+  }
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .menu ul li img {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  .menu ul li img:hover {
+    transform: scale(1.1);
+  }
+  .right-section{
+    display: none;
+  }
+  .hra {
+    width: 98%;
+    display: grid;
+    align-items: center;
+    grid-template-columns: 100%; /* Základne nastavenie jedného stĺpca */
+    grid-template-rows: auto;
+  }
+  #gameCanvas {
+    width: 90%;
+  }
+  /*BOČNÝ PANEL*/
+  .menu-hra {
+    display: flex;
+    grid-template-columns: repeat(3, 1fr); /* Tri stĺpce s rovnakým podielom dostupného miesta */
+    justify-content: space-around;
+    align-items: center;
+    height: inherit;
+    margin-top: -150px;
+    margin-bottom: 20px;
+  }
+  
+  /* PANEL DIAMANTY, GOLDY*/
+  .menu-kov, .menu-diamonds, .menu-golds {
+    height: 100px;
+    width: 120px;
+    position: relative;
+    background-size: cover;
+  }
+  
+  .menu-diamonds {
+    margin-right: 0px; /* Pridané pre oddelenie blokov */
+  }
+  
+  .menu-golds {
+    margin-top: 0px;
+    margin-right: 0px; /* Pridané pre oddelenie blokov */
+  }
+  
+  .diamonds-container, .golds-container, .kov-container {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 25px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+  .diamond-item, .gold-item, .kov-item {
+    margin-right: 5px;
+    margin-left: 5px; /* Medzera medzi jednotlivými diamantmi */
+  }
+  .diamond-image, .gold-image, .kov-image {
+    width: 20px; /* Šírka obrázka diamantu */
+    height: auto;
+  }
+  
+  
+  }
+@media only screen and (min-width: 769px) and (max-width: 992px) {
+  .joystick {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: block;
+  }
+  
+  .controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: block;
+  }
+  body {
+    background-repeat: no-repeat;
+  }
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .menu ul li img {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  .menu ul li img:hover {
+    transform: scale(1.1);
+  }
+  .right-section{
+    display: none;
+  }
+  .hra {
+    width: 98%;
+    display: grid;
+    align-items: center;
+    grid-template-columns: 100%; /* Základne nastavenie jedného stĺpca */
+    grid-template-rows: auto;
+  }
+  #gameCanvas {
+    width: 90%;
+  }
+  /*BOČNÝ PANEL*/
+  .menu-hra {
+    display: flex;
+    grid-template-columns: repeat(3, 1fr); /* Tri stĺpce s rovnakým podielom dostupného miesta */
+    justify-content: space-around;
+    align-items: center;
+    height: inherit;
+    margin-top: 25%;
+    margin-bottom: 20px;
+  }
+  
+  /* PANEL DIAMANTY, GOLDY*/
+  .menu-kov, .menu-diamonds, .menu-golds {
+    height: 160px;
+    width: 192px;
+    position: relative;
+    background-size: cover;
+  }
+  
+  .menu-diamonds {
+    margin-right: 0px; /* Pridané pre oddelenie blokov */
+  }
+  
+  .menu-golds {
+    margin-top: 0px;
+    margin-right: 0px; /* Pridané pre oddelenie blokov */
+  }
+  
+  .diamonds-container, .golds-container, .kov-container {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 25px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+  .diamond-item, .gold-item, .kov-item {
+    margin-right: 5px;
+    margin-left: 5px; /* Medzera medzi jednotlivými diamantmi */
+  }
+  .diamond-image, .gold-image, .kov-image {
+    width: 20px; /* Šírka obrázka diamantu */
+    height: auto;
+  }
+  
+  
+  }
+
+
+@media only screen and (min-width: 993px) and (max-width: 1200px) {
+  body {
+    background-repeat: no-repeat;
+  }
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .menu ul li img {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  .menu ul li img:hover {
+    transform: scale(1.1);
+  }
+  .right-section{
+    display: none;
+  }
+  .hra {
+    width: 98%;
+    display: grid;
+    align-items: center;
+    grid-template-columns: 100%; /* Základne nastavenie jedného stĺpca */
+    grid-template-rows: auto;
+  }
+  #gameCanvas {
+  }
+  /*BOČNÝ PANEL*/
+  .menu-hra {
+    display: flex;
+    grid-template-columns: repeat(3, 1fr); /* Tri stĺpce s rovnakým podielom dostupného miesta */
+    justify-content: space-around;
+    align-items: center;
+    height: inherit;
+    margin-top: 15%;
+    margin-bottom: 20px;
+  }
+  
+  /* PANEL DIAMANTY, GOLDY*/
+  .menu-kov, .menu-diamonds, .menu-golds {
+    height: 160px;
+    width: 192px;
+    position: relative;
+    background-size: cover;
+  }
+  
+  .menu-diamonds {
+    margin-right: 0px; /* Pridané pre oddelenie blokov */
+  }
+  
+  .menu-golds {
+    margin-top: 0px;
+    margin-right: 0px; /* Pridané pre oddelenie blokov */
+  }
+  
+  .diamonds-container, .golds-container, .kov-container {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 25px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+  .diamond-item, .gold-item, .kov-item {
+    margin-right: 5px;
+    margin-left: 5px; /* Medzera medzi jednotlivými diamantmi */
+  }
+  .diamond-image, .gold-image, .kov-image {
+    width: 20px; /* Šírka obrázka diamantu */
+    height: auto;
+  }
+  .joystick {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: block;
+  }
+  
+  .controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: block;
+  }
+  
+  }
