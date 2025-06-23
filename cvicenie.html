@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zvukové Bludisko</title>
+    <link rel="stylesheet" href="cvicenie.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>Zvukové Bludisko</h1>
+            <div class="score">Body: <span id="score">0</span></div>
+            <div class="keys">Kľúče: <span id="keys">0</span></div>
+        </div>
+        
+        <div class="maze-container" id="maze"></div>
+        
+        <div class="controls">
+            <button id="up">↑</button>
+            <div class="horizontal-controls">
+                <button id="left">←</button>
+                <button id="right">→</button>
+            </div>
+            <button id="down">↓</button>
+        </div>
+
+        <div id="task-modal" class="modal">
+            <div class="modal-content">
+                <h2>Úloha</h2>
+                <p id="task-description"></p>
+                <div id="task-options"></div>
+                <button id="speak-button">Hovoriť</button>
+                <button id="hint-button">Nápoveda</button>
+            </div>
+        </div>
+    </div>
+    <script src="cvicenie.js"></script>
+</body>
+</html>
