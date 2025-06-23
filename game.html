@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sk">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -15,20 +15,86 @@
 
   <style>
   canvas {
-  display: block;
-  margin: 0 auto;
-  border: 1px solid #000;
-  justify-content: center;
-  align-items: center;
-}
+    display: block;
+    margin: 0 auto;
+    border: 1px solid #000;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Nový štýl pre navigáciu */
+  .game-navigation {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    display: flex;
+    gap: 10px;
+  }
+  
+  .nav-button {
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.3s ease;
+  }
+  
+  .nav-button:hover {
+    background: rgba(0, 0, 0, 0.9);
+  }
+  
+  /* Level info panel */
+  .level-info-panel {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-family: 'MPLUSRounded1c-Medium', Arial, sans-serif;
+    font-size: 14px;
+    z-index: 1000;
+    border: 2px solid #4CAF50;
+  }
+  
+  .level-info-panel h3 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    color: #4CAF50;
+  }
+  
+  .level-info-panel p {
+    margin: 2px 0;
+    font-size: 12px;
+  }
   </style>
 </head>
 <body>
+  <!-- Navigácia -->
+  <div class="game-navigation">
+    <button class="nav-button" onclick="pauseGame()" id="pauseBtn">⏸️ Pauza</button>
+    <button class="nav-button" onclick="returnToLevelSelector()">← Späť</button>
+    <button class="nav-button" onclick="restartLevel()">🔄 Restart</button>
+  </div>
+
+  <!-- Info panel o leveli -->
+  <div class="level-info-panel" id="levelInfoPanel" style="display: none;">
+    <h3 id="levelTitle">Level 1</h3>
+    <p>Svet: <span id="worldName">R</span></p>
+    <p>Typ: <span id="gameType">Baník</span></p>
+    <p id="timeDisplay" style="display: none;">Čas: <span id="timeValue">0:00</span></p>
+  </div>
+
+  <!-- Hlavná hra -->
   <div class="hra">
    <div class="menu-hra">
     <button onclick="openDialog1()" class="kruhove-tlacidlo" id="menuButton"></button>
     
-       
     <div class="menu-golds">
       <h1></h1><div class="golds-container"></div>
     </div>
@@ -42,6 +108,7 @@
    <canvas id="gameCanvas" width="800" height="800"></canvas>
   </div>
   
+  <!-- Rečové cvičenie -->
   <div id="cvicenie" class="cvicenie">
     <div id="vysledok" class="vysledok"></div>
     <div class="cvicenie-content">
@@ -51,6 +118,7 @@
     </div>
   </div>
 
+  <!-- Posluchové cvičenie -->
   <div id="zvuky" class="cvicenie">
     <div class="cvicenie-content-2">
       <h1>ROZPOZNAJ SLOVÁ</h1>
@@ -59,27 +127,34 @@
     </div>
   </div>
 
+  <!-- End game dialog - Aktualizovaný -->
   <div id="endgame" class="cvicenie">
     <div class="cvicenie-content">
-      <p>VYHRAL SI HRU!<p>
-      <p style="font-size: 20px;">Chceš hrať znova?</p>
+      <p>VYHRAL SI HRU!</p>
+      <p style="font-size: 20px;">Chceš pokračovať?</p>
       <div class="gameend">
-        <a href="game.html"><img src="images/restart_male.png" alt="Reštart"></a>
-        <a href="index.html"><img src="images/menu_male.png" alt="Menu"></a>
+        <!-- Tlačidlá sa vygenerujú dynamicky cez JavaScript -->
       </div>
     </div>
   </div>
 
+  <!-- Menu dialog -->
   <div id="dialogove-okno" class="dialogove-okno">
     <div class="dialogove-okno-content">
       <span class="close" onclick="closeDialog1()">&times;</span>
-      <a href="index.html"><img src="images/menu.png" alt="Menu"></a>
-      <a href="game.html"><img src="images/restart.png" alt="Reštart"></a>
+      <button class="nav-button" onclick="returnToLevelSelector()" style="margin: 10px; padding: 15px 25px; font-size: 16px;">
+        🏠 Späť na levely
+      </button>
+      <button class="nav-button" onclick="restartLevel()" style="margin: 10px; padding: 15px 25px; font-size: 16px;">
+        🔄 Restart level
+      </button>
+      <button class="nav-button" onclick="returnToWorldsMenu()" style="margin: 10px; padding: 15px 25px; font-size: 16px;">
+        🌍 Menu svetov
+      </button>
     </div>
   </div>
 
-
-
+  <!-- Mobilné ovládanie -->
   <div class="joystick">
     <div id="pickaxe" class="tool">🪓</div>
   </div>
@@ -91,23 +166,88 @@
     <div id="right" class="arrow">&#9654;</div>
   </div>
 
+  <!-- Blur pozadie -->
+  <div id="blur-background"></div>
 
-<div id="blur-background"></div>
-<script src="js/game.js"></script>
-<script>
-  function openDialog1() {
-  document.getElementById("dialogove-okno").style.display = "block";
-  document.getElementById("blur-background").style.display = "block";
-  document.body.classList.add("dialog-open");
-  document.body.style.overflow = "hidden"; // Zabrániť posúvaniu stránky
-}
+  <!-- JavaScript súbory - v správnom poradí -->
+  <script src="config/worlds.js"></script>
+  <script src="config/levels.js"></script>
+  <script src="js/managers/progressManager.js"></script>
+  <script src="js/managers/gameRouter.js"></script>
+  <script src="js/game.js"></script> <!-- Naša aktualizovaná hra -->
 
-function closeDialog1() {
-  document.getElementById("dialogove-okno").style.display = "none";
-  document.getElementById("blur-background").style.display = "none";
-  document.body.classList.remove("dialog-open");
-  document.body.style.overflow = "auto"; // Povoliť posúvanie stránky
-}
-</script>
+  <script>
+    // Menu funkcie
+    function openDialog1() {
+      document.getElementById("dialogove-okno").style.display = "block";
+      document.getElementById("blur-background").style.display = "block";
+      document.body.classList.add("dialog-open");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeDialog1() {
+      document.getElementById("dialogove-okno").style.display = "none";
+      document.getElementById("blur-background").style.display = "none";
+      document.body.classList.remove("dialog-open");
+      document.body.style.overflow = "auto";
+    }
+
+    // Pauza hry
+    function pauseGame() {
+      if (window.gameState) {
+        window.gameState.isPaused = !window.gameState.isPaused;
+        const pauseBtn = document.getElementById('pauseBtn');
+        if (window.gameState.isPaused) {
+          pauseBtn.textContent = '▶️ Pokračovať';
+          pauseBtn.style.backgroundColor = '#4CAF50';
+        } else {
+          pauseBtn.textContent = '⏸️ Pauza';
+          pauseBtn.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+        }
+      }
+    }
+
+    // Navigácia funkcionalita
+    function returnToWorldsMenu() {
+      if (window.gameRouter) {
+        window.gameRouter.returnToWorldsMenu();
+      } else {
+        window.location.href = 'worlds-menu.html';
+      }
+    }
+
+    // Aktualizácia level info panelu
+    function updateLevelInfoPanel() {
+      if (window.gameState && window.gameState.levelConfig && window.gameState.worldConfig) {
+        const panel = document.getElementById('levelInfoPanel');
+        const levelConfig = window.gameState.levelConfig;
+        const worldConfig = window.gameState.worldConfig;
+        
+        document.getElementById('levelTitle').textContent = `Level ${levelConfig.levelNumber}: ${levelConfig.name}`;
+        document.getElementById('worldName').textContent = worldConfig.title;
+        document.getElementById('gameType').textContent = levelConfig.gameType.charAt(0).toUpperCase() + levelConfig.gameType.slice(1);
+        
+        // Zobraz časový limit ak existuje
+        if (levelConfig.timeLimit) {
+          const timeDisplay = document.getElementById('timeDisplay');
+          timeDisplay.style.display = 'block';
+        }
+        
+        panel.style.display = 'block';
+      }
+    }
+
+    // Spusti aktualizáciu panelu po načítaní hry
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        updateLevelInfoPanel();
+      }, 1000);
+    });
+
+    // Skrytie level info panelu po kliknutí
+    document.getElementById('levelInfoPanel')?.addEventListener('click', function() {
+      this.style.display = 'none';
+    });
+  </script>
 </body>
 </html>
