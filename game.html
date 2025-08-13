@@ -114,7 +114,7 @@
     <div class="cvicenie-content">
       <center><img id="cvicenie-image" src="images/slova/traktor.png" alt="Obrázok" style="width: 240px; height: auto; display: block; margin-top: 20px; "></center>
       <p class="cvicenie-text" id="word-display" style="text-align: center;">TRAKTOR</p>
-      <center><button id="rozpoznanie" class="tlacidlo"> </button></center>
+      <center><button id="rozpoznanie" class="tlacidlo">KLIKNITE PRE NAHRÁVANIE</button></center>
     </div>
   </div>
 
@@ -127,13 +127,13 @@
     </div>
   </div>
 
-  <!-- End game dialog - Aktualizovaný -->
+  <!-- End game dialog - Aktualizovaný pre level systém -->
   <div id="endgame" class="cvicenie">
     <div class="cvicenie-content">
       <p>VYHRAL SI HRU!</p>
       <p style="font-size: 20px;">Chceš pokračovať?</p>
       <div class="gameend">
-        <!-- Tlačidlá sa vygenerujú dynamicky cez JavaScript -->
+        <!-- Tlačidlá sa vygenerujú dynamicky cez JavaScript v completeLevel() -->
       </div>
     </div>
   </div>
@@ -142,15 +142,17 @@
   <div id="dialogove-okno" class="dialogove-okno">
     <div class="dialogove-okno-content">
       <span class="close" onclick="closeDialog1()">&times;</span>
-      <button class="nav-button" onclick="returnToLevelSelector()" style="margin: 10px; padding: 15px 25px; font-size: 16px;">
-        🏠 Späť na levely
-      </button>
-      <button class="nav-button" onclick="restartLevel()" style="margin: 10px; padding: 15px 25px; font-size: 16px;">
-        🔄 Restart level
-      </button>
-      <button class="nav-button" onclick="returnToWorldsMenu()" style="margin: 10px; padding: 15px 25px; font-size: 16px;">
-        🌍 Menu svetov
-      </button>
+      <div class="menu-buttons">
+        <button class="nav-button" onclick="returnToLevelSelector()" style="margin: 10px; padding: 15px 25px; font-size: 16px; display: block; width: 200px;">
+          🏠 Späť na levely
+        </button>
+        <button class="nav-button" onclick="restartLevel()" style="margin: 10px; padding: 15px 25px; font-size: 16px; display: block; width: 200px;">
+          🔄 Restart level
+        </button>
+        <button class="nav-button" onclick="returnToWorldsMenu()" style="margin: 10px; padding: 15px 25px; font-size: 16px; display: block; width: 200px;">
+          🌍 Menu svetov
+        </button>
+      </div>
     </div>
   </div>
 
@@ -170,11 +172,37 @@
   <div id="blur-background"></div>
 
   <!-- JavaScript súbory - v správnom poradí -->
-  <script src="config/worlds.js"></script>
-  <script src="config/levels.js"></script>
-  <script src="js/managers/progressManager.js"></script>
-  <script src="js/managers/gameRouter.js"></script>
-  <script src="js/game.js"></script> <!-- Naša aktualizovaná hra -->
+  <!-- Bezpečné načítanie config súborov -->
+  <script>
+    // Pomocná funkcia pre bezpečné načítanie skriptov
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = () => {
+          console.log(`Súbor ${src} sa nepodarilo načítať`);
+          resolve(); // Pokračuj aj pri chybe
+        };
+        document.head.appendChild(script);
+      });
+    }
+
+    // Načítaj config súbory ak existujú
+    Promise.all([
+      loadScript('config/worlds.js'),
+      loadScript('config/levels.js'),
+      loadScript('js/managers/progressManager.js'),
+      loadScript('js/managers/gameRouter.js')
+    ]).then(() => {
+      console.log('Config súbory načítané (alebo preskočené)');
+      
+      // Načítaj hlavnú hru až po config súboroch
+      loadScript('js/game.js').then(() => {
+        console.log('Hra načítaná');
+      });
+    });
+  </script>
 
   <script>
     // Menu funkcie
@@ -207,30 +235,36 @@
       }
     }
 
-    // Navigácia funkcionalita
-    function returnToWorldsMenu() {
-      if (window.gameRouter) {
-        window.gameRouter.returnToWorldsMenu();
-      } else {
-        window.location.href = 'worlds-menu.html';
-      }
-    }
-
     // Aktualizácia level info panelu
     function updateLevelInfoPanel() {
-      if (window.gameState && window.gameState.levelConfig && window.gameState.worldConfig) {
+      if (window.gameState && window.gameState.levelConfig) {
         const panel = document.getElementById('levelInfoPanel');
         const levelConfig = window.gameState.levelConfig;
         const worldConfig = window.gameState.worldConfig;
         
-        document.getElementById('levelTitle').textContent = `Level ${levelConfig.levelNumber}: ${levelConfig.name}`;
-        document.getElementById('worldName').textContent = worldConfig.title;
-        document.getElementById('gameType').textContent = levelConfig.gameType.charAt(0).toUpperCase() + levelConfig.gameType.slice(1);
+        document.getElementById('levelTitle').textContent = levelConfig.name || 'Level';
+        
+        if (worldConfig) {
+          document.getElementById('worldName').textContent = worldConfig.title || worldConfig.name || 'Svet';
+        }
+        
+        document.getElementById('gameType').textContent = 'Baník';
         
         // Zobraz časový limit ak existuje
         if (levelConfig.timeLimit) {
           const timeDisplay = document.getElementById('timeDisplay');
           timeDisplay.style.display = 'block';
+          
+          // Spusti aktualizáciu času
+          setInterval(() => {
+            if (window.getCurrentGameTime) {
+              const time = window.getCurrentGameTime();
+              const minutes = Math.floor(time / 60);
+              const seconds = time % 60;
+              document.getElementById('timeValue').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+          }, 1000);
         }
         
         panel.style.display = 'block';
@@ -241,12 +275,31 @@
     document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         updateLevelInfoPanel();
-      }, 1000);
+      }, 2000); // Počkaj kým sa načíta level config
     });
 
     // Skrytie level info panelu po kliknutí
     document.getElementById('levelInfoPanel')?.addEventListener('click', function() {
       this.style.display = 'none';
+    });
+
+    // Debug funkcie pre testovanie
+    window.addEventListener('keydown', (e) => {
+      // Ctrl+L pre zobrazenie level info
+      if (e.ctrlKey && e.key === 'l') {
+        e.preventDefault();
+        console.log('Level Config:', window.gameState?.levelConfig);
+        console.log('World Config:', window.gameState?.worldConfig);
+        console.log('Current Level Words:', window.currentLevelWords);
+      }
+      
+      // Ctrl+W pre simuláciu výhry
+      if (e.ctrlKey && e.key === 'w') {
+        e.preventDefault();
+        if (window.completeLevel) {
+          window.completeLevel();
+        }
+      }
     });
   </script>
 </body>
