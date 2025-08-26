@@ -19,12 +19,12 @@ const WORLDS_CONFIG = [
     {
         id: 'world_r',
         name: 'R',
-        title: 'Svet písmena R',
+        title: 'R',
         description: 'Precvičuj výslovnosť písmena R s rôznymi slovami',
-        color: '#FF6B6B', // červená
+        color: '#FF6B6B', 
         icon: 'images/worlds/world_r.png',
         difficulty: 4,
-        unlockRequirement: null, // prvý svet, vždy odomknutý
+        unlockRequirement: null, 
         totalLevels: 20,
         gameTypes: ['banik', 'pexeso', 'mario'], // typy hier dostupné v tomto svete
         isUnlocked: true // prvý svet je vždy odomknutý
@@ -34,16 +34,13 @@ const WORLDS_CONFIG = [
         name: 'L',
         title: 'Svet písmena L',
         description: 'Nauč sa správne vyslovovať písmeno L',
-        color: '#4ECDC4', // tyrkysová
+        color: '#4ECDC4', 
         icon: 'images/worlds/world_l.png',
         difficulty: 3,
-        unlockRequirement: {
-            worldId: 'world_r',
-            minStars: 30 // potrebuje aspoň 30 hviezd zo sveta R
-        },
+        unlockRequirement: null,
         totalLevels: 18,
         gameTypes: ['banik', 'pexeso'],
-        isUnlocked: false
+        isUnlocked: true
     },
     {
         id: 'world_s',
@@ -53,13 +50,10 @@ const WORLDS_CONFIG = [
         color: '#45B7D1', // modrá
         icon: 'images/worlds/world_s.png',
         difficulty: 2,
-        unlockRequirement: {
-            worldId: 'world_l',
-            minStars: 25
-        },
+        unlockRequirement: null,
         totalLevels: 16,
         gameTypes: ['banik', 'pexeso', 'mario'],
-        isUnlocked: false
+        isUnlocked: true
     },
     {
         id: 'world_z',

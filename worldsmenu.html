@@ -1,4 +1,4 @@
-<!-- worldsmenu.html -->
+<!-- worldsmenu.html - Aktualizovaný s integráciou config súborov -->
 <!DOCTYPE html>
 <html>
   <head>
@@ -15,7 +15,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
     
-
     <link rel="icon" type="image/png" href="images/banik.ico">
     <link rel="shortcut icon" href="images/icons/banik.ico">
   </head>
@@ -46,11 +45,9 @@
             <div class="arrow-icon arrow-left"></div>
         </button>
         
-        <!-- Kontainer pre tlačidlá svetov -->
-        <div class="worlds-buttons-container">
-            <button class="world-button world-z" data-world="z"><span>Z</span></button>
-            <button class="world-button world-s active" data-world="s"><span>Š</span></button>
-            <button class="world-button world-r" data-world="r"><span>R</span></button>
+        <!-- Kontainer pre tlačidlá svetov - dynamicky generované -->
+        <div class="worlds-buttons-container" id="worlds-buttons-container">
+            <!-- Tlačidlá svetov sa generujú JavaScriptom -->
         </div>
         
         <!-- Pravá šípka pre prechádzanie svetov -->
@@ -66,7 +63,7 @@
         <div class="game-panel" id="game-panel">
           <!-- Hlavička s názvom aktuálneho sveta -->
           <div class="game-panel-header">
-              <h2 id="world-title">LEVELY Z</h2>
+              <h2 id="world-title">NAČÍTAVAM...</h2>
           </div>
                 
           <!-- Herné okno - rovnaká veľkosť ako canvas v game.html -->
@@ -74,33 +71,9 @@
             <!-- Tu sa budú zobrazovať levely pre aktuálny svet -->
             <div class="levels-grid" id="levels-grid">
               <!-- Levely sa budú generovať JavaScriptom -->
-               <div class="level-card">
-                  <div class="level-number">
-                    <h1>1</h1>
-                  </div>
-                  <div class="level-stars">
-                    <img src="images/star_active.png" class="active-star">
-                    <img src="images/star_active.png" class="active-star">
-                    <img src="images/star_active.png" class="deactive-star">
-                  </div>
-               </div>
-
-                <div class="level-card">
-                  <div class="lock">
-                      <img src="images/zamok.png" class="lock">
-                  </div>
-                  <div class="level-number">
-                      <h1>3</h1>
-                  </div>
-                  <div class="level-stars">
-                      <div class="level-stars">
-                          <img src="images/star_active.png" class="deactive-star">
-                          <img src="images/star_active.png" class="deactive-star">
-                          <img src="images/star_active.png" class="deactive-star">
-                      </div>
-                  </div>
+              <div style="color: white; text-align: center; width: 100%; padding: 50px;">
+                <p>Načítavam levely...</p>
               </div>
-
             </div>
           </div>
         </div>
@@ -113,18 +86,18 @@
             <div class="window-content">
               <div class="stars-section">
                 <div class="side-star">
-                  <img src="images/star_active.png">
+                  <img src="images/star_active.png" alt="Hviezda">
                 </div>
                 <div class="middle-star">
-                  <img src="images/star_active.png">
+                  <img src="images/star_active.png" alt="Hviezda">
                 </div>
                 <div class="side-star">
-                  <img src="images/star_active.png">
+                  <img src="images/star_active.png" alt="Hviezda">
                 </div>
               </div>
               <div class="stars-display">
-                <span class="stars-count" id="stars-count">20</span>
-                <span class="stars-total">/ 45</span>
+                <span class="stars-count" id="stars-count">0</span>
+                <span class="stars-total">/ 0</span>
               </div>
             </div>
           </div>
@@ -148,9 +121,35 @@
 
     </div>
     
+    <!-- Načítanie konfiguračných súborov PRED hlavnou logikou -->
+    <script src="config/worlds.js"></script>
+    <script src="config/levels.js"></script>
     
-    <!-- JavaScript pre interaktivitu -->
+    <!-- Načítanie manažérov -->
+    <script src="js/managers/progressManager.js"></script>
+    <script src="js/managers/gameRouter.js"></script>
+    
+    <!-- JavaScript pre interaktivitu - načíta sa ako posledný -->
     <script src="js/basics/worldsmenu.js"></script>
+    
+    <!-- Inicializácia progress managera až po načítaní všetkých scriptov -->
+    <script>
+      // Zabezpeč, že sa progress manager inicializuje
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('Inicializujem manažérov...');
+        
+        // Inicializuj progress manager ak neexistuje
+        if (!window.progressManager && typeof ProgressManager !== 'undefined') {
+          new ProgressManager();
+          console.log('Progress manager vytvorený');
+        }
+        
+        // Inicializuj game router ak neexistuje  
+        if (!window.gameRouter && typeof GameRouter !== 'undefined') {
+          new GameRouter();
+          console.log('Game router vytvorený');
+        }
+      });
+    </script>
   </body>
 </html>
-

@@ -171,7 +171,7 @@ const LEVELS_CONFIG = {
             unlockRequirement: null, // odomkne sa automaticky keď sa odomkne svet L
             timeLimit: null,
             minStarsToPass: 1,
-            isUnlocked: false
+            isUnlocked: true
         },
         {
             id: 'l_002',
@@ -217,7 +217,7 @@ const LEVELS_CONFIG = {
             unlockRequirement: null,
             timeLimit: null,
             minStarsToPass: 1,
-            isUnlocked: false
+            isUnlocked: true
         }
         // Tu by pokračovali ďalšie levely sveta S...
     ]

@@ -260,6 +260,46 @@ body {
     background-image: url(../images/worlds/world_r.png);
 }
 
+.world-l {
+    background-image: url(../images/worlds/world_l.png);
+}
+
+.world-c {
+    background-image: url(../images/worlds/world_c.png);
+}
+
+.world-š {
+    background-image: url(../images/worlds/world_sh.png);
+}
+
+.world-ž {
+    background-image: url(../images/worlds/world_zh.png);
+}
+
+.world-č {
+    background-image: url(../images/worlds/world_ch.png);
+}
+
+.world-d {
+    background-image: url(../images/worlds/world_d.png);
+}
+
+.world-t {
+    background-image: url(../images/worlds/world_t.png);
+}
+
+.world-n {
+    background-image: url(../images/worlds/world_n.png);
+}
+
+.world-k {
+    background-image: url(../images/worlds/world_k.png);
+}
+
+.world-g {
+    background-image: url(../images/worlds/world_g.png);
+}
+
 .world-button span{
     color: #FFF;
     -webkit-text-stroke-width: 1px;
@@ -464,6 +504,46 @@ body {
 
 .game-panel.world-r-bg {
     background-image: url(../images/worlds/world_r.png);
+}
+
+.game-panel.world-l-bg {
+    background-image: url(../images/worlds/world_l.png);
+}
+
+.game-panel.world-c-bg {
+    background-image: url(../images/worlds/world_c.png);
+}
+
+.game-panel.world-š-bg {
+    background-image: url(../images/worlds/world_sh.png);
+}
+
+.game-panel.world-ž-bg {
+    background-image: url(../images/worlds/world_zh.png);
+}
+
+.game-panel.world-č-bg {
+    background-image: url(../images/worlds/world_ch.png);
+}
+
+.game-panel.world-d-bg {
+    background-image: url(../images/worlds/world_d.png);
+}
+
+.game-panel.world-t-bg {
+    background-image: url(../images/worlds/world_t.png);
+}
+
+.game-panel.world-n-bg {
+    background-image: url(../images/worlds/world_n.png);
+}
+
+.game-panel.world-k-bg {
+    background-image: url(../images/worlds/world_k.png);
+}
+
+.game-panel.world-g-bg {
+    background-image: url(../images/worlds/world_g.png);
 }
 
 /* Fallback pozadie ak nie je špecifikované */
@@ -692,6 +772,259 @@ body {
     height: 150px;
     object-fit: contain;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ====================================
+   LEVEL DETAIL MODAL - CSS ŠTÝLY
+   Štýly pre modal s detailami levelu
+==================================== */
+
+/* Overlay modalu */
+.level-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+}
+
+/* Zatváracie X tlačidlo */
+.close {
+   position: absolute;
+   top: 20px;
+   right: 30px;
+   color: #FFF;
+   text-align: center;
+   font-family: "Luckiest Guy", sans-serif;
+   font-size: 64px;
+   font-style: normal;
+   font-weight: 400;
+   line-height: normal;
+   cursor: url('../images/active_cursor4.png') 5 5, pointer;
+   z-index: 1001;
+   transition: transform 0.4s ease;
+}
+
+.close:hover {
+    transform: rotate(15deg) scale(1.05);
+}
+
+/* Obsah modalu */
+.level-modal-content {
+    background: url('../images/pozadie_button_mobile_2.png') lightgray 50% / cover no-repeat;
+    border: 4px solid #ECCF17;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
+    display: flex;
+    flex-direction: column;
+}
+
+/* Hlavička modalu */
+.level-modal-header {
+    padding: 20px 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.level-modal-header h2 {
+    color: #FFF;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 42px;
+    font-weight: 400;
+    margin: 0;
+    -webkit-text-stroke: 1px #000;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-style: normal;
+    text-transform: uppercase;
+}
+
+/* Telo modalu */
+.level-modal-body {
+    padding: 25px;
+    display: flex;
+    gap: 30px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.level-info,
+.level-progress {
+    flex: 1;
+}
+
+.level-modal-body p {
+    color: #FFF;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 20px;
+    margin: 0 0 12px 0;
+    -webkit-text-stroke: 0.5px #000;
+}
+
+.level-modal-body strong {
+    text-align: center;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    font-family: "Luckiest Guy";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #EF0 0%, #FFD900 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Slová na precvičovanie */
+.words-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.word-tag {
+    background: rgba(236, 207, 23, 0.2);
+    border: 1px solid #ECCF17;
+    border-radius: 15px;
+    padding: 6px 12px;
+    color: #FFF;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 14px;
+    -webkit-text-stroke: 0.5px #000;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Hviezdy v modali */
+.modal-stars {
+    display: flex;
+    gap: 5px;
+    padding-bottom: 19px;
+    margin-top: -12px;
+}
+
+.modal-stars img {
+    width: 30px;
+    height: 30px;
+}
+
+/* Pätka modalu */
+.level-modal-footer {
+    padding: 20px 25px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+/* Tlačidlá v modali */
+.btn-primary,
+.btn-secondary {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 25px;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 16px;
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
+    transition: all 0.3s ease;
+    -webkit-text-stroke: 0.5px #000;
+
+
+}
+
+.level-modal-footer button{
+    border-radius: 30px;
+    border: 4px solid #1A511D;
+    background: linear-gradient(0deg, #15981E 0%, #0F1 100%);
+}
+
+.btn-primary a {
+    text-align: center;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    font-family: "Luckiest Guy";
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; /* 50% */
+    text-transform: uppercase;
+
+    background: linear-gradient(180deg, #EF0 0%, #FFD900 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(0deg, #107517 0%, rgb(12, 196, 25) 100%);
+    scale: 0.98;
+    box-shadow: 0 4px 8px rgba(236, 207, 23, 0.3);
+}
+
+.btn-primary:hover a {
+    text-align: center;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    font-family: "Luckiest Guy";
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; /* 50% */
+    text-transform: uppercase;
+
+    background: linear-gradient(180deg, rgb(255, 145, 0) 0%, #ff4800 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: #FFF;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+
+
 
 
 
@@ -1400,6 +1733,48 @@ body {
         width: 20px;
     }
 
+    .level-modal-content {
+        max-width: 95%;
+        margin: 10px;
+    }
+    
+    .level-modal-body {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .level-modal-header h2 {
+        font-size: 28px;
+    }
+    
+    .level-modal-body p {
+        font-size: 18px;
+    }
+
+    .level-modal-body strong {
+        font-size: 18px;
+    }
+    
+    .word-tag {
+        font-size: 18px;
+        padding: 4px 8px;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        padding: 10px 18px;
+        font-size: 18px;
+    }
+
+    .btn-primary a {
+        font-size: 28px;
+    }
+
+    .btn-primary:hover a {
+        font-size: 28px;
+    }
+
 }
 
 /* Pre veľmi malé mobilné zariadenia */
@@ -1411,6 +1786,25 @@ body {
         left: 5px;
         font-size: 18px;
         font-weight: 400;
+    }
+
+    .loading-logo {
+        margin-bottom: 2rem;
+    }
+
+    .loading-text-jozino {
+        font-size: 64px;
+        width: auto;
+        line-height: 0px; /* 20% */
+    }
+
+    .loading-text-banik {
+        font-size: 30px;
+        line-height: 20px; /* 20% */
+    }
+
+    .loading-message {
+        font-size: 20px;
     }
 
     /* ===== HORNÁ SEKCIA - NAVIGÁCIA SVETOV ===== */
@@ -1456,6 +1850,7 @@ body {
         font-size: 30px;
         line-height: 0px; 
     }
+    
 
     .world-button.active span {
         font-size: 30px;
@@ -1537,8 +1932,6 @@ body {
         width: 24px;
     }
 
-
-
     .side-panel {
         width: 250px;
         justify-content: center;
@@ -1581,6 +1974,58 @@ body {
         width: 16px;
     }
 
+    .level-modal-content {
+        max-width: 95%;
+        margin: 10px;
+    }
+    
+    .level-modal-body {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .level-modal-header h2 {
+        font-size: 22px;
+    }
+    
+    .level-modal-body p {
+        font-size: 14px;
+    }
+
+    .level-modal-body strong {
+        font-size: 14px;
+    }
+    
+    .word-tag {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        padding: 10px 18px;
+        font-size: 14px;
+    }
+
+    .level-modal-footer {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+        text-align: center;
+    }
+
+    .btn-primary a {
+        font-size: 20px;
+    }
+
+    .btn-primary:hover a {
+        font-size: 20px;
+    }
 }
 
 @media (max-width: 290px) {
@@ -1591,6 +2036,25 @@ body {
         left: 5px;
         font-size: 18px;
         font-weight: 400;
+    }
+
+    .loading-logo {
+        margin-bottom: 2rem;
+    }
+
+    .loading-text-jozino {
+        font-size: 35px;
+        width: auto;
+        line-height: 0px; /* 20% */
+    }
+
+    .loading-text-banik {
+        font-size: 20px;
+        line-height: 20px; /* 20% */
+    }
+
+    .loading-message {
+        font-size: 18px;
     }
 
     /* ===== HORNÁ SEKCIA - NAVIGÁCIA SVETOV ===== */
