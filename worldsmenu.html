@@ -1,3 +1,4 @@
+<!-- worldsmenu.html -->
 <!DOCTYPE html>
 <html>
   <head>
@@ -7,7 +8,7 @@
     <meta name="author" content="Adam Reňak">
     <meta name="keywords" content="Adam Reňak, Joj_Dobre, Diplomová práca, Logopedická hra, TUKE">
     <title>Baník Jožino: Logopedická hra - Diplomová práca</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/worldsmenu.css" />
 
     <!-- Načítanie fontu Luckiest Guy z Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,128 +23,134 @@
   <body>
     <!-- LOADING -->
     <div id="loading-screen" class="loading-screen">
-    <div class="loading-content">
-        <div class="loading-logo">
-            <div class="loading-text-jozino">JOŽINO</div>
-            <div class="loading-text-banik">BANÍK</div>
+        <div class="loading-content">
+            <div class="loading-logo">
+                <div class="loading-text-jozino">JOŽINO</div>
+                <div class="loading-text-banik">BANÍK</div>
+            </div>
+            <div class="loading-spinner"></div>
+            <div class="loading-message">Načítavam...</div>
         </div>
-        <div class="loading-spinner"></div>
-        <div class="loading-message">Načítavam...</div>
-    </div>
     </div>
 
-    <div class="container">
-        <!-- ľavá sekcia -->
-        <div class="left-section">
-            <!-- Logo sekcia -->
-            <div class="logo-container">
-                <div class="logo-text">
-                    <div class="text-jozino">JOŽINO</div>
-                    <div class="text-banik">BANÍK</div>
+    <!-- BACK BUTTON -->
+    <div class="back-button"><a href="menu.html"><=</a></div>
+
+    <!-- MAIN CONTAINER - Hlavný kontainer pre celú stránku -->
+    <div class="main-container">
+
+      <!-- WORLDS NAVIGATION SECTION - Horná sekcia s navigáciou svetov -->
+      <section class="worlds-navigation">
+        <!-- Ľavá šípka pre prechádzanie svetov -->
+        <button class="nav-arrow nav-arrow-left" id="prev-world">
+            <div class="arrow-icon arrow-left"></div>
+        </button>
+        
+        <!-- Kontainer pre tlačidlá svetov -->
+        <div class="worlds-buttons-container">
+            <button class="world-button world-z" data-world="z"><span>Z</span></button>
+            <button class="world-button world-s active" data-world="s"><span>Š</span></button>
+            <button class="world-button world-r" data-world="r"><span>R</span></button>
+        </div>
+        
+        <!-- Pravá šípka pre prechádzanie svetov -->
+        <button class="nav-arrow nav-arrow-right" id="next-world">
+          <div class="arrow-icon arrow-right"></div>
+        </button>
+      </section>
+      
+      <!-- CONTENT SECTION - Dolná sekcia s obsahom -->
+      <section class="content-section">
+            
+        <!-- LEFT PANEL - Ľavý panel s herným oknom/levelmi -->
+        <div class="game-panel" id="game-panel">
+          <!-- Hlavička s názvom aktuálneho sveta -->
+          <div class="game-panel-header">
+              <h2 id="world-title">LEVELY Z</h2>
+          </div>
+                
+          <!-- Herné okno - rovnaká veľkosť ako canvas v game.html -->
+          <div class="game-window">
+            <!-- Tu sa budú zobrazovať levely pre aktuálny svet -->
+            <div class="levels-grid" id="levels-grid">
+              <!-- Levely sa budú generovať JavaScriptom -->
+               <div class="level-card">
+                  <div class="level-number">
+                    <h1>1</h1>
+                  </div>
+                  <div class="level-stars">
+                    <img src="images/star_active.png" class="active-star">
+                    <img src="images/star_active.png" class="active-star">
+                    <img src="images/star_active.png" class="deactive-star">
+                  </div>
+               </div>
+
+                <div class="level-card">
+                  <div class="lock">
+                      <img src="images/zamok.png" class="lock">
+                  </div>
+                  <div class="level-number">
+                      <h1>3</h1>
+                  </div>
+                  <div class="level-stars">
+                      <div class="level-stars">
+                          <img src="images/star_active.png" class="deactive-star">
+                          <img src="images/star_active.png" class="deactive-star">
+                          <img src="images/star_active.png" class="deactive-star">
+                      </div>
+                  </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL - Pravý panel s 3 oknami -->
+        <div class="side-panel"> 
+
+          <!-- Okno 1: Stav hviezd -->
+          <div class="panel-window stars-window">
+            <div class="window-content">
+              <div class="stars-section">
+                <div class="side-star">
+                  <img src="images/star_active.png">
                 </div>
+                <div class="middle-star">
+                  <img src="images/star_active.png">
+                </div>
+                <div class="side-star">
+                  <img src="images/star_active.png">
+                </div>
+              </div>
+              <div class="stars-display">
+                <span class="stars-count" id="stars-count">20</span>
+                <span class="stars-total">/ 45</span>
+              </div>
             </div>
+          </div>
 
-            <!-- Menu sekcia -->
-            <div class="menu-container">
-                <nav class="main-menu">
-                    <ul>
-                        <li><a href="game.html" alt="Spustiť hru" class="menu-button primary"><span>ŠTART</span></a></li>
-                        <li><a href="#pravidla" alt="Pravidlá" class="menu-button show-rules">PRAVIDLÁ</a></li>
-                        <li><a href="#projekt" alt="O projekte" class="menu-button show-about">O PROJEKTE</a></li>
-                    </ul>
-                </nav>
-            </div>
+          <!-- Okno 2: Cvičná hra PEXESO -->
+          <div class="pexeso-window">
+              <button class="practice-button" id="pexeso-button">
+                <h3>PEXESO</h3>
+              </button>
+          </div>
 
-            <!-- Radiálny gradient pozadí objekt pod menu -->
-            <div class="radial-background"></div>
+          <!-- Okno 3: Cvičná hra BANÍK -->
+          <div class="miner-window">
+              <button class="practice-button" id="banik-button">
+                <img src="images/banik-icon.png" alt="Baník" class="practice-icon">
+                <h2>BAŇA</h2>
+              </button>
+          </div>
         </div>
+      </section>
 
-
-        <!-- pravá sekcia -->
-        <div class="right-section">
-            <div class="character-container">
-                <!-- Obrázok postavičky baníka -->
-                <img src="images/banik.png" alt="Jožino Baník" class="character-image">
-            </div>
-        </div>
-    </div>
-
-
-
-    <!-- Modálne okno pre pravidlá -->
-    <div id="rules-modal" class="modal">
-        <div class="close">X</div>
-        <div class="modal-content">
-            <h2>Pravidlá hry</h2>
-            <div class="modal-arrow-up"></div>
-            <div class="modal-text-content">
-                <p>
-                    Vitaj v hre Baník Jožino! Tvojou úlohou je preberať rolu odvážneho baníka a 
-                    hľadať vzácne poklady ukryté v hlbokách podzemnej jaskyne.
-                    <br><br>
-                    <span>Ovládanie postavy:</span><br>
-                    Použi šípky na klávesnici alebo klávesy WASD na pohyb postavy po svete.
-                    Na vykopanie pokladu stlač medzerník.
-                    <br><br>
-                    <span>Drahokamy:</span><br>
-                    V hre sa vyskytujú 3 druhy drahokamov: Zlato, Diamant a Fialový Kryštál.
-                    Na vykopanie diamantu musíš splniť rečové cvičenie. Na vykopanie kryštálu 
-                    zase posluchové cvičenie.
-                    <br><br>
-                    <span>Ciele hry:</span><br>
-                    Pokús sa nazbierať čo najviac pokladov v stanovenom čase. Každý typ 
-                    drahokamu ti prinesie iný počet bodov. Buď opatrný a užívaj si dobrodružstvo!
-                    <br><br>
-                    <span>Ovládanie postavy:</span><br>
-                    Použi šípky na klávesnici alebo klávesy WASD na pohyb postavy po svete.
-                    Na vykopanie pokladu stlač medzerník.
-                    <br><br>
-                    <span>Drahokamy:</span><br>
-                    V hre sa vyskytujú 3 druhy drahokamov: Zlato, Diamant a Fialový Kryštál.
-                    Na vykopanie diamantu musíš splniť rečové cvičenie. Na vykopanie kryštálu 
-                    zase posluchové cvičenie.
-                    <br><br>
-                    <span>Ciele hry:</span><br>
-                    Pokús sa nazbierať čo najviac pokladov v stanovenom čase. Každý typ 
-                    drahokamu ti prinesie iný počet bodov. Buď opatrný a užívaj si dobrodružstvo!
-                </p>
-            </div>
-            <div class="modal-arrow-down"></div>
-        </div>
-    </div>
-
-
-    <!-- Modálne okno pre informacie -->
-    <div id="about-modal" class="modal">
-        <div class="close">X</div>
-        <div class="modal-content">
-            <h2>O Projekte</h2>
-            <div class="modal-arrow-up"></div>
-            <div class="modal-text-content">
-                <p>
-                    Baník Jožino je interaktívna logopedická hra vytvorená v rámci diplomovej práce.
-                    <br><br>
-                    <span>Cieľ:</span><br>
-                    Pomôcť deťom s rozvojom správnej výslovnosti a artikulácie pomocou hravých cvičení.
-                    <br><br>
-                    <span>Technológie:</span><br>
-                    HTML5, CSS, JavaScript
-                    <br><br>
-                    <span>Autor:</span><br>
-                    Adam Reňak<br>
-                    Technická univerzita v Košiciach<br>
-                    Fakulta elektrotechniky a informatiky
-                    <br><br>
-                    <span>Rok:</span><br>
-                    2025
-                </p>
-            </div>
-            <div class="modal-arrow-down"></div>
-        </div>
     </div>
     
+    
     <!-- JavaScript pre interaktivitu -->
-    <script src="js/basics/menu.js"></script>
+    <script src="js/basics/worldsmenu.js"></script>
   </body>
 </html>
 

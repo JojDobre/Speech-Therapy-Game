@@ -1,0 +1,1775 @@
+/* ===== GLOBÁLNE ŠTÝLY ===== */
+
+/* Reset štýlov pre konzistenciu medzi prehliadačmi */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Základné nastavenia pre body */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: "Luckiest Guy", sans-serif;
+    background: var(--Backgrtound, url('../images/worlds/background.jpg')) lightgray 50% / cover no-repeat;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+    cursor: url('../images/cursor.png') 5 5, auto;
+    backdrop-filter: blur(4px);
+}
+
+/* ===== BACK BUTTON ===== */
+.back-button {
+   position: absolute;
+   top: 20px;
+   left: 30px;
+   color: #FFF;
+   text-align: center;
+   font-family: "Luckiest Guy", sans-serif;
+   font-size: 64px;
+   font-style: normal;
+   font-weight: 400;
+   line-height: normal;
+   cursor: url('../images/active_cursor4.png') 5 5, pointer;
+   z-index: 1001;
+   transition: transform 0.4s ease;
+}
+
+.back-button:hover {
+    transform: rotate(8deg) scale(1.05);
+}
+
+.back-button a {
+    color: #FFF;
+    text-decoration: none;
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
+}
+
+
+
+
+/* ===== LOADING ===== */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #2c1810 0%, #1a0f08 100%);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.loading-content {
+    text-align: center;
+    color: white;
+}
+
+.loading-logo {
+    margin-bottom: 2rem;
+}
+
+.loading-text-jozino {
+    display: flex;
+    width: 444px;
+    height: 43px;
+    transform: rotate(0.093deg);
+    flex-direction: column;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    
+    /* Štýlovanie textu */
+    color: #FFF;
+    text-align: center;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 100px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 20% */
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 10;
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
+}
+
+.loading-text-banik {
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 45px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 100%;
+    text-align: center;
+    text-transform: uppercase;
+    
+    /* Gradient pozadí pre text */
+    background: conic-gradient(from 90deg at 50% 50%, #ECD517 0deg, #ECBB17 360deg);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 20;
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(236, 207, 23, 0.3);
+    border-top: 4px solid #ECCF17;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-message {
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 22px;
+    color: #ECCF17;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+
+
+
+/* ===== HLAVNÝ KONTAINER ===== */
+.main-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 80px 20px 20px 20px; /* Top padding pre back button */
+    gap: 20px;
+}
+
+/* ===== HORNÁ SEKCIA - NAVIGÁCIA SVETOV ===== */
+.worlds-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    height: 70px; /* Fixná výška pre hornú sekciu */
+    margin-bottom: 23px;
+}
+
+/* Navigačné šípky - rovnaké ako v modáloch */
+.nav-arrow {
+    background: none;
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    color: #FBDB68;
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 90px;
+    border: none;
+}
+
+.nav-arrow:hover {
+    transform: scale(1.1);
+}
+
+.nav-arrow:active {
+    transform: scale(0.95);
+}
+
+/* CSS šípky */
+.arrow-icon {
+    width: 0;
+    height: 0;
+    transition: all 0.3s ease;
+}
+
+.arrow-left {
+    border-top: 18px solid transparent;
+    border-bottom: 18px solid transparent;
+    border-right: 32px solid #FBDB68;
+}
+
+.arrow-right {
+    border-top: 18px solid transparent;
+    border-bottom: 18px solid transparent;
+    border-left: 30px solid #FBDB68;
+}
+
+.nav-arrow:hover .arrow-left {
+    border-right-color: #FFE94A;
+}
+
+.nav-arrow:hover .arrow-right {
+    border-left-color: #FFE94A;
+}
+
+/* Kontainer pre tlačidlá svetov */
+.worlds-buttons-container {
+    display: flex;
+    gap: 48px;
+    align-items: center;
+}
+
+/* Tlačidlá svetov - zatial základné štýly */
+.world-button {
+    width: 250px;
+    height: 68px;
+    border: 1px solid #000;
+    border-radius: 30px;
+    color: #FFF;
+    font-family: "Luckiest Guy", sans-serif;
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    box-shadow: 0 4px 40px 0 rgba(0, 0, 0, 0.50) inset;
+    background-size: 115%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+/* Špecifické pozadia pre jednotlivé svety */
+.world-z {
+    background-image: url(../images/worlds/world_z.jpg);
+}
+
+.world-s {
+    background-image: url(../images/worlds/world_s.png);
+}
+
+.world-r {
+    background-image: url(../images/worlds/world_r.png);
+}
+
+.world-button span{
+    color: #FFF;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 70px; 
+}
+
+/* Aktívne tlačidlo sveta */
+.world-button.active {
+    border-color: #00FF00;
+    border: 5px solid #16B921;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+}
+
+.world-button.active span {
+    color: #FFF;
+    -webkit-text-stroke-width: 3px;
+    -webkit-text-stroke-color: #16B921;
+    font-family: "Luckiest Guy";
+    font-size: 50px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 60px; 
+}
+
+.world-button:hover {
+    transform: scale(1.05);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===== DOLNÁ SEKCIA - OBSAH ===== */
+.content-section {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex: 1; /* Zaberie zvyšok miesta */
+    min-height: 0; /* Umožní flex itemom zmenšiť sa */
+}
+
+/* ===== ĽAVÝ PANEL - HERNÉ OKNO ===== */
+.game-panel {
+    min-width: 800px;
+    min-height: 800px;
+    max-height: 800px;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 10px 10px 10px 10px;
+    border: 2px solid #000;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    transition: background-image 0.5s ease;
+
+}
+
+.game-panel-header {
+    height: 100px;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-panel-header h2 {
+    color: #FFF;
+    text-shadow: 4px 8px 8px rgba(0, 0, 0, 0.30);
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    font-family: "Luckiest Guy";
+    font-size: 54px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.game-window {
+    width: 800px;
+    height: 700px; /* 800 - 100 pre header */
+    overflow: hidden;
+    background: transparent;
+    border-top: none;
+}
+
+.level-card{
+    position: relative;
+    width: 150px;
+    height: 125px;
+    aspect-ratio: 6/5;
+
+    background: url('../images/pozadie_button_mobile_2.png') lightgray 50% / cover no-repeat;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: auto 1rem;
+    box-sizing: border-box;
+    border: 4px solid #AC3F0B;
+    border-radius: 30px;
+
+    transition: all 0.4s ease;
+
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
+
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
+}
+
+.level-card:hover{
+    box-shadow: inset 0 0 20px 2px rgba(236, 207, 23, 0.3);
+    border: 4px solid #ECCF17;
+    scale: 0.98;
+}
+
+.lock img{
+    width: 55px;
+    height: auto;
+    pointer-events: none;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+
+}
+
+.lock {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(0, 0, 0, 0.14);
+    backdrop-filter: blur(4px);
+
+    border-radius: 30px; 
+    z-index: 1000;
+}
+
+.level-card h1 {
+    text-align: center;
+    font-family: "Luckiest Guy", sans-serif;
+    margin: 0;
+    padding: 0px 10px;
+    letter-spacing: 1.6px;
+    color: #FFF;
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.level-stars{
+    display: flex;
+
+}
+
+.level-stars img{
+    width: 25px;
+    height: 25px;
+    aspect-ratio: 1/1;
+}
+
+.deactive-star{
+    opacity: 0.35;
+}
+
+.active-star{
+    opacity: 1;
+}
+
+
+/* Špecifické pozadia pre jednotlivé svety */
+.game-panel.world-z-bg {
+    background-image: url(../images/worlds/world_z.jpg);
+}
+
+.game-panel.world-s-bg {
+    background-image: url(../images/worlds/world_s.png);
+}
+
+.game-panel.world-r-bg {
+    background-image: url(../images/worlds/world_r.png);
+}
+
+/* Fallback pozadie ak nie je špecifikované */
+.game-panel:not([class*="world-"]) {
+    background: #87CEEB; /* Svetlo modrá ako pôvodná */
+}
+
+.levels-grid {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    gap: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: center;
+    align-items: center;
+    /* Grid pre levely sa definuje neskôr */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===== PRAVÝ PANEL - 3 OKNÁ ===== */
+.side-panel {
+    width: 300px;
+    height: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.panel-window {
+    flex: 1; /* Každé okno zaberie rovnaký priestor */
+    border: 4px solid #ECCF17;
+    background: url('../images/pozadie_button.png') lightgray 50% / cover no-repeat;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
+
+}
+
+.pexeso-window {
+    flex: 1; /* Každé okno zaberie rovnaký priestor */
+    border: 4px solid #ECCF17;
+    background: url('../images/worlds/world_g.png') lightgray 50% / cover no-repeat;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    border: 4px solid #AC3F0B;
+    transition: all 0.4s ease;
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
+}
+
+.miner-window {
+    flex: 1; /* Každé okno zaberie rovnaký priestor */
+    border: 4px solid #ECCF17;
+    background: url('../images/worlds/background.png') lightgray 50% / cover no-repeat;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    border: 4px solid #AC3F0B;
+    transition: all 0.4s ease;
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
+}
+
+.window-header {
+    height: 50px;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid #000;
+}
+
+.window-header h3 {
+    color: #FFF;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 20px;
+    text-transform: uppercase;
+    -webkit-text-stroke: 1px #000;
+}
+
+.window-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.stars-section {
+    display: flex;
+    align-items: flex-end;
+}
+
+.stars-section img {
+    display: flex;
+}
+
+.side-star img {
+    display: flex;
+    width: 66px;
+    height: auto;
+}
+
+.middle-star img {
+    display: flex;
+    width: 88px;
+    height: auto;
+}
+
+/* Štýly pre okno hviezd */
+.stars-window .window-content {
+    flex-direction: column;
+}
+
+.stars-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stars-count {
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 48px;
+    color: #FFD700;
+    font-style: normal;
+    font-weight: 400;
+    -webkit-text-stroke: 1px #000;
+}
+
+.stars-total {
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 48px;
+    color: #FFF;
+    font-style: normal;
+    font-weight: 400;
+    -webkit-text-stroke: 1px #000;
+}
+
+/* Štýly pre cvičné tlačidlá */
+.practice-button {
+    width: 100%;
+    height: 100%;
+    background: none;
+    border: none;
+    border-radius: 10px;
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transition: all 0.4s ease;
+}
+
+.practice-button h2 {
+    color: #FFF;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    font-family: "Luckiest Guy";
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.practice-button h3 {
+    color: #FFF;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    font-family: "Luckiest Guy";
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+
+    background: conic-gradient(from 90deg at 50% 50%, #ECD517 0deg, #ECBB17 360deg);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.miner-window:hover {
+    box-shadow: inset 0 0 20px 2px rgba(236, 207, 23, 0.3);
+    border: 4px solid #ECCF17;
+    scale: 0.98;
+}
+
+.pexeso-window:hover {
+    box-shadow: inset 0 0 20px 2px rgba(236, 207, 23, 0.3);
+    border: 4px solid #ECCF17;
+    scale: 0.98;
+}
+
+.practice-icon {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===== RESPONZÍVNE ŠTÝLY ===== */
+@media (max-width: 1100px) {
+    /* ===== BACK BUTTON ===== */
+    .back-button {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-size: 35px;
+        font-weight: 400;
+    }
+
+    .main-container {
+        padding: 20px 20px 20px 20px; /* Top padding pre back button */
+        gap: 10px;
+        justify-content: center;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .content-section {
+        flex: 0; /* Zaberie zvyšok miesta */
+        min-height: 0; /* Umožní flex itemom zmenšiť sa */
+        gap: 15px;
+
+        display: grid;
+        grid-template-columns: 1fr;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        justify-items: center;
+    }
+
+    /* ===== HORNÁ SEKCIA - NAVIGÁCIA SVETOV ===== */
+    .worlds-navigation {
+        gap: 20px;
+        height: 60px; /* Fixná výška pre hornú sekciu */
+        margin-bottom: 10px;
+    }
+
+    /* Navigačné šípky - rovnaké ako v modáloch */
+    .nav-arrow {
+        background: none;
+        font-size: 38px;
+        height: 38px;
+        width: 38px;
+    }
+
+    .arrow-left {
+        border-top: 14px solid transparent;
+        border-bottom: 14px solid transparent;
+        border-right: 24px solid #FBDB68;
+    }
+
+    .arrow-right {
+        border-top: 14px solid transparent;
+        border-bottom: 14px solid transparent;
+        border-left: 24px solid #FBDB68;
+    }
+
+    /* Kontainer pre tlačidlá svetov */
+    .worlds-buttons-container {
+        gap: 38px;
+    }
+
+    /* Tlačidlá svetov - zatial základné štýly */
+    .world-button {
+        width: 220px;
+        height: 60px;
+    }
+
+    .world-button span{
+        font-size: 42px;
+        line-height: 60px; 
+    }
+
+    .world-button.active span {
+        font-size: 42px;
+        line-height: 55px; 
+    }
+
+
+
+/* ===== Dolny PANEL - 3 OKNÁ ===== */
+.side-panel {
+    width: 800px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    gap: 20px;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.panel-window, .pexeso-window, .miner-window {
+    min-height: 60px;
+    max-height: 80px;
+    max-width: 250px;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    justify-content: center;
+    border-radius: 24px;
+    padding: 0;
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
+}
+
+.window-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.stars-section {
+    display: flex;
+    align-items: flex-end;
+}
+
+.stars-section img {
+    display: flex;
+}
+
+.side-star img {
+    display: none;
+}
+
+.middle-star img {
+    display: flex;
+    width: 50px;
+    height: auto;
+}
+
+/* Štýly pre okno hviezd */
+.stars-window .window-content {
+    flex-direction: row; 
+    padding: 0px;
+}
+
+.stars-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stars-count {
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 40px;
+    color: #FFD700;
+    font-style: normal;
+    font-weight: 400;
+    -webkit-text-stroke: 1px #000;
+}
+
+.stars-total {
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 40px;
+    color: #FFF;
+    font-style: normal;
+    font-weight: 400;
+    -webkit-text-stroke: 1px #000;
+}
+
+/* Štýly pre cvičné tlačidlá */
+.practice-button {
+    width: 100%;
+    height: 100%;
+    background: none;
+    border: none;
+    border-radius: 10px;
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transition: all 0.4s ease;
+}
+
+.practice-button h2 {
+    color: #FFF;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    font-family: "Luckiest Guy";
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.practice-button h3 {
+    color: #FFF;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    font-family: "Luckiest Guy";
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+
+    background: conic-gradient(from 90deg at 50% 50%, #ECD517 0deg, #ECBB17 360deg);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.miner-window:hover {
+    box-shadow: inset 0 0 20px 2px rgba(236, 207, 23, 0.3);
+    border: 4px solid #ECCF17;
+    scale: 0.98;
+}
+
+.pexeso-window:hover {
+    box-shadow: inset 0 0 20px 2px rgba(236, 207, 23, 0.3);
+    border: 4px solid #ECCF17;
+    scale: 0.98;
+}
+
+.practice-icon {
+    display: none;
+}
+
+
+
+
+
+}
+
+/* Pre tablety a menšie obrazovky */
+@media (max-width: 1024px) {
+
+    /* ===== BACK BUTTON ===== */
+    .back-button {
+        position: absolute;
+        top: 10px;
+        left: 20px;
+        font-size: 35px;
+        font-weight: 400;
+        margin: 0;
+        padding: 0;
+    }
+
+    .main-container {
+        padding: 20px 20px 20px 20px; /* Top padding pre back button */
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .content-section {
+        flex: 0; /* Zaberie zvyšok miesta */
+        min-height: 0; /* Umožní flex itemom zmenšiť sa */
+        gap: 15px;
+    }
+
+    /* ===== HORNÁ SEKCIA - NAVIGÁCIA SVETOV ===== */
+    .worlds-navigation {
+        gap: 15px;
+        height: 60px; /* Fixná výška pre hornú sekciu */
+        margin-bottom: 5px;
+    }
+
+    /* Navigačné šípky - rovnaké ako v modáloch */
+    .nav-arrow {
+        background: none;
+        font-size: 38px;
+        height: 38px;
+        width: 38px;
+    }
+
+    .arrow-left {
+        border-top: 14px solid transparent;
+        border-bottom: 14px solid transparent;
+        border-right: 24px solid #FBDB68;
+    }
+
+    .arrow-right {
+        border-top: 14px solid transparent;
+        border-bottom: 14px solid transparent;
+        border-left: 24px solid #FBDB68;
+    }
+
+    /* Kontainer pre tlačidlá svetov */
+    .worlds-buttons-container {
+        gap: 28px;
+    }
+
+    /* Tlačidlá svetov - zatial základné štýly */
+    .world-button {
+        width: 200px;
+        height: 60px;
+    }
+
+    .world-button span{
+        font-size: 42px;
+        line-height: 60px; 
+    }
+
+    .world-button.active span {
+        font-size: 42px;
+        line-height: 55px; 
+    }
+
+
+    .side-panel {
+        width: 650px;
+    }
+
+    .panel-window, .pexeso-window, .miner-window {
+        min-height: 50px;
+        max-height: 70px;
+        display: flex;
+        border-radius: 30px;
+    }
+
+    .practice-button h2 {
+        font-size: 38px;
+    }
+
+    .practice-button h3 {
+        font-size: 38px;
+    }
+
+    .practice-icon {
+        width: 120px;
+        height: 120px;
+        display: none;
+    }
+
+    .stars-count, .stars-total {
+        font-size: 38px;
+    }
+
+    .side-star img {
+        width: 56px;
+        display: none;
+    }
+
+    .middle-star img {
+        width: 34px;
+    }
+
+    .stars-window .window-content {
+        flex-direction: row; 
+        padding: 0px;
+    }
+
+
+}
+
+/* Pre mobilné zariadenia */
+@media (max-width: 900px) {
+
+    .back-button {
+        position: absolute;
+        top: 5px;
+        left: 10px;
+        font-size: 24px;
+        font-weight: 400;
+        margin: 0;
+        padding: 0;
+    }
+
+    .main-container {
+        padding: 25px 20px 20px 20px; /* Top padding pre back button */
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .content-section {
+        flex: 0; /* Zaberie zvyšok miesta */
+        gap: 15px;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* ===== HORNÁ SEKCIA - NAVIGÁCIA SVETOV ===== */
+    .worlds-navigation {
+        gap: 15px;
+        height: 50px; /* Fixná výška pre hornú sekciu */
+        margin-bottom: 10px;
+    }
+
+    /* Navigačné šípky - rovnaké ako v modáloch */
+    .nav-arrow {
+        background: none;
+        font-size: 33px;
+        height: 33px;
+        width: 33px;
+    }
+
+    .arrow-left {
+        border-top: 12px solid transparent;
+        border-bottom: 12px solid transparent;
+        border-right: 16px solid #FBDB68;
+    }
+
+    .arrow-right {
+        border-top: 12px solid transparent;
+        border-bottom: 12px solid transparent;
+        border-left: 16px solid #FBDB68;
+    }
+
+    /* Kontainer pre tlačidlá svetov */
+    .worlds-buttons-container {
+        gap: 24px;
+    }
+
+    /* Tlačidlá svetov - zatial základné štýly */
+    .world-button {
+        width: 165px;
+        height: 50px;
+    }
+
+    .world-button span{
+        font-size: 35px;
+        line-height: 55px; 
+    }
+
+    .world-button.active span {
+        font-size: 33px;
+        line-height: 42px; 
+    }
+
+
+    .game-panel {
+        width: 600px;
+        height: 600px;
+        min-width: 600px;
+        min-height: 600px;
+        max-width: 600px;
+        max-height: 600px;
+    }
+
+    .game-panel-header {
+        height: 62px;
+    }
+
+    .game-panel-header h2 {
+        font-size: 36px;
+    }
+
+    .game-window {
+        width: 600px;
+        height: 530px;
+    }
+
+    .levels-grid {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .level-card {
+        width: 95px;
+        height: 79px;
+    }
+
+    .level-card h1 {
+        font-size: 40px;
+    }
+
+    .level-stars img {
+        width: 18px;
+        height: 18px;
+    }
+
+    .lock img {
+        width: 36px;
+    }
+
+    .side-panel {
+        width: 600px;
+        justify-content: center;
+        flex: 0;
+    }
+
+    .panel-window, .pexeso-window, .miner-window {
+        min-height: 45px;
+        max-height: 55px;
+        max-width: 180px;
+        min-width: 180px;
+        display: flex;
+        border-radius: 30px;
+        padding: 0;
+    }
+
+    .practice-button h2 {
+        font-size: 28px;
+    }
+
+    .practice-button h3 {
+        font-size: 28px;
+    }
+
+    .practice-icon {
+        display: none;
+    }
+
+    .stars-count, .stars-total {
+        font-size: 28px;
+    }
+
+    .side-star img {
+        display: none;
+    }
+
+    .middle-star img {
+        width: 24px;
+    }
+
+}
+
+@media (max-width: 670px) {
+    /* ===== BACK BUTTON ===== */
+    .back-button {
+        position: absolute;
+        top: 2px;
+        left: 10px;
+        font-size: 20px;
+        font-weight: 400;
+    }
+
+    .main-container {
+        padding: 35px 20px 20px 20px; /* Top padding pre back button */
+        gap: 0px;
+        justify-content: center;
+    }
+
+    .content-section {
+        flex: 0; /* Zaberie zvyšok miesta */
+        gap: 10px;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* ===== HORNÁ SEKCIA - NAVIGÁCIA SVETOV ===== */
+    .worlds-navigation {
+        gap: 10px;
+        height: 50px; /* Fixná výška pre hornú sekciu */
+        margin-bottom: 8px;
+    }
+
+    /* Navigačné šípky - rovnaké ako v modáloch */
+    .nav-arrow {
+        background: none;
+        font-size: 24px;
+        height: 24px;
+        width: 24px;
+    }
+
+    .arrow-left {
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        border-right: 12px solid #FBDB68;
+    }
+
+    .arrow-right {
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        border-left: 12px solid #FBDB68;
+    }
+
+    /* Kontainer pre tlačidlá svetov */
+    .worlds-buttons-container {
+        gap: 14px;
+    }
+
+    /* Tlačidlá svetov - zatial základné štýly */
+    .world-button {
+        width: 125px;
+        height: 40px;
+        padding: 0;
+    }
+
+    .world-button span{
+        font-size: 30px;
+        line-height: 0px; 
+    }
+
+    .world-button.active span {
+        font-size: 30px;
+        line-height: 0px; 
+        -webkit-text-stroke-width: 2px;
+    }
+
+    /* Aktívne tlačidlo sveta */
+    .world-button.active {
+        border: 3px solid #16B921;
+    }
+
+    .game-panel {
+        width: 450px;
+        height: 450px;
+        min-width: 450px;
+        min-height: 450px;
+        max-width: 450px;
+        max-height: 450px;
+    }
+
+    .game-panel-header {
+        height: 59px;
+    }
+
+    .game-panel-header h2 {
+        font-size: 32px;
+    }
+
+    .game-window {
+        width: 440px;
+        height: 411px;
+    }
+
+    .levels-grid {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .level-card {
+        width: 90px;
+        height: 75px;
+        border-radius: 14px;
+    }
+
+    .level-card h1 {
+        font-size: 38px;
+    }
+
+    .level-stars img {
+        width: 16px;
+        height: 16px;
+    }
+
+    .lock img {
+        width: 32px;
+    }
+
+    .side-panel {
+        width: 450px;
+        justify-content: center;
+        flex: 0;
+    }
+
+    .panel-window, .pexeso-window, .miner-window {
+        min-height: 35px;
+        max-height: 45px;
+        max-width: 120px;
+        min-width: 120px;
+        display: flex;
+        border-radius: 30px;
+        padding: 0;
+        border: 2px solid #AC3F0B;
+    }
+
+    .practice-button h2 {
+        font-size: 21px;
+    }
+
+    .practice-button h3 {
+        font-size: 21px;
+    }
+
+    .practice-icon {
+        display: none;
+    }
+
+    .stars-count, .stars-total {
+        font-size: 21px;
+    }
+
+    .side-star img {
+        display: none;
+    }
+
+    .middle-star img {
+        width: 20px;
+    }
+
+}
+
+/* Pre veľmi malé mobilné zariadenia */
+@media (max-width: 480px) {
+    /* ===== BACK BUTTON ===== */
+    .back-button {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        font-size: 18px;
+        font-weight: 400;
+    }
+
+    /* ===== HORNÁ SEKCIA - NAVIGÁCIA SVETOV ===== */
+    .worlds-navigation {
+        gap: 10px;
+        height: 50px; /* Fixná výška pre hornú sekciu */
+        margin-bottom: 8px;
+    }
+
+    /* Navigačné šípky - rovnaké ako v modáloch */
+    .nav-arrow {
+        background: none;
+        font-size: 24px;
+        height: 24px;
+        width: 24px;
+    }
+
+    .arrow-left {
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        border-right: 12px solid #FBDB68;
+    }
+
+    .arrow-right {
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        border-left: 12px solid #FBDB68;
+    }
+
+    /* Kontainer pre tlačidlá svetov */
+    .worlds-buttons-container {
+        gap: 14px;
+    }
+
+    /* Tlačidlá svetov - zatial základné štýly */
+    .world-button {
+        width: 50px;
+        height: 50px;
+        padding: 0;
+    }
+
+    .world-button span{
+        font-size: 30px;
+        line-height: 0px; 
+    }
+
+    .world-button.active span {
+        font-size: 30px;
+        line-height: 0px; 
+        -webkit-text-stroke-width: 2px;
+    }
+
+    /* Aktívne tlačidlo sveta */
+    .world-button.active {
+        border: 3px solid #16B921;
+    }
+
+
+
+    .main-container {
+        padding: 10px 0px 5px 0px; /* Top padding pre back button */
+        gap: 0px;
+        justify-content: center;
+    }
+
+    .content-section {
+        flex: 0; /* Zaberie zvyšok miesta */
+        gap: 10px;
+        width: 100%;
+        height: 100vh;
+    }
+
+    .game-panel {
+        width: calc(100vw - 20px);
+        height: calc(100vw - 20px);
+        min-width: 270px;
+        min-height: 270px;
+        max-width: 400px;
+        max-height: 400px;
+    }
+
+    .game-panel-header {
+        height: calc((100vw - 10px) * 0.125);
+        min-height: 35px;
+        max-height: 47px;
+    }
+
+    .game-panel-header h2 {
+        font-size: 24px;
+    }
+
+    .game-window {
+        width: 100%;
+        height: calc((100vw - 10px) * 0.875);
+        min-height: 245px;
+        max-height: 333px;
+    }
+
+    .levels-grid {
+        padding: 8px;
+        gap: 6px;
+    }
+
+    .level-card {
+        width: calc((100vw - 40px) / 4);
+        height: calc((100vw - 40px) / 4 * 0.8);
+        min-width: 60px;
+        min-height: 48px;
+        max-width: 80px;
+        max-height: 64px;
+        border: 2px solid #AC3F0B;
+    }
+
+    .level-card h1 {
+        font-size: 26px;
+    }
+
+    .level-stars img {
+        width: 12px;
+        height: 12px;
+    }
+
+    .lock img {
+        width: 24px;
+    }
+
+
+
+    .side-panel {
+        width: 250px;
+        justify-content: center;
+        flex: 0;
+        gap: 5px;
+    }
+
+    .panel-window, .pexeso-window, .miner-window {
+        min-height: 35px;
+        max-height: 45px;
+        max-width: 80px;
+        min-width: 80px;
+        display: flex;
+        border-radius: 30px;
+        padding: 0;
+        border: 2px solid #AC3F0B;
+    }
+
+    .practice-button h2 {
+        font-size: 16px;
+    }
+
+    .practice-button h3 {
+        font-size: 16px;
+    }
+
+    .practice-icon {
+        display: none;
+    }
+
+    .stars-count, .stars-total {
+        font-size: 16px;
+    }
+
+    .side-star img {
+        display: none;
+    }
+
+    .middle-star img {
+        width: 16px;
+    }
+
+}
+
+@media (max-width: 290px) {
+    /* ===== BACK BUTTON ===== */
+    .back-button {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        font-size: 18px;
+        font-weight: 400;
+    }
+
+    /* ===== HORNÁ SEKCIA - NAVIGÁCIA SVETOV ===== */
+    .worlds-navigation {
+        gap: 4px;
+        height: 50px; /* Fixná výška pre hornú sekciu */
+        margin-bottom: 0px;
+    }
+
+    /* Navigačné šípky - rovnaké ako v modáloch */
+    .nav-arrow {
+        background: none;
+        font-size: 24px;
+        height: 24px;
+        width: 24px;
+    }
+
+    .arrow-left {
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        border-right: 12px solid #FBDB68;
+    }
+
+    .arrow-right {
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        border-left: 12px solid #FBDB68;
+    }
+
+    /* Kontainer pre tlačidlá svetov */
+    .worlds-buttons-container {
+        gap: 8px;
+    }
+
+    /* Tlačidlá svetov - zatial základné štýly */
+    .world-button {
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        justify-items: center;
+        align-items: center;
+    }
+
+    .world-button span{
+        font-size: 20px;
+        line-height: 0px; 
+        padding-top: -10px;
+    }
+
+    .world-button.active span {
+        font-size: 20px;
+        line-height: 0px; 
+        -webkit-text-stroke-width: 2px;
+    }
+
+    /* Aktívne tlačidlo sveta */
+    .world-button.active {
+        border: 3px solid #16B921;
+    }
+
+
+
+    .main-container {
+        padding: 5px 0px 2px 0px; /* Top padding pre back button */
+        gap: 0px;
+        justify-content: center;
+    }
+
+    .content-section {
+        flex: 0; /* Zaberie zvyšok miesta */
+        gap: 5px;
+        width: 100%;
+        height: 100vh;
+    }
+
+    .game-panel {
+        width: calc(100vw - 30px);
+        height: calc(100vw - 30px);
+        min-width: 170px;
+        min-height: 170px;
+        max-width: 270px;
+        max-height: 270px;
+    }
+
+    .game-panel-header {
+        height: calc((100vw - 10px) * 0.125);
+        min-height: 25px;
+        max-height: 30px;
+    }
+
+    .game-panel-header h2 {
+        font-size: 16px;
+    }
+
+    .game-window {
+        width: 100%;
+        height: calc((100vw - 10px) * 0.875);
+        min-height: 245px;
+        max-height: 333px;
+    }
+
+    .levels-grid {
+        padding: 4px;
+        gap: 4px;
+    }
+
+    .level-card {
+        width: calc((100vw - 40px) / 4);
+        height: calc((100vw - 40px) / 4 * 0.8);
+        min-width: 50px;
+        min-height: 38px;
+        max-width: 60px;
+        max-height: 44px;
+        border: 1px solid #AC3F0B;
+        border-radius: 8px;
+    }
+
+    .level-card h1 {
+        font-size: 18px;
+    }
+
+    .level-stars img {
+        width: 8px;
+        height: 8px;
+    }
+
+    .lock img {
+        width: 18px;
+    }
+
+
+
+    .side-panel {
+        width: 180px;
+        justify-content: center;
+        flex: 0;
+        gap: 5px;
+    }
+
+    .panel-window, .pexeso-window, .miner-window {
+        min-height: 20px;
+        max-height: 30px;
+        max-width: 50px;
+        min-width: 50px;
+        display: flex;
+        border-radius: 12px;
+        padding: 0;
+        border: 2px solid #AC3F0B;
+    }
+
+    .practice-button h2 {
+        font-size: 8px;
+    }
+
+    .practice-button h3 {
+        font-size: 8px;
+    }
+
+    .practice-icon {
+        display: none;
+    }
+
+    .stars-display{
+        gap:0px;
+    }
+
+    .stars-count, .stars-total {
+        font-size: 8px;
+        gap: 0px;
+        padding: 0px;
+    }
+
+    .side-star img {
+        display: none;
+    }
+
+    .middle-star img {
+        width: 8px;
+    }
+}
