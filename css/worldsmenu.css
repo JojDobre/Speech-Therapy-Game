@@ -48,8 +48,15 @@ body {
 
 
 
-
-/* ===== LOADING ===== */
+/* ====================================
+/                                     /
+/                                     /
+/                                     /
+            LOADING PAGE
+/                                     /
+/                                     /
+/                                     /
+==================================== */
 .loading-screen {
     position: fixed;
     top: 0;
@@ -160,7 +167,16 @@ body {
     gap: 20px;
 }
 
-/* ===== HORNÁ SEKCIA - NAVIGÁCIA SVETOV ===== */
+/* ====================================
+/                                     /
+/                                     /
+/                                     /
+            HORNÁ SEKCIA
+            WORLDS MENU
+/                                     /
+/                                     /
+/                                     /
+==================================== */
 .worlds-navigation {
     display: flex;
     align-items: center;
@@ -251,51 +267,39 @@ body {
 .world-z {
     background-image: url(../images/worlds/world_z.jpg);
 }
-
 .world-s {
     background-image: url(../images/worlds/world_s.png);
 }
-
 .world-r {
     background-image: url(../images/worlds/world_r.png);
 }
-
 .world-l {
     background-image: url(../images/worlds/world_l.png);
 }
-
 .world-c {
     background-image: url(../images/worlds/world_c.png);
 }
-
 .world-š {
     background-image: url(../images/worlds/world_sh.png);
 }
-
 .world-ž {
     background-image: url(../images/worlds/world_zh.png);
 }
-
 .world-č {
     background-image: url(../images/worlds/world_ch.png);
 }
-
 .world-d {
     background-image: url(../images/worlds/world_d.png);
 }
-
 .world-t {
     background-image: url(../images/worlds/world_t.png);
 }
-
 .world-n {
     background-image: url(../images/worlds/world_n.png);
 }
-
 .world-k {
     background-image: url(../images/worlds/world_k.png);
 }
-
 .world-g {
     background-image: url(../images/worlds/world_g.png);
 }
@@ -334,20 +338,16 @@ body {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* ===== DOLNÁ SEKCIA - OBSAH ===== */
+/* ====================================
+/                                     /
+/                                     /
+/                                     /
+            DOLNA SEKCIA
+        Štýly pre level window
+/                                     /
+/                                     /
+/                                     /
+==================================== */
 .content-section {
     display: flex;
     justify-content: center;
@@ -497,51 +497,39 @@ body {
 .game-panel.world-z-bg {
     background-image: url(../images/worlds/world_z.jpg);
 }
-
 .game-panel.world-s-bg {
     background-image: url(../images/worlds/world_s.png);
 }
-
 .game-panel.world-r-bg {
     background-image: url(../images/worlds/world_r.png);
 }
-
 .game-panel.world-l-bg {
     background-image: url(../images/worlds/world_l.png);
 }
-
 .game-panel.world-c-bg {
     background-image: url(../images/worlds/world_c.png);
 }
-
 .game-panel.world-š-bg {
     background-image: url(../images/worlds/world_sh.png);
 }
-
 .game-panel.world-ž-bg {
     background-image: url(../images/worlds/world_zh.png);
 }
-
 .game-panel.world-č-bg {
     background-image: url(../images/worlds/world_ch.png);
 }
-
 .game-panel.world-d-bg {
     background-image: url(../images/worlds/world_d.png);
 }
-
 .game-panel.world-t-bg {
     background-image: url(../images/worlds/world_t.png);
 }
-
 .game-panel.world-n-bg {
     background-image: url(../images/worlds/world_n.png);
 }
-
 .game-panel.world-k-bg {
     background-image: url(../images/worlds/world_k.png);
 }
-
 .game-panel.world-g-bg {
     background-image: url(../images/worlds/world_g.png);
 }
@@ -565,29 +553,16 @@ body {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* ===== PRAVÝ PANEL - 3 OKNÁ ===== */
+/* ====================================
+/                                     /
+/                                     /
+/                                     /
+            SIDE PANEL
+        Štýly pre side windows
+/                                     /
+/                                     /
+/                                     /
+==================================== */
 .side-panel {
     width: 300px;
     height: 800px;
@@ -610,7 +585,6 @@ body {
 
 .pexeso-window {
     flex: 1; /* Každé okno zaberie rovnaký priestor */
-    border: 4px solid #ECCF17;
     background: url('../images/worlds/world_g.png') lightgray 50% / cover no-repeat;
     border-radius: 10px;
     display: flex;
@@ -625,7 +599,6 @@ body {
 
 .miner-window {
     flex: 1; /* Každé okno zaberie rovnaký priestor */
-    border: 4px solid #ECCF17;
     background: url('../images/worlds/background.png') lightgray 50% / cover no-repeat;
     border-radius: 10px;
     display: flex;
@@ -773,29 +746,15 @@ body {
     object-fit: contain;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* ====================================
+/                                     /
+/                                     /
+/                                     /
    LEVEL DETAIL MODAL - CSS ŠTÝLY
    Štýly pre modal s detailami levelu
+/                                     /
+/                                     /
+/                                     /
 ==================================== */
 
 /* Overlay modalu */
@@ -1053,10 +1012,15 @@ body {
 
 
 
-
-
-
-/* ===== RESPONZÍVNE ŠTÝLY ===== */
+/* ====================================
+/                                     /
+/                                     /
+/                                     /
+        RESPONZÍVNE ŠTYLY
+/                                     /
+/                                     /
+/                                     /
+==================================== */
 @media (max-width: 1100px) {
     /* ===== BACK BUTTON ===== */
     .back-button {

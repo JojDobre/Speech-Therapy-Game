@@ -1,306 +1,181 @@
 <!DOCTYPE html>
-<html lang="sk">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <meta name="description" content="Logopedická hra pre najmenších">
-  <meta name="author" content="Adam Reňak">
-  <meta name="keywords" content="Adam Reňak, Joj_Dobre, Bakalárska práca, Logopedická hra,">
-  <title>Baníkovo dobrodružstvo: Rozvíjanie reči - Bakalárska práca</title>
-  <link rel="stylesheet" type="text/css" href="index.css" />
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="description" content="Logopedická hra pre najmenších">
+    <meta name="author" content="Adam Reňak">
+    <meta name="keywords" content="Adam Reňak, Joj_Dobre, Diplomová práca, Logopedická hra, TUKE">
+    <title>Baník Jožino: Logopedická hra - Diplomová práca</title>
+    <link rel="stylesheet" type="text/css" href="css/miner.css" />
 
-  <link rel="icon" type="image/png" href="images/banik.ico">
-  <link rel="shortcut icon" href="images/icons/banik.ico">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+    <!-- Načítanie fontu Luckiest Guy z Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
 
-  <style>
-  canvas {
-    display: block;
-    margin: 0 auto;
-    border: 1px solid #000;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  /* Nový štýl pre navigáciu */
-  .game-navigation {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    z-index: 1000;
-    display: flex;
-    gap: 10px;
-  }
-  
-  .nav-button {
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 12px;
-    transition: background 0.3s ease;
-  }
-  
-  .nav-button:hover {
-    background: rgba(0, 0, 0, 0.9);
-  }
-  
-  /* Level info panel */
-  .level-info-panel {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-family: 'MPLUSRounded1c-Medium', Arial, sans-serif;
-    font-size: 14px;
-    z-index: 1000;
-    border: 2px solid #4CAF50;
-  }
-  
-  .level-info-panel h3 {
-    margin: 0 0 5px 0;
-    font-size: 16px;
-    color: #4CAF50;
-  }
-  
-  .level-info-panel p {
-    margin: 2px 0;
-    font-size: 12px;
-  }
-  </style>
-</head>
-<body>
-  <!-- Navigácia -->
-  <div class="game-navigation">
-    <button class="nav-button" onclick="pauseGame()" id="pauseBtn">⏸️ Pauza</button>
-    <button class="nav-button" onclick="returnToLevelSelector()">← Späť</button>
-    <button class="nav-button" onclick="restartLevel()">🔄 Restart</button>
-  </div>
+    <link rel="icon" type="image/png" href="images/banik.ico">
+    <link rel="shortcut icon" href="images/icons/banik.ico">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+  </head>
 
-  <!-- Info panel o leveli -->
-  <div class="level-info-panel" id="levelInfoPanel" style="display: none;">
-    <h3 id="levelTitle">Level 1</h3>
-    <p>Svet: <span id="worldName">R</span></p>
-    <p>Typ: <span id="gameType">Baník</span></p>
-    <p id="timeDisplay" style="display: none;">Čas: <span id="timeValue">0:00</span></p>
-  </div>
+  <body>
 
-  <!-- Hlavná hra -->
-  <div class="hra">
-   <div class="menu-hra">
-    <button onclick="openDialog1()" class="kruhove-tlacidlo" id="menuButton"></button>
+    <!-- LOADING -->
+    <div id="loading-screen" class="loading-screen">
+      <div class="loading-content">
+          <div class="loading-logo">
+              <div class="loading-text-jozino">JOŽINO</div>
+              <div class="loading-text-banik">BANÍK</div>
+          </div>
+          <div class="loading-spinner"></div>
+          <div class="loading-message">Načítavam...</div>
+      </div>
+    </div>
+
+    <div class="menu-hra">
+      <button onclick="openDialog1()" class="kruhove-tlacidlo" id="menuButton"></button>
+    </div>
+
+    <!-- GAME -->
+    <div class="hra">
+      <div class="game-window">
+        <canvas id="gameCanvas" width="800" height="800"></canvas>
+      </div>
+
+      <div class="stats-menu">
+        <div class="window">
+          <div class="logo-container">
+            <div class="logo-text">
+              <div class="text-jozino">JOŽINO</div>
+              <div class="text-banik">BANÍK</div>
+            </div>
+          </div>
+          <div class="stats">
+            <div>
+              <a>Čas: </a>
+              <span>02:43</span>
+            </div>
+            <div>
+              <a>Slová: </a>
+              <span>4 <img src="images/spravne.png"></span>
+              <span> / </span>
+              <span>4 <img src="images/nespravne.png"></span>
+            </div>
+          </div>
+        </div>
+        <div class="menu-golds">
+          <h1>Zlato</h1>
+          <div class="golds-container"></div>
+        </div>
+        <div class="menu-diamonds">
+          <h1>Kryštály</h1>
+          <div class="diamonds-container"></div>
+        </div>
+        <div class="menu-kov">
+          <h1>Diamanty</h1>
+          <div class="kov-container"></div>
+        </div>
+      </div>
+
+      <!-- Akčné tlačidlo vľavo -->
+      <div class="controls-section">
+        <div class="action-controls">
+          <button class="action-button" data-action="dig">⛏</button>
+        </div>
+
+        <!-- Virtual joystick vpravo -->
+        <div class="joystick-controls">
+          <div class="virtual-joystick" id="virtualJoystick">
+            <div class="joystick-base"></div>
+            <div class="joystick-knob" id="joystickKnob"></div>
+            <div class="joystick-debug" id="joystickDebug">0, 0</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
     
-    <div class="menu-golds">
-      <h1></h1><div class="golds-container"></div>
-    </div>
-    <div class="menu-diamonds">
-      <h1></h1><div class="diamonds-container"></div>
-    </div>
-    <div class="menu-kov">
-      <h1></h1><div class="kov-container"></div>
-    </div>
-   </div>
-   <canvas id="gameCanvas" width="800" height="800"></canvas>
-  </div>
-  
-  <!-- Rečové cvičenie -->
-  <div id="cvicenie" class="cvicenie">
-    <div id="vysledok" class="vysledok"></div>
-    <div class="cvicenie-content">
-      <center><img id="cvicenie-image" src="images/slova/traktor.png" alt="Obrázok" style="width: 240px; height: auto; display: block; margin-top: 20px; "></center>
-      <p class="cvicenie-text" id="word-display" style="text-align: center;">TRAKTOR</p>
-      <center><button id="rozpoznanie" class="tlacidlo">KLIKNITE PRE NAHRÁVANIE</button></center>
-    </div>
-  </div>
-
-  <!-- Posluchové cvičenie -->
-  <div id="zvuky" class="cvicenie">
-    <div class="cvicenie-content-2">
-      <h1>ROZPOZNAJ SLOVÁ</h1>
-      <p>Sú slová rovnaké?</p>
-      <div id="buttonsContainer"></div>
-    </div>
-  </div>
-
-  <!-- End game dialog - Aktualizovaný pre level systém -->
-  <div id="endgame" class="cvicenie">
-    <div class="cvicenie-content">
-      <p>VYHRAL SI HRU!</p>
-      <p style="font-size: 20px;">Chceš pokračovať?</p>
-      <div class="gameend">
-        <!-- Tlačidlá sa vygenerujú dynamicky cez JavaScript v completeLevel() -->
+    <div id="cvicenie" class="modal">
+      <div class="execise-window">
+        <div id="vysledok" class="vysledok"></div>
+        <div class="cvicenie-content">
+          <div class="cvicenie-text"><p id="word-display">TRAKTOR</p></div>
+          <div class="cvicenie-text"><img id="cvicenie-image" src="images/slova/traktor.png"></div>
+          <div class="tlacidlo"><button id="rozpoznanie"><a>HOVORIŤ</a></button></div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Menu dialog -->
-  <div id="dialogove-okno" class="dialogove-okno">
-    <div class="dialogove-okno-content">
-      <span class="close" onclick="closeDialog1()">&times;</span>
-      <div class="menu-buttons">
-        <button class="nav-button" onclick="returnToLevelSelector()" style="margin: 10px; padding: 15px 25px; font-size: 16px; display: block; width: 200px;">
-          🏠 Späť na levely
-        </button>
-        <button class="nav-button" onclick="restartLevel()" style="margin: 10px; padding: 15px 25px; font-size: 16px; display: block; width: 200px;">
-          🔄 Restart level
-        </button>
-        <button class="nav-button" onclick="returnToWorldsMenu()" style="margin: 10px; padding: 15px 25px; font-size: 16px; display: block; width: 200px;">
-          🌍 Menu svetov
-        </button>
+    <div id="zvuky" class="cvicenie">
+      <div class="execise-window">
+        <div class="cvicenie-content-2">
+          <h1>ROZPOZNAJ SLOVÁ</h1>
+          <p>Sú slová rovnaké?</p>
+          <div id="buttonsContainer"></div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Mobilné ovládanie -->
-  <div class="joystick">
-    <div id="pickaxe" class="tool">🪓</div>
-  </div>
-  
-  <div class="controls">
-    <div id="up" class="arrow">&#9650;</div>
-    <div id="left" class="arrow">&#9664;</div>
-    <div id="down" class="arrow">&#9660;</div>
-    <div id="right" class="arrow">&#9654;</div>
-  </div>
+    <div id="endgame" class="cvicenie">
+      <div class="execise-window">
+        <div class="cvicenie-content-2">
+          <h1>VYHRAL SI HRU!</h1>
+          <p style="margin-top: -20px;">Chceš hrať znova?</p>
+          <div class="stats">
+            <div>
+              <a>Čas: </a>
+              <span>02:43</span>
+            </div>
+            <div>
+              <a>Slová: </a>
+              <span>4 <img src="images/spravne.png"></span>
+              <span> / </span>
+              <span>4 <img src="images/nespravne.png"></span>
+            </div>
+          </div>
+          <div id="modal-stars" class="modal-stars"></div>
+          <div class="gameend">
+            <nav class="main-menu">
+              <ul>
+                <li><a href="game.html" alt="Reštart" class="menu-button">Hrať znova</a></li>
+                <li><a href="worldsmenu.html" alt="Koniec" class="menu-button">Koniec</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  <!-- Blur pozadie -->
+    <div id="dialogove-okno" class="dialogove-okno">
+      <div class="execise-window">
+        <span class="close" onclick="closeDialog1()">&times;</span>
+        <nav class="main-menu">
+            <ul>
+                <li><a href="game.html" alt="Reštart" class="menu-button">Reštart</a></li>
+                <li><a href="worldsmenu.html" alt="Koniec" class="menu-button">Koniec</a></li>
+                <li><a href="menu.html" alt="Menu" class="menu-button">Menu</a></li>
+            </ul>
+        </nav>
+      </div>
+    </div>
+
   <div id="blur-background"></div>
-
-  <!-- JavaScript súbory - v správnom poradí -->
-  <!-- Bezpečné načítanie config súborov -->
+  <script src="js/game.js"></script>
   <script>
-    // Pomocná funkcia pre bezpečné načítanie skriptov
-    function loadScript(src) {
-      return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = src;
-        script.onload = resolve;
-        script.onerror = () => {
-          console.log(`Súbor ${src} sa nepodarilo načítať`);
-          resolve(); // Pokračuj aj pri chybe
-        };
-        document.head.appendChild(script);
-      });
-    }
-
-    // Načítaj config súbory ak existujú
-    Promise.all([
-      loadScript('config/worlds.js'),
-      loadScript('config/levels.js'),
-      loadScript('js/managers/progressManager.js'),
-      loadScript('js/managers/gameRouter.js')
-    ]).then(() => {
-      console.log('Config súbory načítané (alebo preskočené)');
-      
-      // Načítaj hlavnú hru až po config súboroch
-      loadScript('js/game.js').then(() => {
-        console.log('Hra načítaná');
-      });
-    });
-  </script>
-
-  <script>
-    // Menu funkcie
     function openDialog1() {
-      document.getElementById("dialogove-okno").style.display = "block";
-      document.getElementById("blur-background").style.display = "block";
-      document.body.classList.add("dialog-open");
-      document.body.style.overflow = "hidden";
-    }
+    document.getElementById("dialogove-okno").style.display = "block";
+    document.getElementById("blur-background").style.display = "block";
+    document.body.classList.add("dialog-open");
+    document.body.style.overflow = "hidden"; // Zabrániť posúvaniu stránky
+  }
 
-    function closeDialog1() {
-      document.getElementById("dialogove-okno").style.display = "none";
-      document.getElementById("blur-background").style.display = "none";
-      document.body.classList.remove("dialog-open");
-      document.body.style.overflow = "auto";
-    }
-
-    // Pauza hry
-    function pauseGame() {
-      if (window.gameState) {
-        window.gameState.isPaused = !window.gameState.isPaused;
-        const pauseBtn = document.getElementById('pauseBtn');
-        if (window.gameState.isPaused) {
-          pauseBtn.textContent = '▶️ Pokračovať';
-          pauseBtn.style.backgroundColor = '#4CAF50';
-        } else {
-          pauseBtn.textContent = '⏸️ Pauza';
-          pauseBtn.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-        }
-      }
-    }
-
-    // Aktualizácia level info panelu
-    function updateLevelInfoPanel() {
-      if (window.gameState && window.gameState.levelConfig) {
-        const panel = document.getElementById('levelInfoPanel');
-        const levelConfig = window.gameState.levelConfig;
-        const worldConfig = window.gameState.worldConfig;
-        
-        document.getElementById('levelTitle').textContent = levelConfig.name || 'Level';
-        
-        if (worldConfig) {
-          document.getElementById('worldName').textContent = worldConfig.title || worldConfig.name || 'Svet';
-        }
-        
-        document.getElementById('gameType').textContent = 'Baník';
-        
-        // Zobraz časový limit ak existuje
-        if (levelConfig.timeLimit) {
-          const timeDisplay = document.getElementById('timeDisplay');
-          timeDisplay.style.display = 'block';
-          
-          // Spusti aktualizáciu času
-          setInterval(() => {
-            if (window.getCurrentGameTime) {
-              const time = window.getCurrentGameTime();
-              const minutes = Math.floor(time / 60);
-              const seconds = time % 60;
-              document.getElementById('timeValue').textContent = 
-                `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            }
-          }, 1000);
-        }
-        
-        panel.style.display = 'block';
-      }
-    }
-
-    // Spusti aktualizáciu panelu po načítaní hry
-    document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => {
-        updateLevelInfoPanel();
-      }, 2000); // Počkaj kým sa načíta level config
-    });
-
-    // Skrytie level info panelu po kliknutí
-    document.getElementById('levelInfoPanel')?.addEventListener('click', function() {
-      this.style.display = 'none';
-    });
-
-    // Debug funkcie pre testovanie
-    window.addEventListener('keydown', (e) => {
-      // Ctrl+L pre zobrazenie level info
-      if (e.ctrlKey && e.key === 'l') {
-        e.preventDefault();
-        console.log('Level Config:', window.gameState?.levelConfig);
-        console.log('World Config:', window.gameState?.worldConfig);
-        console.log('Current Level Words:', window.currentLevelWords);
-      }
-      
-      // Ctrl+W pre simuláciu výhry
-      if (e.ctrlKey && e.key === 'w') {
-        e.preventDefault();
-        if (window.completeLevel) {
-          window.completeLevel();
-        }
-      }
-    });
+  function closeDialog1() {
+    document.getElementById("dialogove-okno").style.display = "none";
+    document.getElementById("blur-background").style.display = "none";
+    document.body.classList.remove("dialog-open");
+    document.body.style.overflow = "auto"; // Povoliť posúvanie stránky
+  }
   </script>
-</body>
+  </body>
 </html>

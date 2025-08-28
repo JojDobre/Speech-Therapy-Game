@@ -1,333 +1,301 @@
-// =====================================
-// LEVEL SYSTÉM - NOVÉ FUNKCIE
-// =====================================
+// ===== VIRTUAL JOYSTICK FUNKCIONALITA =====
 
-// Level konfigurácia
-let levelConfig = null;
-let currentLevelWords = [];
-let gameStats = {
-    wrongSpeechAttempts: 0, // Počet zlých vyslovení
-    totalSpeechExercises: 0, // Celkový počet rečových cvičení
-    startTime: null,
-    gameTime: 0,
-    isRunning: false
-};
+// Premenné pre virtual joystick
+let joystickActive = false;
+let joystickCenter = { x: 0, y: 0 };
+let joystickKnob = null;
+let joystickBase = null;
+let joystickContainer = null;
+let joystickRadius = 45; // Polomer pohybu knobu
+let lastMoveTime = 0;
+const moveDelay = 150; // Delay medzi pohybmi v ms
 
-let gameState = {
-    isPaused: false,
-    levelConfig: null,
-    worldConfig: null,
-    startTime: null,
-    gameTime: 0,
-    isRunning: false
-};
-window.gameState = gameState;
+// Inicializácia joysticku po načítaní DOM
+document.addEventListener('DOMContentLoaded', function() {
+    initVirtualJoystick();
+});
 
-// Inicializácia level systému
-function initializeGameWithLevel() {
-    console.log('Inicializujem level systém...');
+function initVirtualJoystick() {
+    joystickContainer = document.querySelector('.virtual-joystick');
+    joystickKnob = document.querySelector('.joystick-knob');
+    joystickBase = document.querySelector('.joystick-base');
     
-    // Pokús sa načítať z gameRouter
-    if (window.gameRouter && typeof window.gameRouter.initializeGameWithLevel === 'function') {
-        try {
-            levelConfig = window.gameRouter.initializeGameWithLevel();
-            if (levelConfig) {
-                gameState.levelConfig = levelConfig;
-                console.log('Level config načítaný z gameRouter:', levelConfig);
-            }
-        } catch (error) {
-            console.warn('Chyba s gameRouter:', error);
-        }
-    }
+    if (!joystickContainer || !joystickKnob) return;
     
-    // Ak nie je gameRouter, skús z URL
-    if (!levelConfig) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const levelId = urlParams.get('level');
-        const worldId = urlParams.get('world');
-        
-        console.log('Trying URL params - levelId:', levelId, 'worldId:', worldId);
-        
-        if (levelId && typeof getLevelConfig === 'function') {
-            try {
-                levelConfig = getLevelConfig(levelId);
-                if (levelConfig) {
-                    gameState.levelConfig = levelConfig;
-                    console.log('Level config načítaný z URL:', levelConfig);
-                }
-            } catch (error) {
-                console.warn('Chyba pri načítaní level config:', error);
-            }
-        }
-        
-        if (worldId && typeof getWorldConfig === 'function') {
-            try {
-                gameState.worldConfig = getWorldConfig(worldId);
-                console.log('World config načítaný:', gameState.worldConfig);
-            } catch (error) {
-                console.warn('Chyba pri načítaní world config:', error);
-            }
-        }
-    }
+    // Získanie centra joysticku
+    const rect = joystickContainer.getBoundingClientRect();
+    joystickCenter.x = rect.width / 2;
+    joystickCenter.y = rect.height / 2;
     
-    // Defaultné nastavenie ak sa nič nenačítalo
-    if (!levelConfig) {
-        console.warn('Žiadny level config nenačítaný, vytváram defaultný');
-        levelConfig = {
-            id: 'default_level',
-            name: 'Testovací level',
-            words: ["ROBOT", "RAKETA", "RYBA", "RUŽA", "RUKA"],
-            diamonds: 3,
-            golds: 4,
-            crystals: 1,
-            timeLimit: null,
-            gameType: 'banik'
-        };
-        gameState.levelConfig = levelConfig;
-        console.log('Používam defaultný level config');
-    }
+    // Event listenery pre touch
+    joystickKnob.addEventListener('touchstart', handleTouchStart, { passive: false });
+    joystickKnob.addEventListener('touchmove', handleTouchMove, { passive: false });
+    joystickKnob.addEventListener('touchend', handleTouchEnd, { passive: false });
     
-    // Aplikuj level config
-    applyLevelConfig(levelConfig);
-    console.log('Level systém inicializovaný');
-    console.log('Final levelConfig:', levelConfig);
-    console.log('Final currentLevelWords:', currentLevelWords);
-    
-    return levelConfig;
+    // Event listenery pre mouse (testovanie na desktop)
+    joystickKnob.addEventListener('mousedown', handleMouseStart);
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseEnd);
 }
 
-// Aplikovanie level konfigurácie
-function applyLevelConfig(config) {
-    if (!config) {
-        console.warn('Žiadny config na aplikovanie');
-        return;
-    }
-    
-    PocetGenDiamant = config.diamonds || 3;
-    PocetGenGolds = config.golds || 4;
-    PocetGenKov = config.crystals || 1;
-    currentLevelWords = [...(config.words || ["ROBOT", "RAKETA", "RYBA"])];
-    
-    console.log(`Level nastavený: ${PocetGenDiamant} diamantov, ${PocetGenGolds} zlatých, ${PocetGenKov} kryštálov`);
-    console.log('Slová na precvičovanie:', currentLevelWords);
-    
-    // Vyexportuj pre debug
-    window.currentLevelWords = currentLevelWords;
+// Touch start
+function handleTouchStart(e) {
+    e.preventDefault();
+    joystickActive = true;
+    joystickContainer.classList.add('active');
 }
 
-// Časovač hry
-function startGameTimer() {
-    gameStats.startTime = Date.now();
-    gameStats.isRunning = true;
-    gameState.startTime = Date.now();
-    gameState.isRunning = true;
+// Touch move
+function handleTouchMove(e) {
+    e.preventDefault();
+    if (!joystickActive) return;
     
-    console.log('Časovač spustený');
+    const touch = e.touches[0];
+    const rect = joystickContainer.getBoundingClientRect();
+    const x = touch.clientX - rect.left - joystickCenter.x;
+    const y = touch.clientY - rect.top - joystickCenter.y;
     
-    if (levelConfig && levelConfig.timeLimit) {
-        console.log('Nastavený časový limit:', levelConfig.timeLimit, 'sekúnd');
+    updateJoystickPosition(x, y);
+}
+
+// Touch end
+function handleTouchEnd(e) {
+    e.preventDefault();
+    resetJoystick();
+}
+
+// Mouse start (pre testovanie)
+function handleMouseStart(e) {
+    e.preventDefault();
+    joystickActive = true;
+    joystickContainer.classList.add('active');
+}
+
+// Mouse move
+function handleMouseMove(e) {
+    if (!joystickActive) return;
+    
+    const rect = joystickContainer.getBoundingClientRect();
+    const x = e.clientX - rect.left - joystickCenter.x;
+    const y = e.clientY - rect.top - joystickCenter.y;
+    
+    updateJoystickPosition(x, y);
+}
+
+// Mouse end
+function handleMouseEnd(e) {
+    resetJoystick();
+}
+
+// Aktualizácia pozície knobu a pohyb hráča
+function updateJoystickPosition(x, y) {
+    // Obmedz pohyb v kruhu
+    const distance = Math.sqrt(x * x + y * y);
+    const maxDistance = joystickRadius;
+    
+    if (distance > maxDistance) {
+        x = (x / distance) * maxDistance;
+        y = (y / distance) * maxDistance;
+    }
+    
+    // Aktualizuj pozíciu knobu
+    joystickKnob.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+    
+    // Pohyb hráča na základe pozície joysticku
+    const currentTime = Date.now();
+    if (currentTime - lastMoveTime > moveDelay) {
+        handleJoystickMovement(x, y);
+        lastMoveTime = currentTime;
+    }
+}
+
+// Spracovanie pohybu hráča
+function handleJoystickMovement(x, y) {
+    const threshold = 15; // Minimálna vzdialenosť pre aktiváciu pohybu
+    const distance = Math.sqrt(x * x + y * y);
+    
+    if (distance < threshold) return;
+    
+    // Určenie smeru na základe uhla
+    const angle = Math.atan2(y, x) * (180 / Math.PI);
+    let direction = '';
+    
+    if (angle >= -45 && angle <= 45) {
+        direction = 'right';
+    } else if (angle > 45 && angle <= 135) {
+        direction = 'down';
+    } else if (angle > 135 || angle <= -135) {
+        direction = 'left';
+    } else if (angle > -135 && angle < -45) {
+        direction = 'up';
+    }
+    
+    // Vykonaj pohyb
+    movePlayer(direction);
+}
+
+// Pohyb hráča (používa existujúcu logiku)
+function movePlayer(direction) {
+    const newPlayerX = playerX;
+    const newPlayerY = playerY;
+    
+    switch (direction) {
+        case 'up':
+            if (playerY - blockSize >= 0) {
+                playerY -= blockSize;
+                playerRotation = 0;
+                playerDirection = 'front';
+            }
+            break;
+        case 'left':
+            if (playerX - blockSize >= 0) {
+                playerX -= blockSize;
+                playerRotation = 270;
+                playerDirection = 'vlavo';
+            }
+            break;
+        case 'down':
+            if (playerY + blockSize < 800) {
+                playerY += blockSize;
+                playerRotation = 180;
+                playerDirection = 'front';
+            }
+            break;
+        case 'right':
+            if (playerX + blockSize < 800) {
+                playerX += blockSize;
+                playerRotation = 90;
+                playerDirection = 'vpravo';
+            }
+            break;
+    }
+    
+    // Kontrola kolízií (použije existujúcu logiku)
+    checkCollisions(newPlayerX, newPlayerY);
+}
+
+// Kontrola kolízií (extrahované z pôvodného kódu)
+function checkCollisions(newPlayerX, newPlayerY) {
+    // Kontrola kolízií s clay
+    clay.forEach((clayBlock, clayIndex) => {
+        const blockX = clayBlock.x;
+        const blockY = clayBlock.y;
+        if (playerX === blockX && playerY === blockY) {
+            if (isDestroying) {
+                clay.splice(clayIndex, 1);
+                isDestroying = false;
+            } else {
+                playerX = newPlayerX;
+                playerY = newPlayerY;
+            }
+        }
+    });
+    
+    // Kontrola kolízií s diamonds
+    diamonds.forEach((diamond, diamondIndex) => {
+        const blockX = diamond.x;
+        const blockY = diamond.y;
+        if (playerX === blockX && playerY === blockY && !diamond.destroyed) {
+            if (isDestroying) {
+                diamond.destroyed = true;
+                isDestroying = false;
+            } else {
+                playerX = newPlayerX;
+                playerY = newPlayerY;
+            }
+        }
+    });
+    
+    // Kontrola kolízií s kov
+    kov.forEach((kov, kovIndex) => {
+        const blockX = kov.x;
+        const blockY = kov.y;
+        if (playerX === blockX && playerY === blockY && !kov.destroyed) {
+            if (isDestroying) {
+                kov.destroyed = true;
+                isDestroying = false;
+            } else {
+                playerX = newPlayerX;
+                playerY = newPlayerY;
+            }
+        }
+    });
+    
+    // Kontrola kolízií s golds
+    golds.forEach((gold, goldIndex) => {
+        const blockX = gold.x;
+        const blockY = gold.y;
+        if (playerX === blockX && playerY === blockY && !gold.destroyed) {
+            if (isDestroying) {
+                gold.destroyed = true;
+                isDestroying = false;
+            } else {
+                playerX = newPlayerX;
+                playerY = newPlayerY;
+            }
+        }
+    });
+}
+
+// Reset joysticku na stred
+function resetJoystick() {
+    joystickActive = false;
+    joystickContainer.classList.remove('active');
+    joystickKnob.style.transform = 'translate(-50%, -50%)';
+}
+
+// Akčné tlačidlo
+document.addEventListener('DOMContentLoaded', function() {
+    const actionButton = document.querySelector('.action-button');
+    if (actionButton) {
+        actionButton.addEventListener('touchstart', handleActionTouch, { passive: false });
+        actionButton.addEventListener('click', handleActionClick);
+    }
+});
+
+function handleActionTouch(e) {
+    e.preventDefault();
+    destroyBlock();
+    animateDigging();
+}
+
+function handleActionClick(e) {
+    e.preventDefault();
+    destroyBlock();
+    animateDigging();
+}
+
+// Čakanie na načítanie DOM obsahu
+document.addEventListener('DOMContentLoaded', function() {
+    window.addEventListener('load', function() {
+        setTimeout(hideLoadingScreen, 1000); // Čaká 1 sekundu potom skryje
+    });
+    
+    console.log('Hra načítaná.');
+});
+
+
+/**
+ * Skrytie loading screen s animáciou
+ */
+function hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+        loadingScreen.style.opacity = '0';
         setTimeout(() => {
-            if (gameStats.isRunning && !hasGameEnded()) {
-                gameOver('Čas vypršal!');
-            }
-        }, levelConfig.timeLimit * 1000);
+            loadingScreen.style.display = 'none';
+        }, 500);
     }
 }
 
-function getCurrentGameTime() {
-    if (!gameStats.startTime) return 0;
-    if (!gameStats.isRunning) return gameStats.gameTime;
-    return Math.floor((Date.now() - gameStats.startTime) / 1000);
-}
 
-// Náhodné slovo z level configu
-function getRandomWordFromLevel() {
-    if (!currentLevelWords || currentLevelWords.length === 0) {
-        console.warn('Žiadne level slová, používam defaultné');
-        return "ROBOT";
-    }
-    const word = currentLevelWords[Math.floor(Math.random() * currentLevelWords.length)];
-    console.log('Vybrané slovo:', word, 'z:', currentLevelWords);
-    return word;
-}
-
-// NOVÝ systém hodnotenia na základe chýb v rečových cvičeniach
-function calculateStars() {
-    console.log('Počítam hviezdy...');
-    console.log('Zlé pokusy v reči:', gameStats.wrongSpeechAttempts);
-    console.log('Celkové rečové cvičenia:', gameStats.totalSpeechExercises);
-    
-    let stars = 1; // Minimálne 1 hviezda
-    
-    if (gameStats.wrongSpeechAttempts <= 2) {
-        stars = 3; // 0-2 chyby = 3 hviezdy
-    } else if (gameStats.wrongSpeechAttempts <= 6) {
-        stars = 2; // 3-6 chýb = 2 hviezdy  
-    } else {
-        stars = 1; // 7+ chýb = 1 hviezda
-    }
-    
-    console.log('Vypočítané hviezdy:', stars);
-    return stars;
-}
-
-// Záznam chybného pokusu v rečovom cvičení
-function recordWrongSpeechAttempt() {
-    gameStats.wrongSpeechAttempts++;
-    console.log('Zaznamenaná chyba v reči. Celkom chýb:', gameStats.wrongSpeechAttempts);
-}
-
-// Záznam úspešného rečového cvičenia
-function recordSpeechExerciseCompleted() {
-    gameStats.totalSpeechExercises++;
-    console.log('Dokončené rečové cvičenie. Celkom cvičení:', gameStats.totalSpeechExercises);
-}
-
-// Dokončenie levelu
-function completeLevel() {
-    console.log('Level dokončený!');
-    
-    gameStats.isRunning = false;
-    gameStats.gameTime = getCurrentGameTime();
-    gameState.isRunning = false;
-    gameState.gameTime = gameStats.gameTime;
-    
-    const stars = calculateStars();
-    const results = {
-        stars: stars,
-        time: gameStats.gameTime,
-        wrongAttempts: gameStats.wrongSpeechAttempts,
-        totalExercises: gameStats.totalSpeechExercises,
-        levelName: levelConfig ? levelConfig.name : 'Level',
-        completed: true
-    };
-    
-    console.log('Výsledky levelu:', results);
-    
-    // Pošli výsledky do gameRoutera
-    if (window.gameRouter && typeof window.gameRouter.completeLevel === 'function') {
-        try {
-            const currentLevel = window.gameRouter.getCurrentLevel();
-            if (currentLevel) {
-                console.log('Posielam výsledky do gameRouter');
-                window.gameRouter.completeLevel(currentLevel.worldId, currentLevel.levelId, results);
-                return;
-            }
-        } catch (error) {
-            console.warn('Chyba pri komunikácii s gameRouter:', error);
-        }
-    }
-    
-    // Fallback - zobraz endgame
-    showEndGameWithLevelOptions(results);
-}
-
-// Zobrazenie endgame s level systémom
-function showEndGameWithLevelOptions(results) {
-    const starsText = '★'.repeat(results.stars) + '☆'.repeat(3 - results.stars);
-    
-    const gameendDiv = document.querySelector('.gameend');
-    gameendDiv.innerHTML = `
-        <h3 style="color: #FFD700; margin: 20px 0;">Hodnotenie: ${starsText}</h3>
-        <p style="margin: 10px 0;">Čas: ${results.time || 0} sekúnd</p>
-        <p style="margin: 10px 0; font-size: 14px;">Chyby v reči: ${results.wrongAttempts || 0}</p>
-        <p style="margin: 10px 0; font-size: 14px;">Rečové cvičenia: ${results.totalExercises || 0}</p>
-        <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
-            <a href="#" onclick="restartLevel(); return false;">
-                <img src="images/restart_male.png" alt="Hrať znova">
-            </a>
-            <a href="#" onclick="goToNextLevel(); return false;">
-                <img src="images/menu1.png" alt="Ďalší level">
-            </a>
-            <a href="#" onclick="returnToLevelSelector(); return false;">
-                <img src="images/menu_male.png" alt="Menu levelov">
-            </a>
-        </div>
-    `;
-    
-    document.getElementById("endgame").style.display = "block";
-    document.getElementById("blur-background").style.display = "block";
-    document.body.style.overflow = "hidden";
-}
-
-// Navigačné funkcie
-function returnToLevelSelector() {
-    if (window.gameRouter && typeof window.gameRouter.returnToLevelSelector === 'function') {
-        try {
-            const currentLevel = window.gameRouter.getCurrentLevel();
-            if (currentLevel) {
-                window.gameRouter.returnToLevelSelector(currentLevel.worldId);
-                return;
-            }
-        } catch (error) {
-            console.warn('Chyba pri návrate na level selector:', error);
-        }
-    }
-    
-    const urlParams = new URLSearchParams(window.location.search);
-    const worldId = urlParams.get('world') || 'world_r';
-    window.location.href = `level-selector.html?world=${worldId}`;
-}
-
-function goToNextLevel() {
-    if (window.gameRouter && typeof window.gameRouter.goToNextLevel === 'function') {
-        try {
-            const currentLevel = window.gameRouter.getCurrentLevel();
-            if (currentLevel) {
-                window.gameRouter.goToNextLevel(currentLevel.worldId, currentLevel.levelId);
-                return;
-            }
-        } catch (error) {
-            console.warn('Chyba pri prechode na ďalší level:', error);
-        }
-    }
-    
-    returnToLevelSelector();
-}
-
-function restartLevel() {
-    console.log('Reštartujem level...');
-    window.location.reload();
-}
-
-function returnToWorldsMenu() {
-    if (window.gameRouter && typeof window.gameRouter.returnToWorldsMenu === 'function') {
-        window.gameRouter.returnToWorldsMenu();
-    } else {
-        window.location.href = 'worlds-menu.html';
-    }
-}
-
-function hasGameEnded() {
-    return diamondsCollected === PocetGenDiamant && 
-           goldsCollected === PocetGenGolds && 
-           kovCollected === PocetGenKov;
-}
-
-function gameOver(reason) {
-    console.log('Game Over:', reason);
-    gameState.isRunning = false;
-    alert(reason + '\n\nSkús to znova!');
-    setTimeout(() => {
-        restartLevel();
-    }, 1000);
-}
-
-// Sprístupni funkcie globálne
-window.initializeGameWithLevel = initializeGameWithLevel;
-window.restartLevel = restartLevel;
-window.goToNextLevel = goToNextLevel;
-window.returnToLevelSelector = returnToLevelSelector;
-window.returnToWorldsMenu = returnToWorldsMenu;
-
-// =====================================
-// ORIGINÁLNY KÓD (ZACHOVANÝ)
-// =====================================
 
 // Získanie canvasu a kontextu
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const blockSize = 50; // Veľkosť jednej blokovej kocky
+
+getLocalStream();
 
 const playerSize = blockSize; // Veľkosť hráča
 const diamondSize = blockSize; // Veľkosť diamantu
@@ -360,7 +328,6 @@ let dragonSleeping = true;
 
 playerX = 100;
 playerY = 200;
-
 const goldImg = new Image();
 goldImg.src = 'images/gold.png';
 const diamondImg = new Image();
@@ -391,6 +358,16 @@ let effectSpravne = new Howl({ src: [`zvuky/effects/spravne.mp3`] });
 let effectkopanie = new Howl({ src: [`zvuky/effects/kopanie.wav`] });
 let effectzlato = new Howl({ src: [`zvuky/effects/zlato.wav`] });
 
+//Zobrazenie stats
+/*function displayStats() {
+    ctx.font = '20px Arial';
+    ctx.fillStyle = 'black';
+    ctx.fillText(`Stlačenia medzerníka: ${spaceBarPocitadlo1}`, 10, 30);
+    ctx.fillText(`Počet diamantov: ${diamondsCollected}`, 10, 60);
+    ctx.fillText(`Počet kovov: ${kovCollected}`, 10, 90);
+    ctx.fillText(`Počet goldov: ${goldsCollected}`, 10, 120);
+}*/
+
 //Generovanie predmetov
 function generateDiamonds() {
   const generatedPositions = []; // Pole na uchovanie už vygenerovaných pozícií
@@ -407,7 +384,6 @@ function generateDiamonds() {
   }
   initializeDiamonds(PocetGenDiamant);
 } 
-
 function generateKov() {
   const generatedPositions = []; 
   while (kov.length != PocetGenKov) {
@@ -422,7 +398,6 @@ function generateKov() {
   }
   initializeKov(PocetGenKov);
 } 
-
 function generateGolds() {
   const generatedPositions = []; 
   while (golds.length !== PocetGenGolds) {
@@ -439,7 +414,6 @@ function generateGolds() {
   }
   initializeGolds(PocetGenGolds);
 }
-
 function generateClay() {
     for (let y = 0; y < mapHeight; y++) {
       for (let x = 0; x < mapWidth; x++) {
@@ -465,7 +439,6 @@ function generateClay() {
       }
     }
 }
-
 function drawPlayer() {
     let image;
     if (playerDirection == 'front' ){
@@ -491,7 +464,6 @@ function drawPlayer() {
       image = hracKopaVpravoImg;
     }
 }    
-
 function drawDiamonds() {
     diamonds.forEach(diamond => {
       if (!diamond.destroyed) {
@@ -499,7 +471,6 @@ function drawDiamonds() {
       }
     });
 }
-
 function drawKov() {
   kov.forEach(kov => {
     if (!kov.destroyed) {
@@ -507,7 +478,6 @@ function drawKov() {
     }
   });
 }
-
 function drawGolds() {
   golds.forEach(gold => {
     if (!gold.destroyed) {
@@ -515,7 +485,6 @@ function drawGolds() {
     }
   });
 }
-
 function drawClay() {
     ctx.lineWidth = 2;
     clay.forEach(clayObj => {
@@ -523,129 +492,6 @@ function drawClay() {
     });
 }
 
-// MOBILNÉ OVLÁDANIE - OPRAVENÉ
-const upButton = document.getElementById('up');
-if (upButton) {
-  upButton.addEventListener('click', function() {
-    const newPlayerX = playerX;
-    const newPlayerY = playerY;
-    if (playerY - blockSize >= 0) {
-      playerY -= blockSize;
-      playerRotation = 0;
-      playerDirection = 'front';
-    }
-    handleCollisions(newPlayerX, newPlayerY);
-  });
-}
-
-const leftButton = document.getElementById('left');
-if (leftButton) {
-  leftButton.addEventListener('click', function() {
-    const newPlayerX = playerX;
-    const newPlayerY = playerY;
-    if (playerX - blockSize >= 0) {
-      playerX -= blockSize;
-      playerRotation = 270;
-      playerDirection = 'vlavo';
-    }
-    handleCollisions(newPlayerX, newPlayerY);
-  });
-}
-
-const downButton = document.getElementById('down');
-if (downButton) {
-  downButton.addEventListener('click', function() {
-    const newPlayerX = playerX;
-    const newPlayerY = playerY;
-    if (playerY + blockSize < 800) {
-      playerY += blockSize;
-      playerRotation = 180;
-      playerDirection = 'front';
-    }
-    handleCollisions(newPlayerX, newPlayerY);
-  });
-}
-
-const rightButton = document.getElementById('right');
-if (rightButton) {
-  rightButton.addEventListener('click', function() {
-    const newPlayerX = playerX;
-    const newPlayerY = playerY;
-    if (playerX + blockSize < 800) { 
-      playerX += blockSize;
-      playerRotation = 90; 
-      playerDirection = 'vpravo';
-    }
-    handleCollisions(newPlayerX, newPlayerY);
-  });
-}
-
-const pickaxeButton = document.getElementById('pickaxe');
-if (pickaxeButton) {
-  pickaxeButton.addEventListener('click', function() {
-    destroyBlock();
-    animateDigging();
-  });
-}
-
-// Funkcia pre spracovanie kolízií
-function handleCollisions(originalX, originalY) {
-  clay.forEach((clayBlock, clayIndex) => {
-    const blockX = clayBlock.x;
-    const blockY = clayBlock.y;
-    if (playerX === blockX && playerY === blockY) {
-        if (isDestroying) {
-            clay.splice(clayIndex, 1);
-            isDestroying = false;
-        } else {
-            playerX = originalX;
-            playerY = originalY;
-        }
-    }
-  });
-  
-  diamonds.forEach((diamond, diamondIndex) => {
-    const blockX = diamond.x;
-    const blockY = diamond.y;
-    if (playerX === blockX && playerY === blockY && !diamond.destroyed) {
-        if (isDestroying) {
-            diamond.destroyed = true;
-            isDestroying = false;
-        } else {
-            playerX = originalX;
-            playerY = originalY;
-        }
-    }
-  });
-  
-  kov.forEach((kov, kovIndex) => {
-    const blockX = kov.x;
-    const blockY = kov.y;
-    if (playerX === blockX && playerY === blockY && !kov.destroyed) {
-        if (isDestroying) {
-            kov.destroyed = true;
-            isDestroying = false;
-        } else {
-            playerX = originalX;
-            playerY = originalY;
-        }
-    }
-  });
-  
-  golds.forEach((gold, goldIndex) => {
-    const blockX = gold.x;
-    const blockY = gold.y;
-    if (playerX === blockX && playerY === blockY && !gold.destroyed) {
-        if (isDestroying) {
-            gold.destroyed = true;
-            isDestroying = false;
-        } else {
-            playerX = originalX;
-            playerY = originalY;
-        }
-    }
-  });
-}
 
 //POHYB
 window.addEventListener('keydown', (e) => {
@@ -655,9 +501,9 @@ window.addEventListener('keydown', (e) => {
   switch (e.key) {
       case 'w':
       case 'ArrowUp':
-          if (playerY - blockSize >= 0) {
+          if (playerY - blockSize >= 0) { // Kontrola pohybu nahor
               playerY -= blockSize;
-              playerRotation = 0;
+              playerRotation = 0; // Rotácia smeru hore
               playerDirection = 'front';
           }
           break;
@@ -687,17 +533,64 @@ window.addEventListener('keydown', (e) => {
           break;
   }
   
-  handleCollisions(newPlayerX, newPlayerY);
+  // Kontrola kolízií 
+  clay.forEach((clayBlock, clayIndex) => {
+      const blockX = clayBlock.x;
+      const blockY = clayBlock.y;
+      if (playerX === blockX && playerY === blockY) {
+          if (isDestroying) {
+              clay.splice(clayIndex, 1);
+              isDestroying = false;
+          } else {
+              // Nastavenie hráča späť na pôvodné miesto, keď sa snaží prejsť cez blok
+              playerX = newPlayerX;
+              playerY = newPlayerY;
+          }
+      }
+  });
+  diamonds.forEach((diamond, diamondIndex) => {
+      const blockX = diamond.x;
+      const blockY = diamond.y;
+      if (playerX === blockX && playerY === blockY && !diamond.destroyed) {
+          if (isDestroying) {
+              diamond.destroyed = true;
+              isDestroying = false;
+          } else {
+              playerX = newPlayerX;
+              playerY = newPlayerY;
+          }
+      }
+  });
+  kov.forEach((kov, kovIndex) => {
+    const blockX = kov.x;
+    const blockY = kov.y;
+    if (playerX === blockX && playerY === blockY && !kov.destroyed) {
+        if (isDestroying) {
+            kov.destroyed = true;
+            isDestroying = false;
+        } else {
+            playerX = newPlayerX;
+            playerY = newPlayerY;
+        }
+    }
 });
+  golds.forEach((gold, goldIndex) => {
+      const blockX = gold.x;
+      const blockY = gold.y;
+      if (playerX === blockX && playerY === blockY && !gold.destroyed) {
+          if (isDestroying) {
+              gold.destroyed = true;
+              isDestroying = false;
+          } else {
+              playerX = newPlayerX;
+              playerY = newPlayerY;
+          }
+      }
+  });
 
+});
 //HERNÁ SLUČKA
 function gameLoop() {
-    // Skontroluj pauzu
-    if (gameState.isPaused) {
-        requestAnimationFrame(gameLoop);
-        return;
-    }
-    
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawPlayer();
     drawClay();
@@ -706,7 +599,6 @@ function gameLoop() {
     drawGolds();
     requestAnimationFrame(gameLoop);
 }
-
 let spaceBarPressed = 0; // Počet stlačení medzerníka
 let playerBlockX;
 let playerBlockY;
@@ -738,7 +630,7 @@ function destroyBlock() {
     clay.forEach((clayBlock, clayIndex) => {
         const blockX = clayBlock.x / blockSize;
         const blockY = clayBlock.y / blockSize;
-        // Kontrola zničenia bloku, ktorý je pred hráčom v smere, ktorým je hráč otáčaný
+        // Kontrola zničenia bloku, ktorý je pred hráčom v smeru, ktorým je hráč otáčaný
         if (blockX === targetBlockX && blockY === targetBlockY) {
             clay.splice(clayIndex, 1);
         }
@@ -749,7 +641,7 @@ function destroyBlock() {
       if (blockX === targetBlockX && blockY === targetBlockY && !diamond.destroyed) {
         spaceBarPressed++;
         if (spaceBarPressed === 3) {
-          openCvicenieWithLevelWords(); // ZMENENÉ: Používa level slová
+          openCvicenie();
         }
       }
     });
@@ -780,7 +672,6 @@ function destroyBlock() {
       }
     });
 }
-
 function animateDigging() {
     kope = true;
     drawPlayer();
@@ -788,16 +679,14 @@ function animateDigging() {
     setTimeout(() => {
         kope = false;
         drawPlayer();
-    }, 200);
+    }, 200); // Čas, po ktorom sa obrázok vráti späť (200 milisekúnd)
 }
-
 document.addEventListener('keydown', (e) => {
     if (e.key === ' ') {
       destroyBlock();
       animateDigging();
     }
 });
-
 function checkWinCondition() {
     if (diamondsCollected === PocetGenDiamant && goldsCollected === PocetGenGolds && kovCollected === PocetGenKov) {
       setTimeout(() => {
@@ -805,30 +694,29 @@ function checkWinCondition() {
         kovCollected = 0;
         goldsCollected = 0;
         effectVyhra.play();
-        
-        // ZMENENÉ: Používa level systém
-        completeLevel();
-      }, 100);
+        document.getElementById("endgame").style.display = "block";
+        document.getElementById("blur-background").style.display = "block";
+        document.body.style.overflow = "hidden"; 
+      }, 100); // Oneskorí upozornenie o 0,1 sekundu (100 milisekúnd)
     }
 }
-
 function resetGame() {
-   let hasWon = false;
-   playerX = blockSize;
-   playerY = blockSize;
+   let hasWon = false; // Premenná na sledovanie, či hráč už vyhral
+   playerX = blockSize; // Začiatočná pozícia hráča na osi X
+   playerY = blockSize; // Začiatočná pozícia hráča na osi Y
     
    diamonds.length = 0;
    kov.length = 0;
    clay.length = 0;
    golds.length = 0;
     
-    diamondsDestroyed = 0;
-    kovsDestroyed = 0;
+    diamondsDestroyed = 0; // Počet zničených diamantov
+    kovsDestroyed = 0; // Počet zničených diamantov
     goldsDestroyed = 0;
-    isDestroying = false;
-    playerRotation = 0;
-    diamondsCollected = 0;
-    kovCollected = 0;
+    isDestroying = false; // Premenná určujúca, či hráč zničí blok
+    playerRotation = 0; // Úvodná rotácia hráča
+    diamondsCollected = 0; // Počet zozbieraných diamantov
+    kovCollected = 0; // Počet zozbieraných diamantov
     goldsCollected = 0;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -841,9 +729,9 @@ function resetGame() {
     drawDiamonds();
     drawKov();
     drawGolds();
+    //displayStats(); // Zobraz štatistiky
     requestAnimationFrame(gameLoop);
 }
-
 // BOČNY PANEL
 function updateDiamondCount() {
   const diamondCountElement = document.getElementById('diamondCount');
@@ -851,12 +739,12 @@ function updateDiamondCount() {
       diamondCountElement.textContent = diamondsCollected;
   }
 }
-
+// Funkcia na inicializáciu zobrazenia diamantov
 function initializeDiamonds(count) {
   const diamondsContainer = document.querySelector('.diamonds-container');
-  if (!diamondsContainer) return;
-  
+  // Vymažte všetky existujúce diamantové položky
   diamondsContainer.innerHTML = '';
+  // Vytvorte a pridajte diamantové položky na základe počtu diamantov
   for (let i = 0; i < count; i++) {
     const diamondItem = document.createElement('div');
     diamondItem.classList.add('diamond-item');
@@ -871,25 +759,22 @@ function initializeDiamonds(count) {
     diamondsContainer.appendChild(diamondItem);
   }
 }
-
+// Funkcia na aktualizáciu zobrazenia diamantov po získaní nového diamantu
 function updateDiamondsCollected(count) {
   const diamonds = document.querySelectorAll('.diamond-item');
+  // Aktualizujte triedy pre všetky diamanty po získaní nového diamantu
   for (let i = 0; i < count; i++) {
     diamonds[i].classList.add('collected');
   }
 }
-
 function updateKovCount() {
   const kovCountElement = document.getElementById('kovCount');
   if (kovCountElement) {
       kovCountElement.textContent = kovCollected;
   }
 }
-
 function initializeKov(count) {
   const kovContainer = document.querySelector('.kov-container');
-  if (!kovContainer) return;
-  
   kovContainer.innerHTML = '';
   for (let i = 0; i < count; i++) {
     const kovItem = document.createElement('div');
@@ -905,25 +790,20 @@ function initializeKov(count) {
     kovContainer.appendChild(kovItem);
   }
 }
-
 function updateKovCollected(count) {
   const kov = document.querySelectorAll('.kov-item');
   for (let i = 0; i < count; i++) {
     kov[i].classList.add('collected');
   }
 }
-
 function updateGoldCount() {
   const goldCountElement = document.getElementById('goldCount');
   if (goldCountElement) {
       goldCountElement.textContent = goldsCollected;
   }
 }
-
 function initializeGolds(count) {
   const goldsContainer = document.querySelector('.golds-container');
-  if (!goldsContainer) return;
-  
   goldsContainer.innerHTML = '';
   for (let i = 0; i < count; i++) {
     const goldItem = document.createElement('div');
@@ -939,13 +819,21 @@ function initializeGolds(count) {
     goldsContainer.appendChild(goldItem);
   }
 }
-
 function updategoldsCollected(count) {
   const golds = document.querySelectorAll('.gold-item');
   for (let i = 0; i < count; i++) {
     golds[i].classList.add('collected');
   }
 }
+
+
+
+
+
+
+
+
+
 
 /*CVIČENIE NA ROZPOZNAVANIE ZVUKU*/
 function minigame(){
@@ -967,7 +855,6 @@ function minigame(){
         endGame();
     }
   }
-  
   function playRandomSounds() {
     const randomFolder = Math.floor(Math.random() * 15) + 1;
     const soundFolder = `zvuky/${randomFolder}/`;
@@ -984,26 +871,22 @@ function minigame(){
         }, 500); 
     });
   }
-  
   function getSoundList() {
     const allSounds = ['1.wav', '2.wav']; 
     return allSounds;
   }
-  
   function getRandomIndexes(length) {
     const index1 = Math.floor(Math.random() * length);
     let index2 = Math.floor(Math.random() * length);
     return [index1, index2];
   }
-  
   function displayMessage(message) {
     console.log(message);
     const dialogBox = document.querySelector('.cvicenie-content-2');
-    dialogBox.innerHTML = `<p>ROZPOZNAJ SLOVÁ</p>
-    <p style="font-size:20px;">${message}</p>
+    dialogBox.innerHTML = `<h1>ROZPOZNAJ SLOVÁ</h1>
+    <p>${message}</p>
     <center><div id="buttonsContainer"></div></center>`;
   }
-  
   function createButtons() {
     let buttonsContainer = document.getElementById('buttonsContainer');
     if (!buttonsContainer) {
@@ -1012,22 +895,20 @@ function minigame(){
     } else {
         buttonsContainer.innerHTML = '';
     }
-    
-    const sameButton = document.createElement('img');
-    sameButton.src = 'images/rovnake.png';
-    sameButton.alt = 'Rovnaké';
-    sameButton.addEventListener('click', () => evaluateGuess(true));
-    const differentButton = document.createElement('img');
-    differentButton.src = 'images/rozdielne.png';
-    differentButton.alt = 'Rozdielne';
-    differentButton.addEventListener('click', () => evaluateGuess(false));
-    buttonsContainer.appendChild(sameButton);
-    buttonsContainer.appendChild(differentButton);
-    if (!document.getElementById('buttonsContainer')) {
-      document.body.appendChild(buttonsContainer);
-    }
+  const sameButton = document.createElement('img');
+  sameButton.src = 'images/rovnake.png';
+  sameButton.alt = 'Rovnaké';
+  sameButton.addEventListener('click', () => evaluateGuess(true));
+  const differentButton = document.createElement('img');
+  differentButton.src = 'images/rozdielne.png';
+  differentButton.alt = 'Rozdielne';
+  differentButton.addEventListener('click', () => evaluateGuess(false));
+  buttonsContainer.appendChild(sameButton);
+  buttonsContainer.appendChild(differentButton);
+  if (!document.getElementById('buttonsContainer')) {
+    document.body.appendChild(buttonsContainer);
+  }
   } 
-  
   function evaluateGuess(isSame) {
     sound1.stop();
     sound2.stop();
@@ -1049,7 +930,6 @@ function minigame(){
         startGame();
     }
   }
-  
   function endGame(hasWon = false) {
     const message = hasWon ? 'Správne!' : 'Skús to ešte raz.';
     if (hasWon){
@@ -1063,7 +943,7 @@ function minigame(){
           updateKovCount();
           updateKovCollected(kovCollected);
           checkWinCondition();
-          spaceBarPressed = 0;
+          spaceBarPressed = 0; // Reset počtu stlačení pre ďalšie diamanty
         }
       });
     }
@@ -1078,61 +958,60 @@ function minigame(){
         const infoDialog = document.getElementById('zvuky');
         infoDialog.style.display = 'none';
         document.getElementById("blur-background").style.display = "none";
-        document.body.style.overflow = "auto";
+        document.body.style.overflow = "auto"; // Povoliť posúvanie stránky
     }, 1000);   
   }
-  
-  startGame();
-  document.addEventListener('DOMContentLoaded', function() {
-    minigame();
-  });
-}
+startGame();
+document.addEventListener('DOMContentLoaded', function() {
+  minigame();
+});
 
+}
 function showInfoDialog() {
   const infoDialog = document.getElementById('zvuky');
   infoDialog.style.display = 'block'; 
   document.getElementById("blur-background").style.display = "block";
-  document.body.style.overflow = "hidden";
+  document.body.style.overflow = "hidden"; // Zabrániť posúvaniu stránky
   minigame();
 }
 
+
+
+
+
+
+
+
+
+
 /* CVIČENIE NA VYSLOVNOSŤ SLOVA*/
+const url = 'slova.txt'; 
 let currentWordIndex = 0; 
 let wordList = []; // Pole slov na vyslovenie
 const pocetcviceni = 2;
 let kontrolacvicenia = 0;
-
-// NOVÁ FUNKCIA: openCvicenieWithLevelWords - používa slová z level configu
-function openCvicenieWithLevelWords() {
-  wordList = []; // Vymaž predchádzajúce slová
-  
-  // Vyber náhodné slová z level configu
-  let vybraneSlova = []; 
-  while (wordList.length < pocetcviceni && vybraneSlova.length < currentLevelWords.length) {
-    const nahodnyIndex = Math.floor(Math.random() * currentLevelWords.length);
-    const slovo = currentLevelWords[nahodnyIndex];
-    if (!vybraneSlova.includes(slovo)) {
-      wordList.push(slovo);
-      vybraneSlova.push(slovo);
-    }
-  }
-  
-  // Ak nemáme dostatok slov, pridaj ich opakovane
-  while (wordList.length < pocetcviceni) {
-    const nahodnyIndex = Math.floor(Math.random() * currentLevelWords.length);
-    wordList.push(currentLevelWords[nahodnyIndex]);
-  }
-  
-  console.log('Vybrané slová pre cvičenie:', wordList);
-  startExercise();
-}
-
-// Funkcia na otvorenie cvičenia (zachovaná pre kompatibilitu)
+// Funkcia na otvorenie cvičenia a výber náhodných slov
 function openCvicenie() {
-  // ZMENENÉ: Používa level slová namiesto súboru
-  openCvicenieWithLevelWords();
+  fetch(url)
+  .then(response => response.text())
+  .then(obsah => {
+    const riadky = obsah.split('\n');
+    let vybraneSlova = []; // Zoznam vybratých slov
+    while (wordList.length < pocetcviceni) {
+      const nahodnyIndex = Math.floor(Math.random() * riadky.length);
+      const slovo = riadky[nahodnyIndex].trim();
+      if (!vybraneSlova.includes(slovo)) { //kontrola či sa vybralo iné/rozdielne slovo
+        wordList.push(slovo);
+        vybraneSlova.push(slovo);
+      }
+    }
+    startExercise();
+  })
+  .catch(error => {
+    console.error('Chyba pri načítaní obsahu súboru: ' + error);
+  });
 }
-
+/* Spustenie Cvicenia*/
 function startExercise() {
   document.getElementById("cvicenie").style.display = "block";
   document.getElementById("blur-background").style.display = "block";
@@ -1140,72 +1019,41 @@ function startExercise() {
   document.body.style.overflow = "hidden"; 
   displayWord();
 }
-
-// OPRAVENÁ funkcia getLocalStream
 function getLocalStream() {
-  try {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices
-        .getUserMedia({ video: false, audio: true })
-        .then((stream) => {
-          window.localStream = stream;
-          // OPRAVENÉ: Bezpečná kontrola pred nastavením srcObject
-          if (window.localAudio) {
-            window.localAudio.srcObject = stream;
-            window.localAudio.autoplay = true;
-          }
-          console.log('Mikrofón úspešne inicializovaný');
-        })
-        .catch((err) => {
-          console.warn(`Mikrofón nedostupný: ${err}`);
-        });
-    } else {
-      console.warn('getUserMedia nie je podporované v tomto prehliadači');
-    }
-  } catch (error) {
-    console.warn('Chyba pri inicializácii mikrofónu:', error);
-  }
+  navigator.mediaDevices
+    .getUserMedia({ video: false, audio: true })
+    .then((stream) => {
+      window.localStream = stream;
+      window.localAudio.srcObject = stream;
+      window.localAudio.autoplay = true;
+    })
+    .catch((err) => {
+      console.error(`you got an error: ${err}`);
+    });
 }
-
+// Funkcia na zobrazenie aktuálneho slova na vyslovenie
 function displayWord() {
   document.getElementById("word-display").innerText = wordList[currentWordIndex].toUpperCase();
   const imageName = wordList[currentWordIndex] + ".png"; 
-  const imageElement = document.getElementById("cvicenie-image");
-  imageElement.src = "images/slova/" + imageName;
-  
-  // Fallback pre chýbajúce obrázky
-  imageElement.onerror = function() {
-    this.src = 'images/slova/default.png';
-  };
+  document.getElementById("cvicenie-image").src = "images/slova/" + imageName;
 }
-
 let slovicka = 0;
-
+/* Samotna funckia */
 function rozpoznanieS() {
-  // OPRAVENÉ: Bezpečná kontrola podpory Speech Recognition
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    console.error('Rozpoznávanie reči nie je podporované v tomto prehliadači');
-    alert('Rozpoznávanie reči nie je podporované v tomto prehliadači');
-    return;
-  }
-  
-  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  const recognition = new webkitSpeechRecognition();
   recognition.lang = 'sk-SK';
-  recognition.continuous = false;
-  
+  recognition.continuous = false; //rozoznavanie jedneho slova
+  // Spustenie nahrávania
   recognition.start();
   console.log('Nahrávanie spustené.');
-  let transcript = '';
-  
-  const waitForEnd = new Promise((resolve) => {
-    recognition.onend = () => {
+  let transcript = ''; // Premenná na uchovávanie rozpoznaného textu
+  const waitForEnd = new Promise((resolve) => { //promisa, ktorá počká na ukončenie nahrávania
+    recognition.onend = () => {                 // Funkcia, ktorá sa vyvolá po ukončení nahrávania
       console.log('Nahrávanie ukončené.');
       console.log('Rozpoznaný text:', transcript);
       const currentWord = wordList[currentWordIndex];
-      const cleanedTranscript = transcript.trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-      console.log('Rozpoznaný text po vyčistení:', cleanedTranscript);
-      console.log('Očakávané slovo:', currentWord.toLowerCase());
-      
+      const cleanedTranscript = transcript.trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,""); // Odstránenie interpunkčných znamienok a prevod na malé písmená
+      console.log('Rozpoznaný text:', cleanedTranscript);
       if (cleanedTranscript === currentWord.toLowerCase()) {
         console.log('Bolo správne vyslovené slovo "' + currentWord + '".');
         document.getElementById("vysledok").innerHTML = '<center><img src="images/spravne.png" alt="Správne" style="width: 435px; height: 342px;"></center>';
@@ -1214,51 +1062,43 @@ function rozpoznanieS() {
         setTimeout(() => {
         document.getElementById("vysledok").innerHTML = ''; 
         if (currentWordIndex < wordList.length) {
-          displayWord();
+          displayWord(); // Zobraziť ďalšie slovo
         } else {
           kontrolacvicenia = 1;
-          recordSpeechExerciseCompleted(); // PRIDANÉ: Zaznamenej dokončenie cvičenia
-          closeCvicenie();
+          closeCvicenie(); // Ukončiť cvičenie
         }
         }, 2000);
       } else {
         console.log('Slovo "' + currentWord + '" nebolo správne vyslovené.');
         slovicka++;
-        recordWrongSpeechAttempt(); // PRIDANÉ: Zaznamenej chybu
         console.log('Skús ho vysloviť znova, slovicka: ' +slovicka);
         document.getElementById("vysledok").innerHTML = '<center><img src="images/nespravne.png" alt="Nesprávne" style="width: 435px; height: 342px;"></center>';
         effectZle.play();
       }
       setTimeout(() => {
-        document.getElementById("vysledok").innerHTML = '';
+        document.getElementById("vysledok").innerHTML = ''; // Vymazanie obrázka po 2 sekundách
         if (slovicka === 3) {
           kontrolacvicenia = 2;
-          recordSpeechExerciseCompleted(); // PRIDANÉ: Zaznamenej dokončenie aj pri neúspechu
-          closeCvicenie();
+          closeCvicenie(); // Ukončiť cvičenie
         }
-        resolve();
+        resolve();  //resolve na splnenie promisy
       }, 2000);
     };
   });
-  
   recognition.onresult = function(event) {
-    transcript += event.results[0][0].transcript.trim();
+    transcript += event.results[0][0].transcript.trim();  // Rozpoznaný text
   };
-  
-  recognition.onerror = function(event) {
+  recognition.onerror = function(event) { //upozornenie na chybu
     console.error('Chyba pri rozpoznávaní reči:', event.error);
-    recordWrongSpeechAttempt(); // PRIDANÉ: Zaznamenej chybu aj pri error
   };
-  
-  setTimeout(() => {
+  setTimeout(() => {             // Zastavenie nahrávania po 5 sekundách
     recognition.stop();
   }, 5000);
-  
-  waitForEnd.then(() => {
+  waitForEnd.then(() => {       // Počkáme na ukončenie nahrávania pomocou promisy
     console.log('Vyhodnotenie hotové.');
   });
 }
-
+// Funkcia na zatvorenie cvičenia
 function closeCvicenie() {
   if (kontrolacvicenia === 1) {
     diamonds.forEach((diamond, diamondIndex) => {
@@ -1285,84 +1125,14 @@ function closeCvicenie() {
   document.body.classList.remove("cvicenie-open");
   document.body.style.overflow = "auto"; 
 }
-
-// OPRAVENÉ: Bezpečný event listener
 const rozpoznanie = document.getElementById('rozpoznanie');
-if (rozpoznanie) {
-  rozpoznanie.addEventListener('click', rozpoznanieS);
-}
+rozpoznanie.addEventListener('click', rozpoznanieS);
 
-// INICIALIZÁCIA PO NAČÍTANÍ DOM
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('DOM načítaný, inicializujem hru...');
-  
-  // Počkaj na načítanie config súborov a potom inicializuj level systém
-  setTimeout(() => {
-    console.log('Spúšťam inicializáciu level systému...');
-    
-    // Skontroluj dostupnosť funkcií
-    console.log('getLevelConfig dostupné:', typeof getLevelConfig);
-    console.log('getWorldConfig dostupné:', typeof getWorldConfig);
-    console.log('gameRouter dostupný:', typeof window.gameRouter);
-    
-    // Inicializuj level systém
-    initializeGameWithLevel();
-    
-    // Bezpečne inicializuj mikrofón
-    getLocalStream();
-    
-    // Spusti časovač
-    startGameTimer();
-    
-    console.log('Hra úspešne inicializovaná');
-    
-    // Debug info
-    console.log('===== DEBUG INFO =====');
-    console.log('levelConfig:', levelConfig);
-    console.log('currentLevelWords:', currentLevelWords);
-    console.log('gameState:', gameState);
-    console.log('======================');
-    
-  }, 500); // Počkaj 500ms na načítanie config súborov
-});
-
-// Generovanie predmetov a spustenie hry
+/*Generovanie predmetov a GameLoop*/
 generateDiamonds();
 generateKov();
 generateGolds();
 generateClay();
 gameLoop();
 
-// Debug funkcie
-window.debugGame = {
-    showConfig: () => {
-        console.log('=== GAME DEBUG ===');
-        console.log('levelConfig:', levelConfig);
-        console.log('currentLevelWords:', currentLevelWords); 
-        console.log('gameState:', gameState);
-        console.log('gameStats:', gameStats);
-        console.log('PocetGenDiamant:', PocetGenDiamant);
-        console.log('PocetGenGolds:', PocetGenGolds);
-        console.log('PocetGenKov:', PocetGenKov);
-    },
-    
-    simulateWrong: (count = 1) => {
-        for (let i = 0; i < count; i++) {
-            recordWrongSpeechAttempt();
-        }
-        console.log('Simulované', count, 'chyby. Celkom:', gameStats.wrongSpeechAttempts);
-    },
-    
-    testStars: () => {
-        console.log('Test hodnotenia hviezd:');
-        console.log('0-2 chyby = 3 hviezdy');
-        console.log('3-6 chyby = 2 hviezdy');
-        console.log('7+ chyby = 1 hviezda');
-        console.log('Aktuálny počet chýb:', gameStats.wrongSpeechAttempts);
-        console.log('Hviezdy:', calculateStars());
-    },
-    
-    forceComplete: () => {
-        completeLevel();
-    }
-};
+
