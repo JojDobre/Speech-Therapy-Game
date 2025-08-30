@@ -28,15 +28,37 @@ const LEVELS_CONFIG = {
             name: 'Prvé R-čka',
             gameType: 'banik',
             difficulty: 1,
-            words: ['rak', 'ryba', 'ruka', 'rosa'], // jednoduché krátke slová s R
+            words: ['rak', 'ryba', 'ruka', 'rosa'],
             gameConfig: {
-                diamonds: 2, // počet diamantov (rečových cvičení)
-                golds: 3,    // počet zlatých predmetov
-                crystals: 1, // počet kryštálov (posluchových cvičení)
-                mapSize: { width: 16, height: 10 } // veľkosť mapy
+                diamonds: 2,
+                golds: 5,
+                crystals: 1,
+                mapSize: { width: 16, height: 10 }
             },
-            unlockRequirement: null, // prvý level je vždy odomknutý
-            timeLimit: null, // bez časového limitu
+            // NOVÝ OBJEKT positions - presné pozície všetkých itemov
+            positions: {
+                // Pozície diamantov (súradnice v grid-e, nie pixeloch)
+                diamonds: [
+                    { x: 3, y: 8 },  // diamant na pozícii 3,8
+                    { x: 12, y: 7 }  // diamant na pozícii 12,7
+                ],
+                // Pozície zlatých predmetov
+                golds: [
+                    { x: 2, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 8 },   // gold na pozícii 7,8
+                    { x: 14, y: 6 },   // gold na pozícii 14,6
+                    { x: 9, y: 8 },
+                    { x: 10, y: 8 },
+                ],
+                // Pozície kryštálov (kov v pôvodnom kóde)
+                crystals: [
+                    { x: 9, y: 7 }    // kryštál na pozícii 9,7
+                ],
+                // Pozícia hráča na začiatku levelu
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: null,
+            timeLimit: null,
             minStarsToPass: 1,
             isUnlocked: true
         },

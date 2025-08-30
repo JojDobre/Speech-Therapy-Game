@@ -1,6 +1,262 @@
-// ===== VIRTUAL JOYSTICK FUNKCIONALITA =====
+//////////////////////////////////////////////
+// Game.js - hlavný kód pre minmihru miner  //
+// Autor: Adam Renak                        //
+// Diplomová práca - 28.8.2025              //
+//////////////////////////////////////////////
 
-// Premenné pre virtual joystick
+
+
+//////////////////////////////////////////////
+// ============ LOADING SCREEN ============ //
+// Čakanie na načítanie DOM obsahu          //
+// Skrytie loading screen s animáciou       //
+//////////////////////////////////////////////
+document.addEventListener('DOMContentLoaded', function() {
+    window.addEventListener('load', function() {
+        setTimeout(hideLoadingScreen, 1000); // Čaká 1 sekundu potom skryje
+    });
+    
+    console.log('Hra načítaná.');
+});
+
+function hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+        loadingScreen.style.opacity = '0';
+        setTimeout(() => {
+            loadingScreen.style.display = 'none';
+        }, 500);
+    }
+}
+
+
+
+
+
+///////////////////////////////////////////////
+// ========== ZAKLADNE PREMENNE ============ //
+// Diamonds, kov, Golds, Kov, Zvukové efekty //
+// velkosti blokov, pocet ziskanych itemov   //
+///////////////////////////////////////////////
+
+//////////////////////////////////
+// Získanie canvasu a kontextu  //
+//////////////////////////////////
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const blockSize = 50; // Veľkosť jednej blokovej kocky
+
+getLocalStream();
+
+const playerSize = blockSize;           // Veľkosť hráča
+const diamondSize = blockSize;          // Veľkosť diamantu
+const GoldSize = blockSize;             // Veľkosť diamantu
+const claySize = blockSize;             // Veľkosť hliny
+const kovSize = blockSize;              // Veľkosť diamantu
+const mapWidth = 16;                    // Počet blokov na šírku
+const mapHeight = 10;                   // Počet blokov na výšku
+
+let playerX = blockSize;                // Začiatočná pozícia hráča na osi X
+let playerY = blockSize;                // Začiatočná pozícia hráča na osi Y
+
+const diamonds = [];
+const kov = [];                         ///////////////////////
+const golds = [];                       // Základné premenné //
+const clay = [];                        ///////////////////////
+let PocetGenDiamant = 3;                
+let PocetGenKov = 1;
+let PocetGenGolds = 4;
+
+let diamondsDestroyed = 0;              // Počet zničených diamantov
+let kovDestroyed = 0;                   // Počet zničených diamantov
+let goldsDestroyed = 0;                 // Počet zničených goldov
+let isDestroying = false;               // Premenná určujúca, či hráč zničí blok
+let playerRotation = 0;                 // Úvodná rotácia hráča
+let diamondsCollected = 0;              // Počet zozbieraných diamantov
+let kovCollected = 0;                   // Počet zozbieraných kovov
+let goldsCollected = 0;                 // Počet zozbieraných diamantov
+
+let spaceBarPressed = 0;                // Počet stlačení medzerníka
+let playerBlockX;                       // Pozicia hraca X
+let playerBlockY;                       // Pozicia hraca Y
+let targetBlockX;                       
+let targetBlockY;
+let blockX;
+let blockY;
+
+///////////////////////
+// Obrázky postavy   //
+///////////////////////
+playerX = 100;
+playerY = 200;
+const goldImg = new Image();
+goldImg.src = 'images/gold.png';
+const diamondImg = new Image();
+diamondImg.src = 'images/diamond.png';
+const kovImg = new Image();
+kovImg.src = 'images/kov.png';
+const clayImg = new Image();
+clayImg.src = 'images/stone.png';
+const playerImg = new Image();
+playerImg.src = 'images/hrac.png';
+const playerImgVl = new Image();
+playerImgVl.src = 'images/hrac-otoceny-vlavo.png';
+const playerImgVp = new Image();
+playerImgVp.src = 'images/hrac-otoceny-vpravo.png';
+const playerImgchrbat = new Image();
+playerImgchrbat.src = 'images/hrac.png';
+const hracKopaVpravoImg = new Image();
+hracKopaVpravoImg.src = 'images/hrac-kope-vpravo.png';
+const hracKopaVlavoImg = new Image();
+hracKopaVlavoImg.src = 'images/hrac-kope-vlavo.png';
+let playerDirection = 'front';
+let kope = false;
+
+////////////////////
+// zvukové efekty //
+////////////////////
+const EffectssoundFolder = `zvuky/effects`;
+let  effectVyhra = new Howl({ src: [`zvuky/effects/vyhra.mp3`] });
+let effectZle = new Howl({ src: [`zvuky/effects/zle.mp3`] });
+let effectSpravne = new Howl({ src: [`zvuky/effects/spravne.mp3`] });
+let effectkopanie = new Howl({ src: [`zvuky/effects/kopanie.wav`] });
+let effectzlato = new Howl({ src: [`zvuky/effects/zlato.wav`] });
+
+
+
+
+
+
+////////////////////////////////////////////////////////////
+//      ========== KONFIGURÁCIA LEVELU ==========         //
+// Globálna premenná pre konfiguráciu aktuálneho levelu   //
+// Obsahuje: words, diamonds, golds, crystals, timeLimit  //
+//           positions                                    //
+////////////////////////////////////////////////////////////
+let currentLevelConfig = null;
+let isCustomLevel = false; // Označuje či je spustený custom level
+
+/**
+ * Inicializácia hry s konfiguráciou levelu
+ * @param {Object} levelConfig - konfigurácia levelu z levels.js
+ * @param {Boolean} customLevel - true ak je to custom level
+ */
+
+function initializeGameWithLevel(levelConfig, customLevel = false) {
+    console.log('Inicializujem hru s levelConfig:', levelConfig);
+    
+    currentLevelConfig = levelConfig;
+    isCustomLevel = customLevel;
+    
+    // Aktualizácia počtov objektov podľa levelConfig
+    if (levelConfig.diamonds) PocetGenDiamant = levelConfig.diamonds;
+    if (levelConfig.golds) PocetGenGolds = levelConfig.golds;  
+    if (levelConfig.crystals) PocetGenKov = levelConfig.crystals;
+
+    // Nastavenie pozície hráča ak je definovaná v levelConfig
+    if (levelConfig.positions && levelConfig.positions.player) {
+        playerX = levelConfig.positions.player.x * blockSize;
+        playerY = levelConfig.positions.player.y * blockSize;
+        console.log(`Pozícia hráča nastavená na: ${levelConfig.positions.player.x}, ${levelConfig.positions.player.y}`);
+    } else {
+        // Predvolená pozícia
+        playerX = blockSize;
+        playerY = blockSize;
+    }
+    
+    console.log(`Nastavené počty: Diamanty=${PocetGenDiamant}, Zlato=${PocetGenGolds}, Kryštály=${PocetGenKov}`);
+    console.log('Custom level:', isCustomLevel);
+    
+    resetGame();
+}
+
+
+
+
+//////////////////////////////////////////////////
+// ===== SPUSTENIE HRY S URL PARAMETRAMI =====  //
+// Inicializácia hry na základe URL parametrov  //
+// Očakáva parametry: worldId, levelId          //
+//////////////////////////////////////////////////
+function initializeFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // OPRAVENÉ: Podporuj oba formáty parametrov
+    const worldId = urlParams.get('worldId') || urlParams.get('world');
+    const levelId = urlParams.get('levelId') || urlParams.get('level');
+
+    const isTraining = urlParams.get('training') === 'true';
+    const trainingConfig = urlParams.get('config');
+    
+    console.log('URL parametre:', { worldId, levelId });
+    
+    // Zvyšok funkcie zostáva rovnaký...
+    if (worldId && levelId) {
+        if (typeof getLevelConfig === 'function') {
+            const levelConfig = getLevelConfig(levelId);
+            if (levelConfig) {
+                console.log('Načítaná konfigurácia levelu:', levelConfig);
+                initializeGameWithLevel(levelConfig);
+                return;
+            } else {
+                console.warn(`Level ${levelId} nebol nájdený`);
+            }
+        } else {
+            console.warn('Funkcia getLevelConfig nie je dostupná - levels.js nebol načítaný');
+        }
+    }
+
+    if (isTraining && trainingConfig) {
+        try {
+            const config = JSON.parse(decodeURIComponent(trainingConfig));
+            console.log('Spúšťam tréningový level s konfiguráciou:', config);
+            initializeGameWithLevel(config, true); // true = custom level
+            return;
+        } catch (error) {
+            console.error('Chyba pri načítaní tréningovej konfigurácie:', error);
+        }
+    }
+       
+    // OPRAVENÝ FALLBACK - správne počty
+    console.log('Spúšťam hru s predvolenými nastaveniami');
+    const fallbackLevelConfig = {
+        words: ['rak', 'ryba', 'ruka', 'rosa'],
+        diamonds: 2,    // OPRAVENÉ: bolo 3, teraz 2
+        golds: 3,       // OPRAVENÉ: bolo 4, teraz 3  
+        crystals: 1,
+        timeLimit: null,
+        positions: {
+            diamonds: [{ x: 3, y: 8 }, { x: 12, y: 7 }], // len 2 pozície
+            golds: [{ x: 2, y: 9 }, { x: 7, y: 8 }, { x: 14, y: 6 }], // len 3 pozície
+            crystals: [{ x: 9, y: 7 }],
+            player: { x: 1, y: 1 }
+        }
+    };
+    
+    initializeGameWithLevel(fallbackLevelConfig);
+}
+
+///////////////////////////////////////////////
+// Spustenie inicializácie po načítaní DOM   //
+///////////////////////////////////////////////
+document.addEventListener('DOMContentLoaded', function() {
+    // Čakaj kým sa načítajú všetky scripty, potom inicializuj
+    setTimeout(initializeFromURL, 100);
+});
+
+
+
+
+
+
+//////////////////////////////////////////////////
+// ====== VIRTUAL JOYSTICK FUNKCIONALITA ====== //
+//        MECHANIKA POHYBU PRE MOBILY           //
+//////////////////////////////////////////////////
+
+///////////////////////////////////////////////
+//       Premenné pre virtual joystick       //
+///////////////////////////////////////////////
 let joystickActive = false;
 let joystickCenter = { x: 0, y: 0 };
 let joystickKnob = null;
@@ -10,7 +266,9 @@ let joystickRadius = 45; // Polomer pohybu knobu
 let lastMoveTime = 0;
 const moveDelay = 150; // Delay medzi pohybmi v ms
 
-// Inicializácia joysticku po načítaní DOM
+///////////////////////////////////////////////
+// Inicializácia joysticku po načítaní DOM   //
+///////////////////////////////////////////////
 document.addEventListener('DOMContentLoaded', function() {
     initVirtualJoystick();
 });
@@ -38,14 +296,18 @@ function initVirtualJoystick() {
     document.addEventListener('mouseup', handleMouseEnd);
 }
 
-// Touch start
+///////////////////////////////////////////////
+//                Touch start                //
+///////////////////////////////////////////////
 function handleTouchStart(e) {
     e.preventDefault();
     joystickActive = true;
     joystickContainer.classList.add('active');
 }
 
-// Touch move
+///////////////////////////////////////////////
+//                Touch move                 //
+///////////////////////////////////////////////
 function handleTouchMove(e) {
     e.preventDefault();
     if (!joystickActive) return;
@@ -58,20 +320,26 @@ function handleTouchMove(e) {
     updateJoystickPosition(x, y);
 }
 
-// Touch end
+///////////////////////////////////////////////
+//                Touch end                  //
+///////////////////////////////////////////////
 function handleTouchEnd(e) {
     e.preventDefault();
     resetJoystick();
 }
 
-// Mouse start (pre testovanie)
+///////////////////////////////////////////////
+//      Mouse start (pre testovanie)         //
+///////////////////////////////////////////////
 function handleMouseStart(e) {
     e.preventDefault();
     joystickActive = true;
     joystickContainer.classList.add('active');
 }
 
-// Mouse move
+///////////////////////////////////////////////
+//              Mouse move                   //
+///////////////////////////////////////////////
 function handleMouseMove(e) {
     if (!joystickActive) return;
     
@@ -82,12 +350,16 @@ function handleMouseMove(e) {
     updateJoystickPosition(x, y);
 }
 
-// Mouse end
+///////////////////////////////////////////////
+//                Mouse end                  //
+///////////////////////////////////////////////
 function handleMouseEnd(e) {
     resetJoystick();
 }
 
-// Aktualizácia pozície knobu a pohyb hráča
+///////////////////////////////////////////////
+// Aktualizácia pozície knobu a pohyb hráča  //
+///////////////////////////////////////////////
 function updateJoystickPosition(x, y) {
     // Obmedz pohyb v kruhu
     const distance = Math.sqrt(x * x + y * y);
@@ -109,7 +381,9 @@ function updateJoystickPosition(x, y) {
     }
 }
 
-// Spracovanie pohybu hráča
+///////////////////////////////////////////////
+//      Spracovanie pohybu hráča             //
+///////////////////////////////////////////////
 function handleJoystickMovement(x, y) {
     const threshold = 15; // Minimálna vzdialenosť pre aktiváciu pohybu
     const distance = Math.sqrt(x * x + y * y);
@@ -134,7 +408,9 @@ function handleJoystickMovement(x, y) {
     movePlayer(direction);
 }
 
-// Pohyb hráča (používa existujúcu logiku)
+///////////////////////////////////////////////
+// Pohyb hráča (používa existujúcu logiku)   //
+///////////////////////////////////////////////
 function movePlayer(direction) {
     const newPlayerX = playerX;
     const newPlayerY = playerY;
@@ -174,7 +450,9 @@ function movePlayer(direction) {
     checkCollisions(newPlayerX, newPlayerY);
 }
 
-// Kontrola kolízií (extrahované z pôvodného kódu)
+/////////////////////////////////////////////////////
+// Kontrola kolízií (extrahované z pôvodného kódu) //
+/////////////////////////////////////////////////////
 function checkCollisions(newPlayerX, newPlayerY) {
     // Kontrola kolízií s clay
     clay.forEach((clayBlock, clayIndex) => {
@@ -237,14 +515,18 @@ function checkCollisions(newPlayerX, newPlayerY) {
     });
 }
 
-// Reset joysticku na stred
+///////////////////////////////////////////////
+//         Reset joysticku na stred          //
+///////////////////////////////////////////////
 function resetJoystick() {
     joystickActive = false;
     joystickContainer.classList.remove('active');
     joystickKnob.style.transform = 'translate(-50%, -50%)';
 }
 
-// Akčné tlačidlo
+///////////////////////////////////////////////
+//           Akčné tlačidlo                  //
+///////////////////////////////////////////////
 document.addEventListener('DOMContentLoaded', function() {
     const actionButton = document.querySelector('.action-button');
     if (actionButton) {
@@ -265,235 +547,11 @@ function handleActionClick(e) {
     animateDigging();
 }
 
-// Čakanie na načítanie DOM obsahu
-document.addEventListener('DOMContentLoaded', function() {
-    window.addEventListener('load', function() {
-        setTimeout(hideLoadingScreen, 1000); // Čaká 1 sekundu potom skryje
-    });
-    
-    console.log('Hra načítaná.');
-});
 
-
-/**
- * Skrytie loading screen s animáciou
- */
-function hideLoadingScreen() {
-    const loadingScreen = document.getElementById('loading-screen');
-    if (loadingScreen) {
-        loadingScreen.style.opacity = '0';
-        setTimeout(() => {
-            loadingScreen.style.display = 'none';
-        }, 500);
-    }
-}
-
-
-
-// Získanie canvasu a kontextu
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-const blockSize = 50; // Veľkosť jednej blokovej kocky
-
-getLocalStream();
-
-const playerSize = blockSize; // Veľkosť hráča
-const diamondSize = blockSize; // Veľkosť diamantu
-const GoldSize = blockSize; // Veľkosť diamantu
-const claySize = blockSize; // Veľkosť hliny
-const kovSize = blockSize; // Veľkosť diamantu
-const mapWidth = 16; // Počet blokov na šírku
-const mapHeight = 10; // Počet blokov na výšku
-
-let playerX = blockSize; // Začiatočná pozícia hráča na osi X
-let playerY = blockSize; // Začiatočná pozícia hráča na osi Y
-
-const diamonds = [];
-const kov = [];
-const golds = [];
-const clay = [];
-let PocetGenDiamant = 3;
-let PocetGenKov = 1;
-let PocetGenGolds = 4;
-
-let diamondsDestroyed = 0; // Počet zničených diamantov
-let kovDestroyed = 0; // Počet zničených diamantov
-let goldsDestroyed = 0; // Počet zničených goldov
-let isDestroying = false; // Premenná určujúca, či hráč zničí blok
-let playerRotation = 0; // Úvodná rotácia hráča
-let diamondsCollected = 0; // Počet zozbieraných diamantov
-let kovCollected = 0; // Počet zozbieraných kovov
-let goldsCollected = 0; // Počet zozbieraných diamantov
-let dragonSleeping = true;
-
-playerX = 100;
-playerY = 200;
-const goldImg = new Image();
-goldImg.src = 'images/gold.png';
-const diamondImg = new Image();
-diamondImg.src = 'images/diamond.png';
-const kovImg = new Image();
-kovImg.src = 'images/kov.png';
-const clayImg = new Image();
-clayImg.src = 'images/stone.png';
-const playerImg = new Image();
-playerImg.src = 'images/hrac.png';
-const playerImgVl = new Image();
-playerImgVl.src = 'images/hrac-otoceny-vlavo.png';
-const playerImgVp = new Image();
-playerImgVp.src = 'images/hrac-otoceny-vpravo.png';
-const playerImgchrbat = new Image();
-playerImgchrbat.src = 'images/hrac.png';
-const hracKopaVpravoImg = new Image();
-hracKopaVpravoImg.src = 'images/hrac-kope-vpravo.png';
-const hracKopaVlavoImg = new Image();
-hracKopaVlavoImg.src = 'images/hrac-kope-vlavo.png';
-let playerDirection = 'front';
-let kope = false;
-
-const EffectssoundFolder = `zvuky/effects`;
-let  effectVyhra = new Howl({ src: [`zvuky/effects/vyhra.mp3`] });
-let effectZle = new Howl({ src: [`zvuky/effects/zle.mp3`] });
-let effectSpravne = new Howl({ src: [`zvuky/effects/spravne.mp3`] });
-let effectkopanie = new Howl({ src: [`zvuky/effects/kopanie.wav`] });
-let effectzlato = new Howl({ src: [`zvuky/effects/zlato.wav`] });
-
-//Zobrazenie stats
-/*function displayStats() {
-    ctx.font = '20px Arial';
-    ctx.fillStyle = 'black';
-    ctx.fillText(`Stlačenia medzerníka: ${spaceBarPocitadlo1}`, 10, 30);
-    ctx.fillText(`Počet diamantov: ${diamondsCollected}`, 10, 60);
-    ctx.fillText(`Počet kovov: ${kovCollected}`, 10, 90);
-    ctx.fillText(`Počet goldov: ${goldsCollected}`, 10, 120);
-}*/
-
-//Generovanie predmetov
-function generateDiamonds() {
-  const generatedPositions = []; // Pole na uchovanie už vygenerovaných pozícií
-  while (diamonds.length != PocetGenDiamant) {
-    const diamondX = Math.floor(Math.random() * mapWidth) * blockSize;
-    const diamondY = (Math.floor(Math.random() * mapHeight) + 6) * blockSize; // Generovanie o 10 nižšie
-    const newPosition = { x: diamondX, y: diamondY };
-    // Zkontrolujeme, či je pozícia už obsadená diamantom
-    const positionExists = generatedPositions.some (pos => pos.x === diamondX && pos.y === diamondY); 
-    if (!positionExists) {
-      diamonds.push(newPosition);
-      generatedPositions.push(newPosition);
-    }
-  }
-  initializeDiamonds(PocetGenDiamant);
-} 
-function generateKov() {
-  const generatedPositions = []; 
-  while (kov.length != PocetGenKov) {
-    const kovX = Math.floor(Math.random() * mapWidth) * blockSize;
-    const kovY = (Math.floor(Math.random() * mapHeight) + 6) * blockSize; 
-    const newPosition = { x: kovX, y: kovY };
-    const positionExists = generatedPositions.some (pos => pos.x === kovX && pos.y === kovY); 
-    if (!positionExists) {
-      kov.push(newPosition);
-      generatedPositions.push(newPosition);
-    }
-  }
-  initializeKov(PocetGenKov);
-} 
-function generateGolds() {
-  const generatedPositions = []; 
-  while (golds.length !== PocetGenGolds) {
-    const goldX = Math.floor(Math.random() * mapWidth) * blockSize;
-    const goldY = (Math.floor(Math.random() * mapHeight) + 6) * blockSize; 
-    const newPosition = { x: goldX, y: goldY };
-    const positionExists = generatedPositions.some(pos => pos.x === goldX && pos.y === goldY) ||
-                           diamonds.some(diamond => diamond.x === goldX && diamond.y === goldY) || 
-                           kov.some(kov => kov.x === goldX && kov.y === goldY);
-    if (!positionExists) {
-      golds.push(newPosition);
-      generatedPositions.push(newPosition);
-    }
-  }
-  initializeGolds(PocetGenGolds);
-}
-function generateClay() {
-    for (let y = 0; y < mapHeight; y++) {
-      for (let x = 0; x < mapWidth; x++) {
-        let isPositionEmpty = true;
-        diamonds.forEach(diamond => {
-          if (diamond.x === x * blockSize && diamond.y === (y + 6) * blockSize) { 
-            isPositionEmpty = false;
-          }
-        });
-        kov.forEach(kov => {
-          if (kov.x === x * blockSize && kov.y === (y + 6) * blockSize) { 
-            isPositionEmpty = false;
-          }
-        });
-        golds.forEach(gold => {
-          if (gold.x === x * blockSize && gold.y === (y + 6) * blockSize) { 
-            isPositionEmpty = false;
-          }
-        });
-        if (isPositionEmpty) {
-          clay.push({ x: x * blockSize, y: (y + 6) * blockSize }); 
-        }
-      }
-    }
-}
-function drawPlayer() {
-    let image;
-    if (playerDirection == 'front' ){
-      image = playerImg;
-      if(kope == true){
-        image = hracKopaVpravoImg;
-      }
-    }else if (playerDirection == 'vpravo' ){
-      image = playerImgVp;
-      if(kope == true){
-        image = hracKopaVpravoImg;
-      }
-    } else if (playerDirection == 'vlavo' ){
-      image = playerImgVl;
-      if(kope == true){
-        image = hracKopaVlavoImg;
-      }
-    }else{
-      image = playerImg;
-  }
-    ctx.drawImage(image, playerX, playerY, playerSize, playerSize);
-    if(kope == true){
-      image = hracKopaVpravoImg;
-    }
-}    
-function drawDiamonds() {
-    diamonds.forEach(diamond => {
-      if (!diamond.destroyed) {
-        ctx.drawImage(diamondImg, diamond.x, diamond.y, diamondSize, diamondSize);
-      }
-    });
-}
-function drawKov() {
-  kov.forEach(kov => {
-    if (!kov.destroyed) {
-      ctx.drawImage(kovImg, kov.x, kov.y, kovSize, kovSize);
-    }
-  });
-}
-function drawGolds() {
-  golds.forEach(gold => {
-    if (!gold.destroyed) {
-      ctx.drawImage(goldImg, gold.x, gold.y, GoldSize, GoldSize);
-    }
-  });
-}
-function drawClay() {
-    ctx.lineWidth = 2;
-    clay.forEach(clayObj => {
-      ctx.drawImage(clayImg, clayObj.x, clayObj.y, claySize, claySize);
-    });
-}
-
-
-//POHYB
+///////////////////////////////////////////////
+// ========== OVLADANIE PRE PC ============= //
+//         POHYB - KLAVESNICA (PC)           //
+///////////////////////////////////////////////
 window.addEventListener('keydown', (e) => {
   const newPlayerX = playerX;
   const newPlayerY = playerY;
@@ -533,7 +591,9 @@ window.addEventListener('keydown', (e) => {
           break;
   }
   
-  // Kontrola kolízií 
+  //////////////////////////////////////////////
+  //            Kontrola kolízií              //
+  //////////////////////////////////////////////
   clay.forEach((clayBlock, clayIndex) => {
       const blockX = clayBlock.x;
       const blockY = clayBlock.y;
@@ -589,24 +649,17 @@ window.addEventListener('keydown', (e) => {
   });
 
 });
-//HERNÁ SLUČKA
-function gameLoop() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawPlayer();
-    drawClay();
-    drawDiamonds();
-    drawKov();
-    drawGolds();
-    requestAnimationFrame(gameLoop);
-}
-let spaceBarPressed = 0; // Počet stlačení medzerníka
-let playerBlockX;
-let playerBlockY;
-let targetBlockX;
-let targetBlockY;
-let blockX;
-let blockY;
 
+document.addEventListener('keydown', (e) => {
+    if (e.key === ' ') {
+      destroyBlock();
+      animateDigging();
+    }
+});
+
+///////////////////////////////////////////////
+//      Funkcia na ničenie itemov            // 
+///////////////////////////////////////////////
 function destroyBlock() {
     playerBlockX = Math.floor(playerX / blockSize);
     playerBlockY = Math.floor(playerY / blockSize);
@@ -672,6 +725,9 @@ function destroyBlock() {
       }
     });
 }
+///////////////////////////////////////////////
+//          Animácia kopania                 // 
+///////////////////////////////////////////////
 function animateDigging() {
     kope = true;
     drawPlayer();
@@ -681,12 +737,267 @@ function animateDigging() {
         drawPlayer();
     }, 200); // Čas, po ktorom sa obrázok vráti späť (200 milisekúnd)
 }
-document.addEventListener('keydown', (e) => {
-    if (e.key === ' ') {
-      destroyBlock();
-      animateDigging();
+
+
+
+
+
+//////////////////////////////////////////////////
+//  ======= GENEROVANIE SVETA A ITEMOV =======  //
+// Inicializácia sveta, generovanie a kreslenie //
+//  itemov a hrača                              //
+//////////////////////////////////////////////////
+
+//////////////////////////////////////////////////
+// Generovanie diamantov                        //
+// Podporuje presné pozície z levelConfig       //
+// alebo náhodné generovanie                    //
+//////////////////////////////////////////////////
+function generateDiamonds() {
+    const generatedPositions = [];
+    
+    // Ak máme presné pozície v levelConfig a nie je to custom level
+    if (currentLevelConfig && currentLevelConfig.positions && 
+        currentLevelConfig.positions.diamonds && !isCustomLevel) {
+        
+        console.log('Generujem diamanty na presných pozíciach z levelConfig');
+        currentLevelConfig.positions.diamonds.forEach(pos => {
+            const newPosition = { x: pos.x * blockSize, y: pos.y * blockSize };
+            diamonds.push(newPosition);
+            generatedPositions.push(newPosition);
+            console.log(`Diamant na pozícii: ${pos.x}, ${pos.y}`);
+        });
+    } else {
+        // Náhodné generovanie (pre custom levely alebo ak nie sú definované pozície)
+        console.log('Generujem diamanty náhodne');
+        while (diamonds.length != PocetGenDiamant) {
+            const diamondX = Math.floor(Math.random() * mapWidth) * blockSize;
+            const diamondY = (Math.floor(Math.random() * mapHeight) + 6) * blockSize;
+            const newPosition = { x: diamondX, y: diamondY };
+            
+            const positionExists = generatedPositions.some(pos => pos.x === diamondX && pos.y === diamondY);
+            if (!positionExists) {
+                diamonds.push(newPosition);
+                generatedPositions.push(newPosition);
+            }
+        }
     }
-});
+    
+    initializeDiamonds(PocetGenDiamant);
+}
+
+//////////////////////////////////////////////////
+// Generovanie Kovov                            //
+// Podporuje presné pozície z levelConfig       //
+// alebo náhodné generovanie                    //
+//////////////////////////////////////////////////
+function generateKov() {
+    const generatedPositions = [];
+    
+    if (currentLevelConfig && currentLevelConfig.positions && 
+        currentLevelConfig.positions.crystals && !isCustomLevel) {
+        
+        console.log('Generujem kryštály na presných pozíciach z levelConfig');
+        currentLevelConfig.positions.crystals.forEach(pos => {
+            const newPosition = { x: pos.x * blockSize, y: pos.y * blockSize };
+            kov.push(newPosition);
+            generatedPositions.push(newPosition);
+            console.log(`Kryštál na pozícii: ${pos.x}, ${pos.y}`);
+        });
+    } else {
+        console.log('Generujem kryštály náhodne');
+        while (kov.length != PocetGenKov) {
+            const kovX = Math.floor(Math.random() * mapWidth) * blockSize;
+            const kovY = (Math.floor(Math.random() * mapHeight) + 6) * blockSize;
+            const newPosition = { x: kovX, y: kovY };
+            
+            const positionExists = generatedPositions.some(pos => pos.x === kovX && pos.y === kovY);
+            if (!positionExists) {
+                kov.push(newPosition);
+                generatedPositions.push(newPosition);
+            }
+        }
+    }
+    
+    initializeKov(PocetGenKov);
+}
+
+//////////////////////////////////////////////////
+// Generovanie Goldov                           //
+// Podporuje presné pozície z levelConfig       //
+// alebo náhodné generovanie                    //
+//////////////////////////////////////////////////
+function generateGolds() {
+    const generatedPositions = [];
+    
+    if (currentLevelConfig && currentLevelConfig.positions && 
+        currentLevelConfig.positions.golds && !isCustomLevel) {
+        
+        console.log('Generujem goldy na presných pozíciách z levelConfig');
+        currentLevelConfig.positions.golds.forEach(pos => {
+            const newPosition = { x: pos.x * blockSize, y: pos.y * blockSize };
+            golds.push(newPosition);
+            generatedPositions.push(newPosition);
+            console.log(`Gold na pozícii: ${pos.x}, ${pos.y}`);
+        });
+    } else {
+        console.log('Generujem goldy náhodne');
+        while (golds.length !== PocetGenGolds) {
+            const goldX = Math.floor(Math.random() * mapWidth) * blockSize;
+            const goldY = (Math.floor(Math.random() * mapHeight) + 6) * blockSize;
+            const newPosition = { x: goldX, y: goldY };
+            
+            const positionExists = generatedPositions.some(pos => pos.x === goldX && pos.y === goldY) ||
+                                   diamonds.some(diamond => diamond.x === goldX && diamond.y === goldY) || 
+                                   kov.some(kov => kov.x === goldX && kov.y === goldY);
+            if (!positionExists) {
+                golds.push(newPosition);
+                generatedPositions.push(newPosition);
+            }
+        }
+    }
+    
+    initializeGolds(PocetGenGolds);
+}
+
+//////////////////////////////////////////////////
+// Generovanie Clay                             //
+// Generuje hlinu všade okrem pozícií           //
+// kde sú iné objekty                           //
+//////////////////////////////////////////////////
+function generateClay() {
+    for (let y = 0; y < mapHeight; y++) {
+      for (let x = 0; x < mapWidth; x++) {
+        let isPositionEmpty = true;
+        diamonds.forEach(diamond => {
+          if (diamond.x === x * blockSize && diamond.y === (y + 6) * blockSize) { 
+            isPositionEmpty = false;
+          }
+        });
+        kov.forEach(kov => {
+          if (kov.x === x * blockSize && kov.y === (y + 6) * blockSize) { 
+            isPositionEmpty = false;
+          }
+        });
+        golds.forEach(gold => {
+          if (gold.x === x * blockSize && gold.y === (y + 6) * blockSize) { 
+            isPositionEmpty = false;
+          }
+        });
+        if (isPositionEmpty) {
+          clay.push({ x: x * blockSize, y: (y + 6) * blockSize }); 
+        }
+      }
+    }
+}
+
+//////////////////////////////////////////////////
+// Funkcia na vykreslovanie postavy             //
+//////////////////////////////////////////////////
+function drawPlayer() {
+    let image;
+    if (playerDirection == 'front' ){
+      image = playerImg;
+      if(kope == true){
+        image = hracKopaVpravoImg;
+      }
+    }else if (playerDirection == 'vpravo' ){
+      image = playerImgVp;
+      if(kope == true){
+        image = hracKopaVpravoImg;
+      }
+    } else if (playerDirection == 'vlavo' ){
+      image = playerImgVl;
+      if(kope == true){
+        image = hracKopaVlavoImg;
+      }
+    }else{
+      image = playerImg;
+  }
+    ctx.drawImage(image, playerX, playerY, playerSize, playerSize);
+    if(kope == true){
+      image = hracKopaVpravoImg;
+    }
+}    
+//////////////////////////////////////////////////
+// Funkcia na vykreslovanie diamantov           //
+//////////////////////////////////////////////////
+function drawDiamonds() {
+    diamonds.forEach(diamond => {
+      if (!diamond.destroyed) {
+        ctx.drawImage(diamondImg, diamond.x, diamond.y, diamondSize, diamondSize);
+      }
+    });
+}
+//////////////////////////////////////////////////
+// Funkcia na vykreslovanie kovu                //
+//////////////////////////////////////////////////
+function drawKov() {
+  kov.forEach(kov => {
+    if (!kov.destroyed) {
+      ctx.drawImage(kovImg, kov.x, kov.y, kovSize, kovSize);
+    }
+  });
+}
+//////////////////////////////////////////////////
+// Funkcia na vykreslovanie goldov              //
+//////////////////////////////////////////////////
+function drawGolds() {
+  golds.forEach(gold => {
+    if (!gold.destroyed) {
+      ctx.drawImage(goldImg, gold.x, gold.y, GoldSize, GoldSize);
+    }
+  });
+}
+//////////////////////////////////////////////////
+// Funkcia na vykreslovanie hliny               //
+//////////////////////////////////////////////////
+function drawClay() {
+    ctx.lineWidth = 2;
+    clay.forEach(clayObj => {
+      ctx.drawImage(clayImg, clayObj.x, clayObj.y, claySize, claySize);
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function checkWinCondition() {
     if (diamondsCollected === PocetGenDiamant && goldsCollected === PocetGenGolds && kovCollected === PocetGenKov) {
       setTimeout(() => {
@@ -709,6 +1020,10 @@ function resetGame() {
    kov.length = 0;
    clay.length = 0;
    golds.length = 0;
+    
+
+    wordList = [];
+    currentWordIndex = 0;
     
     diamondsDestroyed = 0; // Počet zničených diamantov
     kovsDestroyed = 0; // Počet zničených diamantov
@@ -984,33 +1299,75 @@ function showInfoDialog() {
 
 
 
-/* CVIČENIE NA VYSLOVNOSŤ SLOVA*/
+//////////////////////////////////////////
+// ====== HLASOVÉ CVIČENIE ======       //
+// Premenné                             //
+//////////////////////////////////////////
 const url = 'slova.txt'; 
 let currentWordIndex = 0; 
 let wordList = []; // Pole slov na vyslovenie
 const pocetcviceni = 2;
 let kontrolacvicenia = 0;
-// Funkcia na otvorenie cvičenia a výber náhodných slov
+
+//////////////////////////////////////////
+// Funkcia na otvorenie cvičenia        //
+// Používa slová z levelConfig          //
+//////////////////////////////////////////
 function openCvicenie() {
-  fetch(url)
-  .then(response => response.text())
-  .then(obsah => {
-    const riadky = obsah.split('\n');
-    let vybraneSlova = []; // Zoznam vybratých slov
-    while (wordList.length < pocetcviceni) {
-      const nahodnyIndex = Math.floor(Math.random() * riadky.length);
-      const slovo = riadky[nahodnyIndex].trim();
-      if (!vybraneSlova.includes(slovo)) { //kontrola či sa vybralo iné/rozdielne slovo
-        wordList.push(slovo);
-        vybraneSlova.push(slovo);
-      }
+    // DEBUG informácie
+    console.log('=== DEBUG openCvicenie ===');
+    console.log('currentLevelConfig:', currentLevelConfig);
+    console.log('isCustomLevel:', isCustomLevel);
+    console.log('URL parameters:', window.location.search);
+    
+    // Kontrola či máme dostupnú konfiguráciu levelu
+    if (!currentLevelConfig || !currentLevelConfig.words || currentLevelConfig.words.length === 0) {
+        console.error('Chyba: Nie sú dostupné slová pre cvičenie v levelConfig');
+        console.error('currentLevelConfig je:', currentLevelConfig);
+        
+        // OPRAVENÝ FALLBACK - náhodný výber slov
+        console.log('Používam fallback slová pre testovanie...');
+        const allFallbackWords = ['rak', 'ryba', 'ruka', 'rosa', 'ruža', 'robot', 'raketa', 'ryžou'];
+        
+        // Náhodný výber pocetcviceni slov z fallback zoznamu
+        const shuffled = allFallbackWords.sort(() => 0.5 - Math.random());
+        wordList = shuffled.slice(0, pocetcviceni);
+        
+        console.log('Fallback slová (náhodne vybrané):', wordList);
+        startExercise();
+        return;
     }
+    
+    console.log('Začínam cvičenie s slovami z levelConfig:', currentLevelConfig.words);
+    
+    // Výber náhodných slov z levelConfig namiesto zo súboru
+    let vybraneSlova = []; // Zoznam vybratých slov
+    const dostupneSlova = currentLevelConfig.words; // Slová z levelConfig
+    
+    // Vyber pocet cviceni počet náhodných slov
+    while (wordList.length < pocetcviceni && vybraneSlova.length < dostupneSlova.length) {
+        const nahodnyIndex = Math.floor(Math.random() * dostupneSlova.length);
+        const slovo = dostupneSlova[nahodnyIndex].trim();
+        
+        if (!vybraneSlova.includes(slovo)) { // kontrola či sa vybralo iné/rozdielne slovo
+            wordList.push(slovo);
+            vybraneSlova.push(slovo);
+            console.log(`Pridané slovo do cvičenia: ${slovo}`);
+        }
+    }
+    
+    // Ak nemáme dostatok slov, pridáme všetky dostupné
+    if (wordList.length === 0) {
+        console.warn('Neboli vybrané žiadne slová, používam všetky dostupné');
+        wordList = dostupneSlova.slice(0, Math.min(pocetcviceni, dostupneSlova.length));
+    }
+    
+    console.log('Finálny zoznam slov pre cvičenie:', wordList);
     startExercise();
-  })
-  .catch(error => {
-    console.error('Chyba pri načítaní obsahu súboru: ' + error);
-  });
 }
+
+
+
 /* Spustenie Cvicenia*/
 function startExercise() {
   document.getElementById("cvicenie").style.display = "block";
@@ -1128,7 +1485,113 @@ function closeCvicenie() {
 const rozpoznanie = document.getElementById('rozpoznanie');
 rozpoznanie.addEventListener('click', rozpoznanieS);
 
-/*Generovanie predmetov a GameLoop*/
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////
+// DEBUG FUNKCIE //
+///////////////////
+
+  /* Zobrazenie stats */
+  /*function displayStats() {
+      ctx.font = '20px Arial';
+      ctx.fillStyle = 'black';
+      ctx.fillText(`Stlačenia medzerníka: ${spaceBarPocitadlo1}`, 10, 30);
+      ctx.fillText(`Počet diamantov: ${diamondsCollected}`, 10, 60);
+      ctx.fillText(`Počet kovov: ${kovCollected}`, 10, 90);
+      ctx.fillText(`Počet goldov: ${goldsCollected}`, 10, 120);
+  }*/
+
+
+
+
+/////////////////////////////////////
+// ====== Dodatočné funkcie ====== //
+/////////////////////////////////////
+
+  /* Otvorenie custom level modalu */
+  function openCustomLevelModal() {
+      document.getElementById("custom-level-modal").style.display = "block";
+      document.getElementById("blur-background").style.display = "block";
+      document.body.style.overflow = "hidden";
+  }
+
+  /* Zatvorenie custom level modalu */
+  function closeCustomModal() {
+      document.getElementById("custom-level-modal").style.display = "none";
+      document.getElementById("blur-background").style.display = "none";
+      document.body.style.overflow = "auto";
+}
+
+  /* Spustenie custom levelu s vlastnými slovami */
+  function startCustomLevel() {
+      const wordsInput = document.getElementById('custom-words-input').value.trim();
+      
+      if (!wordsInput) {
+          alert('Prosím zadajte aspoň jedno slovo!');
+          return;
+      }
+      
+      // Rozdelenie slov po riadkoch a vyčistenie
+      const customWords = wordsInput.split('\n')
+          .map(word => word.trim())
+          .filter(word => word.length > 0);
+      
+      if (customWords.length === 0) {
+          alert('Prosím zadajte platné slová!');
+          return;
+      }
+      
+      console.log('Custom slová:', customWords);
+      
+      // Vytvorenie custom levelConfig
+      const customLevelConfig = {
+          words: customWords,
+          diamonds: 3,        // predvolené hodnoty
+          golds: 4,
+          crystals: 1,
+          timeLimit: null,    // bez časového limitu
+          // žiadne positions = náhodné generovanie
+      };
+      
+      closeCustomModal();
+      initializeGameWithLevel(customLevelConfig, true); // true = custom level
+  }
+
+
+
+
+
+  
+/////////////////////////////////
+//   ===== HERNÁ SLUČKA ====== //
+//  vykreslenie hraca          //
+//  vykreslenie itemov         //
+/////////////////////////////////
+function gameLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawPlayer();
+    drawClay();
+    drawDiamonds();
+    drawKov();
+    drawGolds();
+    requestAnimationFrame(gameLoop);
+}
+
+
+/////////////////////////////////
+// ====== Hlavná slučka ====== //
+// Generovanie sveta, Gameloop //
+/////////////////////////////////
 generateDiamonds();
 generateKov();
 generateGolds();

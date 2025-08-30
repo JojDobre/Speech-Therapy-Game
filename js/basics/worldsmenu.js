@@ -230,6 +230,68 @@ function setVisibleWorldsForCenter(centerIndex) {
 }
 
 /**
+ * Event listenery pre checkboxy
+ */
+function setupTrainingModalListeners() {
+    document.addEventListener('DOMContentLoaded', function() {
+        const showLockedCheckbox = document.getElementById('show-locked-words');
+        const showAllWorldsCheckbox = document.getElementById('show-all-worlds-words');
+        
+        if (showLockedCheckbox) {
+            showLockedCheckbox.addEventListener('change', updateWordsDisplay);
+        }
+        
+        if (showAllWorldsCheckbox) {
+            showAllWorldsCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    // Keď je zaškrtnuté "všetky svety", automaticky zaškrtni aj "nenaučené slová"
+                    showLockedCheckbox.checked = true;
+                }
+                updateWordsDisplay();
+            });
+        }
+    });
+}
+
+/**
+ * Nastavenie event listenerov pre training modal keď sa vytvára
+ */
+function setupTrainingModalEvents() {
+    const showLockedCheckbox = document.getElementById('show-locked-words');
+    const showAllWorldsCheckbox = document.getElementById('show-all-worlds-words');
+    const closeBtn = document.getElementById('training-modal-close');
+    const startBtn = document.getElementById('start-training-btn');
+    
+    console.log('Nastavujem event listenery pre training modal');
+    
+    if (showLockedCheckbox) {
+        showLockedCheckbox.addEventListener('change', updateWordsDisplay);
+        console.log('Show locked words checkbox listener nastavený');
+    }
+    
+    if (showAllWorldsCheckbox) {
+        showAllWorldsCheckbox.addEventListener('change', function() {
+            console.log('Show all worlds checkbox clicked');
+            if (this.checked) {
+                showLockedCheckbox.checked = true;
+            }
+            updateWordsDisplay();
+        });
+        console.log('Show all worlds checkbox listener nastavený');
+    }
+    
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeTrainingModal);
+        console.log('Close button listener nastavený');
+    }
+    
+    if (startBtn) {
+        startBtn.addEventListener('click', startTrainingLevel);
+        console.log('Start button listener nastavený');
+    }
+}
+
+/**
  * Nastavenie event listenerov
  */
 function setupEventListeners() {
@@ -238,6 +300,7 @@ function setupEventListeners() {
     // Navigačné šípky
     const prevButton = document.getElementById('prev-world');
     const nextButton = document.getElementById('next-world');
+    const banikButton = document.getElementById('banik-button');
     
     if (prevButton) {
         prevButton.addEventListener('click', () => {
@@ -250,12 +313,17 @@ function setupEventListeners() {
             navigateWorlds(1);
         });
     }
+
+    if (banikButton) {
+        banikButton.addEventListener('click', openTrainingModal);
+    }
     
     // Tlačidlá svetov - pridajú sa dynamicky v updateWorldButtons()
     // Level cards - pridajú sa dynamicky v updateLevelsGrid()
     
     // Event listener pre level modal zatvorenie
     setupLevelModalListeners();
+    setupTrainingModalListeners();
 }
 
 /**
@@ -651,17 +719,19 @@ function playSelectedLevel() {
     if (window.gameRouter && typeof window.gameRouter.startLevel === 'function') {
         window.gameRouter.startLevel(currentSelectedWorld.id, levelId);
     } else {
-        // Fallback - priama navigácia
+        // Fallback - priama navigácia s OPRAVENÝMI parametrami
         const level = getLevelConfig(levelId);
         if (level) {
             const gameUrls = {
                 'banik': 'game.html',
-                'pexeso': 'pexeso.html',
+                'pexeso': 'pexeso.html', 
                 'mario': 'mario.html'
             };
             const url = gameUrls[level.gameType];
             if (url) {
-                window.location.href = `${url}?level=${levelId}&world=${currentSelectedWorld.id}`;
+                // OPRAVENÉ: worldId namiesto world, levelId namiesto level
+                window.location.href = `${url}?worldId=${currentSelectedWorld.id}&levelId=${levelId}`;
+                console.log(`Navigujem na: ${url}?worldId=${currentSelectedWorld.id}&levelId=${levelId}`);
             }
         }
     }
@@ -706,4 +776,319 @@ if (typeof module !== 'undefined' && module.exports) {
         navigateWorlds,
         debugWorldsMenu
     };
+}
+
+
+/**
+ * Otvorenie training modalu
+ */
+function openTrainingModal() {
+    console.log('Otváram trénovací modal pre svet:', currentSelectedWorld.name);
+    
+    // Vytvor modal ak neexistuje
+    createTrainingModalIfNotExists();
+    
+    // Naplň modal dátami
+    populateTrainingModal();
+
+    // Nastav event listenery PO vytvorení modalu
+    setupTrainingModalEvents();
+    
+    // Zobraz modal
+    const modal = document.getElementById('training-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+/**
+ * Vytvorenie training modalu ak neexistuje
+ */
+function createTrainingModalIfNotExists() {
+    if (document.getElementById('training-modal')) return;
+    
+    // Modal HTML je už v HTML súbore, takže len pridáme event listenery
+    document.addEventListener('DOMContentLoaded', function() {
+        const closeBtn = document.getElementById('training-modal-close');
+        const startBtn = document.getElementById('start-training-btn');
+        const includeAllCheckbox = document.getElementById('include-all-words');
+        
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeTrainingModal);
+        }
+        
+        if (startBtn) {
+            startBtn.addEventListener('click', startTrainingLevel);
+        }
+        
+        if (includeAllCheckbox) {
+            includeAllCheckbox.addEventListener('change', toggleAllWords);
+        }
+    });
+}
+
+/**
+ * Naplnenie training modalu dátami
+ */
+function populateTrainingModal() {
+    // Aktualizuj názov sveta
+    const wordsTitle = document.getElementById('words-section-title');
+    if (wordsTitle) {
+        wordsTitle.textContent = `Naučené slová zo sveta ${currentSelectedWorld.name}:`;
+    }
+    
+    // Načítaj len slová z odomknutých levelov
+    const unlockedWords = getUnlockedWorldWords();
+    populateWordsList(unlockedWords);
+    
+    // Reset checkboxov
+    document.getElementById('show-locked-words').checked = false;
+    document.getElementById('show-all-worlds-words').checked = false;
+    
+    // Nastav predvolené hodnoty pre itemy
+    document.getElementById('diamonds-count').value = 2;
+    document.getElementById('golds-count').value = 3;
+    document.getElementById('crystals-count').value = 1;
+}
+
+/**
+ * Získanie slov len z odomknutých levelov aktuálneho sveta
+ */
+function getUnlockedWorldWords() {
+    const unlockedWords = [];
+    
+    if (typeof getWorldLevels === 'function' && currentSelectedWorld) {
+        const worldLevels = getWorldLevels(currentSelectedWorld.id);
+        worldLevels.forEach(level => {
+            const levelProgress = playerProgress?.worlds?.[level.worldId]?.levels?.[level.id];
+            const isUnlocked = levelProgress?.isUnlocked || false;
+            
+            if (isUnlocked && level.words) {
+                level.words.forEach(word => {
+                    if (!unlockedWords.includes(word)) {
+                        unlockedWords.push(word);
+                    }
+                });
+            }
+        });
+    }
+    
+    return unlockedWords.sort();
+}
+
+/**
+ * Získanie všetkých slov z aktuálneho sveta (vrátane zamknutých)
+ */
+function getAllCurrentWorldWords() {
+    const allWords = [];
+    
+    if (typeof getWorldLevels === 'function' && currentSelectedWorld) {
+        const worldLevels = getWorldLevels(currentSelectedWorld.id);
+        worldLevels.forEach(level => {
+            if (level.words) {
+                level.words.forEach(word => {
+                    if (!allWords.find(w => w.text === word)) {
+                        const levelProgress = playerProgress?.worlds?.[level.worldId]?.levels?.[level.id];
+                        const isUnlocked = levelProgress?.isUnlocked || false;
+                        
+                        allWords.push({
+                            text: word,
+                            isUnlocked: isUnlocked
+                        });
+                    }
+                });
+            }
+        });
+    }
+    
+    return allWords.sort((a, b) => a.text.localeCompare(b.text));
+}
+
+/**
+ * Získanie všetkých slov zo všetkých svetov
+ */
+function getAllWorldsWords() {
+    const allWords = [];
+    
+    if (typeof getWorldLevels === 'function') {
+        allWorlds.forEach(world => {
+            const worldLevels = getWorldLevels(world.id);
+            worldLevels.forEach(level => {
+                if (level.words) {
+                    level.words.forEach(word => {
+                        if (!allWords.find(w => w.text === word)) {
+                            const levelProgress = playerProgress?.worlds?.[level.worldId]?.levels?.[level.id];
+                            const isUnlocked = levelProgress?.isUnlocked || false;
+                            
+                            allWords.push({
+                                text: word,
+                                isUnlocked: isUnlocked,
+                                world: world.name
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    }
+    
+    return allWords.sort((a, b) => a.text.localeCompare(b.text));
+}
+
+/**
+ * Naplnenie zoznamu slov
+ */
+function populateWordsList(words) {
+    const wordsContainer = document.getElementById('words-list');
+    if (!wordsContainer) return;
+    
+    wordsContainer.innerHTML = '';
+    
+    if (typeof words[0] === 'string') {
+        // Jednoduché slová (len text)
+        words.forEach(word => {
+            const wordElement = createWordElement(word, true);
+            wordsContainer.appendChild(wordElement);
+        });
+    } else {
+        // Objekty s dodatočnými informáciami
+        words.forEach(wordObj => {
+            const wordElement = createWordElement(wordObj.text, wordObj.isUnlocked, wordObj.world);
+            wordsContainer.appendChild(wordElement);
+        });
+    }
+}
+
+/**
+ * Vytvorenie elementu pre slovo
+ */
+function createWordElement(word, isUnlocked = true, worldName = null) {
+    const wordElement = document.createElement('div');
+    wordElement.className = 'word-item';
+    wordElement.textContent = word;
+    wordElement.dataset.word = word;
+    
+    // ODSTRÁNENÉ: locked styling - všetky slová sú klikateľné
+    if (!isUnlocked) {
+        wordElement.classList.add('locked');
+        wordElement.title = 'Toto slovo je zo zamknutého levelu';
+        // Ale stále povoľ kliknutie
+    }
+    
+    if (worldName && worldName !== currentSelectedWorld.name) {
+        wordElement.title = `Slovo zo sveta ${worldName}`;
+    }
+    
+    // Event listener pre výber slova - funguje pre všetky slová
+    wordElement.addEventListener('click', function() {
+        console.log('Kliknuté na slovo:', word);
+        if (this.classList.contains('selected')) {
+            this.classList.remove('selected');
+            console.log('Slovo odznačené:', word);
+        } else {
+            this.classList.add('selected');
+            console.log('Slovo označené:', word);
+        }
+    });
+    
+    return wordElement;
+}
+
+/**
+ * Aktualizácia zobrazenia slov na základe checkboxov
+ */
+function updateWordsDisplay() {
+    const showLocked = document.getElementById('show-locked-words').checked;
+    const showAllWorlds = document.getElementById('show-all-worlds-words').checked;
+    const wordsTitle = document.getElementById('words-section-title');
+    
+    let words;
+    let titleText;
+    
+    if (showAllWorlds) {
+        words = getAllWorldsWords();
+        titleText = showLocked ? 'Všetky slová zo všetkých svetov:' : 'Naučené slová zo všetkých svetov:';
+        if (!showLocked) {
+            words = words.filter(w => w.isUnlocked);
+        }
+    } else {
+        if (showLocked) {
+            words = getAllCurrentWorldWords();
+            titleText = `Všetky slová zo sveta ${currentSelectedWorld.name}:`;
+        } else {
+            words = getUnlockedWorldWords();
+            titleText = `Naučené slová zo sveta ${currentSelectedWorld.name}:`;
+        }
+    }
+    
+    wordsTitle.textContent = titleText;
+    populateWordsList(words);
+}
+
+/**
+ * Spustenie tréningového levelu - aktualizovaná verzia
+ */
+function startTrainingLevel() {
+    // Zbieranie vybraných slov
+    const selectedWordElements = document.querySelectorAll('#words-list .word-item.selected');
+    const selectedWords = Array.from(selectedWordElements).map(el => el.dataset.word);
+    
+    if (selectedWords.length === 0) {
+        alert('Prosím vyberte aspoň jedno slovo pre tréning!');
+        return;
+    }
+    
+    // Získanie nastavení počtu itemov
+    const diamondsCount = parseInt(document.getElementById('diamonds-count').value) || 2;
+    const goldsCount = parseInt(document.getElementById('golds-count').value) || 3;
+    const crystalsCount = parseInt(document.getElementById('crystals-count').value) || 1;
+    
+    console.log('Spúšťam tréning:', {
+        words: selectedWords,
+        diamonds: diamondsCount,
+        golds: goldsCount,
+        crystals: crystalsCount
+    });
+    
+    // Zatvor modal
+    closeTrainingModal();
+    
+    // Vytvor custom levelConfig pre tréning
+    const trainingLevelConfig = {
+        words: selectedWords,
+        diamonds: diamondsCount,
+        golds: goldsCount,
+        crystals: crystalsCount,
+        timeLimit: null,
+        isTraining: true
+    };
+    
+    // Spusti hru s tréningovým levelom
+    const gameUrl = `game.html?training=true&config=${encodeURIComponent(JSON.stringify(trainingLevelConfig))}`;
+    window.location.href = gameUrl;
+}
+
+/**
+ * Zatvorenie training modalu
+ */
+function closeTrainingModal() {
+    const modal = document.getElementById('training-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+
+
+function debugTrainingModal() {
+    console.log('=== TRAINING MODAL DEBUG ===');
+    console.log('Modal element:', document.getElementById('training-modal'));
+    console.log('Close button:', document.getElementById('training-modal-close'));
+    console.log('Start button:', document.getElementById('start-training-btn'));
+    console.log('Show locked checkbox:', document.getElementById('show-locked-words'));
+    console.log('Show all worlds checkbox:', document.getElementById('show-all-worlds-words'));
+    console.log('Current selected world:', currentSelectedWorld);
+    console.log('============================');
 }

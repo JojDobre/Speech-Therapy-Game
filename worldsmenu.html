@@ -120,7 +120,67 @@
       </section>
 
     </div>
-    
+
+    <!-- TRAINING MODAL -->
+    <div id="training-modal" class="level-modal-overlay" style="display: none;">
+        <div class="close" id="training-modal-close">X</div>
+        <div class="level-modal-content">
+            <div class="level-modal-header">
+                <h2>TRÉNOVACIA BAŇA</h2>
+            </div>
+            <div class="level-modal-body">
+                <!-- Scrollovateľný div so slovami -->
+                <div class="words-display-section">
+                    <h3 id="words-section-title">Naučené slová zo sveta R:</h3>
+                    <div id="words-scrollable-container" class="words-scrollable-container">
+                        <div id="words-list" class="words-list">
+                            <!-- Slová sa budú generovať JavaScriptom -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Možnosti zobrazenia slov -->
+                <div class="words-options">
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="show-locked-words">
+                        <span class="checkmark"></span>
+                        Zobraziť aj nenaučené slová z tohto sveta
+                    </label>
+                    
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="show-all-worlds-words">
+                        <span class="checkmark"></span>
+                        Zobraziť slová zo všetkých svetov
+                    </label>
+                </div>
+
+                <!-- Nastavenia počtu itemov -->
+                <div class="items-settings">
+                    <h3>Nastavenia baní:</h3>
+                    <div class="items-controls">
+                        <div class="item-control">
+                            <label>Diamanty (rečové cvičenia):</label>
+                            <input type="number" id="diamonds-count" min="1" max="10" value="2">
+                        </div>
+                        <div class="item-control">
+                            <label>Goldy (jednoduché):</label>
+                            <input type="number" id="golds-count" min="1" max="10" value="3">
+                        </div>
+                        <div class="item-control">
+                            <label>Kryštály (posluchové cvičenia):</label>
+                            <input type="number" id="crystals-count" min="0" max="5" value="1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="level-modal-footer">
+                <button id="start-training-btn" class="btn-primary">
+                    <a>Spustiť tréning</a>
+                </button>
+            </div>
+        </div>
+    </div>
+        
     <!-- Načítanie konfiguračných súborov PRED hlavnou logikou -->
     <script src="config/worlds.js"></script>
     <script src="config/levels.js"></script>

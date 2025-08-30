@@ -990,7 +990,159 @@ body {
 
 
 
+/* ===== TRAINING MODAL STYLES ===== */
+.words-display-section {
+    margin-bottom: 20px;
+}
 
+.words-display-section h3 {
+    color: #ECCF17;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 18px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.words-scrollable-container {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+}
+
+.words-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 40px;
+}
+
+.word-item {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    user-select: none;
+}
+
+.word-item:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.word-item.selected {
+    background: linear-gradient(135deg, #00b894, #00cec9);
+    border: 2px solid #fff;
+    color: white;
+}
+
+/* Umožni kliknúť na locked slová */
+.word-item.locked {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    cursor: pointer !important;
+    font-style: normal !important;
+}
+
+.word-item.locked:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+    transform: scale(1.05);
+}
+
+.word-item.locked.selected {
+    background: linear-gradient(135deg, #00b894, #00cec9) !important;
+    color: white !important;
+    border: 2px solid #fff !important;
+}
+.words-options {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.checkbox-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 16px;
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 15px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.checkbox-option:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.checkbox-option input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.items-settings {
+    margin-top: 20px;
+    border-top: 2px solid rgba(255, 255, 255, 0.3);
+    padding-top: 15px;
+}
+
+.items-settings h3 {
+    color: #ECCF17;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 18px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.items-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.item-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 15px;
+    border-radius: 15px;
+}
+
+.item-control label {
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 14px;
+    color: white;
+    flex: 1;
+}
+
+.item-control input[type="number"] {
+    width: 60px;
+    padding: 5px 8px;
+    border: 2px solid #ECCF17;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 16px;
+    text-align: center;
+}
+
+.item-control input[type="number"]:focus {
+    outline: none;
+    border-color: #00cec9;
+    box-shadow: 0 0 5px rgba(0, 206, 201, 0.5);
+}
 
 
 
@@ -1528,6 +1680,28 @@ body {
 
     .middle-star img {
         width: 24px;
+    }
+
+
+    .words-scrollable-container {
+        max-height: 150px;
+    }
+    
+    .word-item {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+    
+    .items-controls {
+        gap: 8px;
+    }
+    
+    .item-control {
+        padding: 8px 12px;
+    }
+    
+    .item-control input[type="number"] {
+        width: 50px;
     }
 
 }
