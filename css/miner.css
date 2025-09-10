@@ -181,6 +181,7 @@ body {
     justify-content: center;
     text-align: center;
     gap: 20px;
+    align-content: center;
 }
 
 /* CANVAS */
@@ -1635,3 +1636,81 @@ body {
   }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.level-results {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 15px 0;
+    text-align: center;
+}
+
+.stars-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.star {
+    font-size: 40px;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+}
+
+.star.active {
+    opacity: 1;
+    text-shadow: 0 0 10px gold;
+}
+
+.performance-summary h3 {
+    color: #333;
+    margin-bottom: 15px;
+    font-family: 'Luckiest Guy', cursive;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.stat-label {
+    font-weight: bold;
+    color: #666;
+}
+
+.stat-value {
+    color: #333;
+    font-weight: bold;
+}

@@ -63,9 +63,9 @@ const LEVELS_CONFIG = {
             isUnlocked: true
         },
         {
-            id: 'r_002',
+            id: 'r_003',
             worldId: 'world_r',
-            levelNumber: 2,
+            levelNumber: 3,
             name: 'R v strede',
             gameType: 'pexeso',
             difficulty: 1,
@@ -83,9 +83,9 @@ const LEVELS_CONFIG = {
             isUnlocked: false
         },
         {
-            id: 'r_003',
+            id: 'r_002',
             worldId: 'world_r',
-            levelNumber: 3,
+            levelNumber: 2,
             name: 'R na konci',
             gameType: 'banik',
             difficulty: 2,

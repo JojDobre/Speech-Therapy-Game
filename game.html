@@ -57,13 +57,13 @@
           <div class="stats">
             <div>
               <a>Čas: </a>
-              <span>02:43</span>
+              <span id="game-timer">00:00</span>
             </div>
             <div>
               <a>Slová: </a>
-              <span>4 <img src="images/spravne.png"></span>
+              <span id="correct-words">0 <img src="images/spravne.png"></span>
               <span> / </span>
-              <span>4 <img src="images/nespravne.png"></span>
+              <span id="incorrect-words">0 <img src="images/nespravne.png"></span>
             </div>
           </div>
         </div>
@@ -121,10 +121,9 @@
     </div>
 
     <div id="endgame" class="cvicenie">
-      <div class="execise-window">
+      <div class="execise-window" style="max-height: 550px;">
         <div class="cvicenie-content-2">
-          <h1>VYHRAL SI HRU!</h1>
-          <p style="margin-top: -20px;">Chceš hrať znova?</p>
+          <h1>Prešiel si level!</h1>
           <div class="stats">
             <div>
               <a>Čas: </a>
@@ -132,17 +131,18 @@
             </div>
             <div>
               <a>Slová: </a>
-              <span>4 <img src="images/spravne.png"></span>
+              <span>4</span> <img src="images/spravne.png">
               <span> / </span>
-              <span>4 <img src="images/nespravne.png"></span>
+              <span>4 </span> <img src="images/nespravne.png">
             </div>
           </div>
           <div id="modal-stars" class="modal-stars"></div>
           <div class="gameend">
             <nav class="main-menu">
               <ul>
-                <li><a href="game.html" alt="Reštart" class="menu-button">Hrať znova</a></li>
-                <li><a href="worldsmenu.html" alt="Koniec" class="menu-button">Koniec</a></li>
+                <li><button onclick="restartCurrentLevel()" class="menu-button">Hrať znova</button></li>
+                <li><button onclick="goToNextLevel()" class="menu-button">Ďalší level</button></li>
+                <li><button onclick="returnToMenu()" class="menu-button">Späť do menu</button></li>
               </ul>
             </nav>
           </div>
@@ -164,6 +164,8 @@
     </div>
 
   <div id="blur-background"></div>
+  <script src="js/managers/progressManager.js"></script>
+
   <script src="js/game.js"></script>
   <script>
     function openDialog1() {
