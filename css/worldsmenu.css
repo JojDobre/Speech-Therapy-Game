@@ -22,12 +22,12 @@ body {
 /* ===== BACK BUTTON ===== */
 .back-button {
    position: absolute;
-   top: 20px;
-   left: 30px;
+   top: 5px;
+   left: 15px;
    color: #FFF;
    text-align: center;
    font-family: "Luckiest Guy", sans-serif;
-   font-size: 64px;
+   font-size: 44px;
    font-style: normal;
    font-weight: 400;
    line-height: normal;
@@ -163,8 +163,9 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    padding: 80px 20px 20px 20px; /* Top padding pre back button */
+    padding: 20px 20px 20px 20px; /* Top padding pre back button */
     gap: 20px;
+    justify-content: center;
 }
 
 /* ====================================
@@ -183,7 +184,6 @@ body {
     justify-content: center;
     gap: 20px;
     height: 70px; /* Fixná výška pre hornú sekciu */
-    margin-bottom: 23px;
 }
 
 /* Navigačné šípky - rovnaké ako v modáloch */
@@ -352,7 +352,6 @@ body {
     display: flex;
     justify-content: center;
     gap: 20px;
-    flex: 1; /* Zaberie zvyšok miesta */
     min-height: 0; /* Umožní flex itemom zmenšiť sa */
 }
 

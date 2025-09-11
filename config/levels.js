@@ -28,33 +28,30 @@ const LEVELS_CONFIG = {
             name: 'Prvé R-čka',
             gameType: 'banik',
             difficulty: 1,
-            words: ['rak', 'ryba', 'ruka', 'rosa'],
+            words: ['rak', 'ryba', 'ruka'],
             gameConfig: {
                 diamonds: 2,
                 golds: 5,
-                crystals: 1,
+                crystals: 3,
                 mapSize: { width: 16, height: 10 }
             },
-            // NOVÝ OBJEKT positions - presné pozície všetkých itemov
             positions: {
-                // Pozície diamantov (súradnice v grid-e, nie pixeloch)
                 diamonds: [
                     { x: 3, y: 8 },  // diamant na pozícii 3,8
                     { x: 12, y: 7 }  // diamant na pozícii 12,7
                 ],
-                // Pozície zlatých predmetov
                 golds: [
                     { x: 2, y: 9 },   // gold na pozícii 2,9
                     { x: 7, y: 8 },   // gold na pozícii 7,8
                     { x: 14, y: 6 },   // gold na pozícii 14,6
                     { x: 9, y: 8 },
-                    { x: 10, y: 8 },
+                    { x: 10, y: 13 }
                 ],
-                // Pozície kryštálov (kov v pôvodnom kóde)
                 crystals: [
-                    { x: 9, y: 7 }    // kryštál na pozícii 9,7
+                    { x: 9, y: 12 },    // kryštál na pozícii 9,7
+                    { x: 3, y: 12 },
+                    { x: 11, y: 9 }  
                 ],
-                // Pozícia hráča na začiatku levelu
                 player: { x: 1, y: 1 }
             },
             unlockRequirement: null,
@@ -63,42 +60,79 @@ const LEVELS_CONFIG = {
             isUnlocked: true
         },
         {
-            id: 'r_003',
+            id: 'r_002',
             worldId: 'world_r',
-            levelNumber: 3,
-            name: 'R v strede',
-            gameType: 'pexeso',
+            levelNumber: 2,
+            name: 'Prvé R-čka',
+            gameType: 'banik',
             difficulty: 1,
-            words: ['krava', 'tráva', 'prasa', 'breza', 'drevo', 'krása'],
+            words: ['rak', 'ryba', 'ruka', 'rád', 'rok'],
             gameConfig: {
-                pairs: 6, // počet párov v pexese
-                gridSize: { rows: 3, cols: 4 } // rozloženie kariet
+                diamonds: 3,
+                golds: 3,
+                crystals: 2,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 3, y: 8 },  // diamant na pozícii 3,8
+                    { x: 12, y: 7 },  // diamant na pozícii 12,7
+                    { x: 7, y: 13 }
+                ],
+                golds: [
+                    { x: 2, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 8 },   // gold na pozícii 7,8
+                    { x: 10, y: 8 }
+                ],
+                crystals: [
+                    { x: 9, y: 7 },    // kryštál na pozícii 9,7
+                    { x: 10, y: 12 }
+                ],
+                player: { x: 1, y: 1 }
             },
             unlockRequirement: {
                 levelId: 'r_001',
                 minStars: 1
             },
-            timeLimit: 180, // 3 minúty
+            timeLimit: null,
             minStarsToPass: 1,
             isUnlocked: false
         },
         {
-            id: 'r_002',
+            id: 'r_003',
             worldId: 'world_r',
-            levelNumber: 2,
-            name: 'R na konci',
+            levelNumber: 3,
+            name: 'Prvé R-čka',
             gameType: 'banik',
-            difficulty: 2,
-            words: ['kôr', 'mor', 'dvôr', 'kúr', 'syr', 'mier'],
+            difficulty: 1,
+            words: ['rak', 'ryba', 'ruka', 'rosa', 'rád', 'rok'],
             gameConfig: {
                 diamonds: 3,
-                golds: 4,
+                golds: 5,
                 crystals: 1,
                 mapSize: { width: 16, height: 10 }
             },
+            positions: {
+                diamonds: [
+                    { x: 3, y: 8 },  // diamant na pozícii 3,8
+                    { x: 12, y: 7 },  // diamant na pozícii 12,7
+                    { x: 10, y: 12 }
+                ],
+                golds: [
+                    { x: 2, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 8 },   // gold na pozícii 7,8
+                    { x: 14, y: 6 },   // gold na pozícii 14,6
+                    { x: 9, y: 8 },
+                    { x: 10, y: 8 }
+                ],
+                crystals: [
+                    { x: 9, y: 7 }    // kryštál na pozícii 9,7
+                ],
+                player: { x: 1, y: 1 }
+            },
             unlockRequirement: {
                 levelId: 'r_002',
-                minStars: 1
+                minStars: 2
             },
             timeLimit: null,
             minStarsToPass: 1,
@@ -108,19 +142,38 @@ const LEVELS_CONFIG = {
             id: 'r_004',
             worldId: 'world_r',
             levelNumber: 4,
-            name: 'Dvojité R',
-            gameType: 'pexeso',
-            difficulty: 2,
-            words: ['koruna', 'barva', 'varenie', 'porota', 'gorila', 'kurča'],
+            name: 'Prvé R-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['rak', 'ryba', 'ruka', 'rosa', 'rád', 'rok', 'roh'],
             gameConfig: {
-                pairs: 6,
-                gridSize: { rows: 3, cols: 4 }
+                diamonds: 4,
+                golds: 3,
+                crystals: 1,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 4, y: 8 },  // diamant na pozícii 3,8
+                    { x: 10, y: 7 },  // diamant na pozícii 12,7
+                    { x: 4, y: 12 },
+                    { x: 9, y: 14 }
+                ],
+                golds: [
+                    { x: 3, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 8 },   // gold na pozícii 7,8
+                    { x: 14, y: 6 }   // gold na pozícii 14,6
+                ],
+                crystals: [
+                    { x: 7, y: 11 }    // kryštál na pozícii 9,7
+                ],
+                player: { x: 1, y: 1 }
             },
             unlockRequirement: {
                 levelId: 'r_003',
-                minStars: 1
+                minStars: 3
             },
-            timeLimit: 150,
+            timeLimit: null,
             minStarsToPass: 1,
             isUnlocked: false
         },
@@ -128,48 +181,470 @@ const LEVELS_CONFIG = {
             id: 'r_005',
             worldId: 'world_r',
             levelNumber: 5,
-            name: 'Mario a R',
-            gameType: 'mario',
-            difficulty: 2,
-            words: ['robot', 'ruža', 'rieka', 'raketa', 'rýchlo', 'radosť'],
+            name: 'Prvé R-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['ruka', 'rosa', 'rád', 'rok', 'roh', 'ráno'],
             gameConfig: {
-                speechItems: 4, // počet predmetov vyžadujúcich rečové cvičenie
-                coins: 6,       // počet mincí na zbieranie
-                enemies: 2,     // počet nepriateľov
-                platforms: 8    // počet platforiem
+                diamonds: 4,
+                golds: 2,
+                crystals: 2,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 6, y: 4 },  // diamant na pozícii 3,8
+                    { x: 9, y: 7 },  // diamant na pozícii 12,7
+                    { x: 2, y: 10 },
+                    { x: 1, y: 14 }
+                ],
+                golds: [
+                    { x: 3, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 8 }   // gold na pozícii 7,8
+                ],
+                crystals: [
+                    { x: 7, y: 11 },    // kryštál na pozícii 9,7
+                    { x: 3, y: 6 } 
+                ],
+                player: { x: 1, y: 1 }
             },
             unlockRequirement: {
                 levelId: 'r_004',
-                minStars: 2
+                minStars: 4
             },
-            timeLimit: 240,
+            timeLimit: null,
             minStarsToPass: 1,
             isUnlocked: false
         },
-        // Pokračovanie pre ďalšie levely sveta R...
         {
             id: 'r_006',
             worldId: 'world_r',
             levelNumber: 6,
-            name: 'R kombinace',
+            name: 'Prvé R-čka',
             gameType: 'banik',
-            difficulty: 3,
-            words: ['traktor', 'draček', 'príroda', 'program', 'krásny', 'pracovať'],
+            difficulty: 1,
+            words: ['rok', 'rak', 'ruka', 'roh', 'ryba', 'rádio', 'ráno'],
             gameConfig: {
                 diamonds: 4,
-                golds: 5,
+                golds: 2,
                 crystals: 2,
-                mapSize: { width: 18, height: 12 }
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 5 },  // diamant na pozícii 3,8
+                    { x: 4, y: 7 },  // diamant na pozícii 12,7
+                    { x: 6, y: 10 },
+                    { x: 2, y: 14 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 12 }   // gold na pozícii 7,8
+                ],
+                crystals: [
+                    { x: 7, y: 11 },    // kryštál na pozícii 9,7
+                    { x: 10, y: 6 } 
+                ],
+                player: { x: 1, y: 1 }
             },
             unlockRequirement: {
                 levelId: 'r_005',
-                minStars: 2
+                minStars: 5
             },
             timeLimit: null,
-            minStarsToPass: 2,
+            minStarsToPass: 1,
             isUnlocked: false
-        }
-        // Tu by pokračovali ďalšie levely až po r_020...
+        },
+        {
+            id: 'r_007',
+            worldId: 'world_r',
+            levelNumber: 7,
+            name: 'Prvé R-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['rok', 'rak', 'ruka', 'roh', 'ryba', 'rádio', 'ráno'],
+            gameConfig: {
+                diamonds: 4,
+                golds: 2,
+                crystals: 2,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 5 },  // diamant na pozícii 3,8
+                    { x: 4, y: 7 },  // diamant na pozícii 12,7
+                    { x: 6, y: 10 },
+                    { x: 2, y: 14 }
+                ],
+                golds: [
+                    { x: 3, y: 8 },   // gold na pozícii 2,9
+                    { x: 7, y: 12 }   // gold na pozícii 7,8
+                ],
+                crystals: [
+                    { x: 7, y: 11 },    // kryštál na pozícii 9,7
+                    { x: 10, y: 9 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'r_006',
+                minStars: 6
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'r_008',
+            worldId: 'world_r',
+            levelNumber: 8,
+            name: 'Prvé R-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['ryba', 'rádio', 'ráno', 'rakva', 'rámus'],
+            gameConfig: {
+                diamonds: 2,
+                golds: 4,
+                crystals: 2,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 6 },  // diamant na pozícii 3,8
+                    { x: 6, y: 14 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 11 },   // gold na pozícii 7,8
+                    { x: 8, y: 12 },
+                    { x: 1, y: 5 }
+                ],
+                crystals: [
+                    { x: 9, y: 11 },    // kryštál na pozícii 9,7
+                    { x: 14, y: 8 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'r_007',
+                minStars: 7
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'r_009',
+            worldId: 'world_r',
+            levelNumber: 9,
+            name: 'Prvé R-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['rádio', 'ráno', 'rakva', 'rámus', 'párik'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 3,
+                crystals: 1,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 6 },  // diamant na pozícii 3,8
+                    { x: 10, y: 14 },
+                    { x: 2, y: 9 }
+                ],
+                golds: [
+                    { x: 7, y: 11 },   // gold na pozícii 7,8
+                    { x: 12, y: 12 },
+                    { x: 1, y: 5 }
+                ],
+                crystals: [
+                    { x: 9, y: 11 },    // kryštál na pozícii 9,7
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'r_008',
+                minStars: 10
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'r_010',
+            worldId: 'world_r',
+            levelNumber: 10,
+            name: 'Prvé R-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['ryba', 'rádio', 'ráno', 'rakva', 'rámus', 'rýchly'],
+            gameConfig: {
+                diamonds: 4,
+                golds: 6,
+                crystals: 1,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 6 },  // diamant na pozícii 3,8
+                    { x: 10, y: 14 },
+                    { x: 6, y: 5 },
+                    { x: 2, y: 10 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 11 },   // gold na pozícii 7,8
+                    { x: 12, y: 12 },
+                    { x: 1, y: 5 },
+                    { x: 3, y: 8 },
+                    { x: 7, y: 4 }
+                ],
+                crystals: [
+                    { x: 14, y: 6 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'r_009',
+                minStars: 11
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'r_011',
+            worldId: 'world_r',
+            levelNumber: 11,
+            name: 'Prvé R-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['rámus', 'rýchly', 'rakva', 'raketa'],
+            gameConfig: {
+                diamonds: 2,
+                golds: 2,
+                crystals: 2,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 6 },  // diamant na pozícii 3,8
+                    { x: 3, y: 12 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 11 },   // gold na pozícii 7,8
+                    { x: 1, y: 10 },
+                    { x: 1, y: 5 }
+                ],
+                crystals: [
+                    { x: 9, y: 11 },    // kryštál na pozícii 9,7
+                    { x: 6, y: 6 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'r_010',
+                minStars: 12
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'r_012',
+            worldId: 'world_r',
+            levelNumber: 12,
+            name: 'Prvé R-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['ryba', 'rádio', 'ráno', 'rakva', 'rámus', 'rýchly', 'raketa'],
+            gameConfig: {
+                diamonds: 2,
+                golds: 4,
+                crystals: 1,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 6 },  // diamant na pozícii 3,8
+                    { x: 10, y: 14 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 11 },   // gold na pozícii 7,8
+                    { x: 12, y: 12 },
+                    { x: 1, y: 5 }
+                ],
+                crystals: [
+                    { x: 9, y: 11 }    // kryštál na pozícii 9,7
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'r_011',
+                minStars: 13
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'r_013',
+            worldId: 'world_r',
+            levelNumber: 13,
+            name: 'Prvé R-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['ryba', 'rádio', 'ráno', 'rakva', 'rámus', 'rýchly', 'raketa', 'rybár', 'králik'],
+            gameConfig: {
+                diamonds: 5,
+                golds: 3,
+                crystals: 1,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 4, y: 12 },  // diamant na pozícii 3,8
+                    { x: 9, y: 10 },
+                    { x: 10, y: 14 },
+                    { x: 5, y: 2 },
+                    { x: 2, y: 10 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 10 },   // gold na pozícii 7,8
+                    { x: 2, y: 6 }
+                ],
+                crystals: [
+                    { x: 3, y: 6 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'r_012',
+                minStars: 14
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'r_014',
+            worldId: 'world_r',
+            levelNumber: 14,
+            name: 'Prvé R-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['rámus', 'rýchly', 'raketa', 'rybár', 'králik'],
+            gameConfig: {
+                diamonds: 2,
+                golds: 4,
+                crystals: 1,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 6 },  // diamant na pozícii 3,8
+                    { x: 10, y: 14 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 11 },   // gold na pozícii 7,8
+                    { x: 12, y: 12 },
+                    { x: 1, y: 5 }
+                ],
+                crystals: [
+                    { x: 9, y: 11 }    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'r_013',
+                minStars: 15
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'r_015',
+            worldId: 'world_r',
+            levelNumber: 15,
+            name: 'Prvé R-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['brána', 'pravda', 'mravec'],
+            gameConfig: {
+                diamonds: 2,
+                golds: 4,
+                crystals: 1,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 6 },  // diamant na pozícii 3,8
+                    { x: 10, y: 14 }
+                ],
+                golds: [
+                    { x: 8, y: 10 },   // gold na pozícii 2,9
+                    { x: 7, y: 11 },   // gold na pozícii 7,8
+                    { x: 4, y: 6 },
+                    { x: 2, y: 5 }
+                ],
+                crystals: [
+                    { x: 2, y: 4 }
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'r_014',
+                minStars: 16
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'r_016',
+            worldId: 'world_r',
+            levelNumber: 16,
+            name: 'Prvé R-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['brána', 'pravda', 'mravec', 'rybár', 'tráva', 'králik', 'ryba'],
+            gameConfig: {
+                diamonds: 4,
+                golds: 2,
+                crystals: 2,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 4, y: 6 },  // diamant na pozícii 3,8
+                    { x: 10, y: 14 }
+                ],
+                golds: [
+                    { x: 10, y: 10 },   // gold na pozícii 2,9
+                    { x: 7, y: 11 },   // gold na pozícii 7,8
+                    { x: 6, y: 12 },
+                    { x: 3, y: 7 }
+                ],
+                crystals: [
+                    { x: 10, y: 11 },    // kryštál na pozícii 9,7
+                    { x: 2, y: 6 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'r_015',
+                minStars: 17
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
     ],
 
     // ===============================

@@ -2,417 +2,180 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Logopedická hra pre najmenších">
     <meta name="author" content="Adam Reňak">
-    <meta name="keywords" content="Adam Reňak, Joj_Dobre, Bakalárska práca, Logopedická hra,">
-    <title>Baníkovo dobrodružstvo: Rozvíjanie reči - Bakalárska práca</title>
-    <link rel="stylesheet" type="text/css" href="index.css" />
+    <meta name="keywords" content="Adam Reňak, Joj_Dobre, Diplomová práca, Logopedická hra, TUKE">
+    <title>Baník Jožino: Logopedická hra - Diplomová práca</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+    <!-- Načítanie fontu Luckiest Guy z Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" type="text/css" href="css/pexeso-menu.css" />
 
     <link rel="icon" type="image/png" href="images/banik.ico">
     <link rel="shortcut icon" href="images/icons/banik.ico">
-
-
-    
   </head>
 
   <body>
-    <div class="container">
-      <div class="menu">
-        <ul>
-          <li><a href="game.html"><img src="images/spustithru.png" alt="ŠTART"></a></li>
-          <li><img src="images/Akohrat.png" alt="INFORMACIE" class="show-info"></li>
-          <li><a><img src="images/pexesomenu.png" alt="PEXESO" onclick="openCustomLevel()"></a></li>
-          <li><a href="superjozino.html"><img src="images/menu1.png" alt="cvicenie"></a></li>
-          <li><a href="jozino.html"><img src="images/menu1.png" alt="cvicenie"></a></li>
-          <li><a href="worlds-menu.html"><img src="images/menu1.png" alt="cvicenie"></a></li>
-          <li><a href="menu.html"><img src="images/menu1.png" alt="cvicenie"></a></li>
-
-
-        </ul>
-      </div>
-
-      <div class="right-section">
-        <img src="images/banik.png" alt="Baník Bob" class="rotate-enlarge">
-      </div>
-  
-
-      
-      <div id="informacie-okno" class="informacie-okno">
-        <span class="close"></span>
-        <div class="informacie-okno-content">
-          <h1>Baníkovo dobrodružstvo</h1>
-          <p>Vitaj v hre! Tvojou úlohou je preberať rolu odvážneho baníka a 
-            hľadať vzácne poklady ukryté v hlbokách podzemnej jaskyne.<br></p>
-            
-          <h2>Ovládanie postavy</h2>
-          <p>Použi šípky na klávesnici alebo klávesnice WASD na pohyb postavy po svete.
-          <br>Na vykopanie pokladu stlač medzerník.  
-          </p>
-          
-          <h2>Drahokamy</h2>
-          <p>V hre sa vyskytujú 3 druhy drahokamov: Zlato, Diamant a Fialový Kryštál.
-          <br>Na vykopanie diamantu musíš splniť rečové cvičenie. Na vykopanie kryštálu zase posluchové cvičenie.  
-          </p>
-          <br>
-          <p>Level dokončíš vyzbieraním všetkých drahokamov zobrazených v bočnom informačnom paneli.</p>
-          <br>
-          <p>Podporované webové prehliadače: Google Chrome, Microsoft Edge, Safari, Opera</p>
-          <p>Odporúčané rozlíšenie: minimálne 1200x850px</p>
-        </p>
+    <!-- LOADING -->
+    <div id="loading-screen" class="loading-screen">
+    <div class="loading-content">
+        <div class="loading-logo">
+            <div class="loading-text-jozino">JOŽINO</div>
+            <div class="loading-text-banik">BANÍK</div>
         </div>
-      </div>
-
-
-<div id="customLevelModal">
-  <h2>Spustiť pexeso</h2>
-  <div class="word-list" id="wordList">
-  </div>
-  <div id="wordCountContainer" style="display: none;">
-    <strong>Vybrané slova: <span id="selectedWordsCount">0</span></strong>
-  </div>
-
-  <div class="player-setup">
-    <h3>Nastavenie hráčov</h3>
-    <div id="playerInputs">
-      <input type="text" placeholder="Hráč 1" value="Hráč 1">
+        <div class="loading-spinner"></div>
+        <div class="loading-message">Načítavam...</div>
     </div>
-    <div class="game-controls">
-      <button onclick="addPlayer()">Pridať hráča</button>
-      <button onclick="removePlayer()">Odobrať hráča</button>
-    </div>
-  </div>
-  
-  <div class="game-controls">
-    <button onclick="startCustomGame()">Spustiť hru</button>
-    <button onclick="closeCustomLevel()">Zrušiť</button>
-  </div>
-</div>
-</div>
-      
     </div>
 
+    <div class="container">
+        <!-- ľavá sekcia -->
+        <div class="left-section">
+            <!-- Logo sekcia -->
+            <div class="logo-container">
+                <div class="logo-text">
+                    <div class="text-jozino">JOŽINO</div>
+                    <div class="text-banik">BANÍK</div>
+                </div>
+            </div>
+
+            <!-- Menu sekcia -->
+            <div class="menu-container">
+                <nav class="main-menu">
+                    <ul>
+                        <li><a href="worldsmenu.html" alt="Spustiť hru" class="menu-button primary"><span>ŠTART</span></a></li>
+                        <li><a href="#pravidla" alt="Pravidlá" class="menu-button show-rules">PRAVIDLÁ</a></li>
+                        <li><a href="#projekt" alt="O projekte" class="menu-button show-about">O PROJEKTE</a></li>
+                        <li><a href="game.html" alt="Banik" class="menu-button"><span>TEST Bana</span></a></li>
+                        <li><a onclick="openCustomLevel()" alt="Pexeso" class="menu-button"><span>TEST Pexeso</span></a></li>
+                        <li><a href="superjozino.html" alt="Jozino" class="menu-button"><span>TEST JOZINO</span></a></li>
+
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Radiálny gradient pozadí objekt pod menu -->
+            <div class="radial-background"></div>
+        </div>
+
+
+        <!-- pravá sekcia -->
+        <div class="right-section">
+            <div class="character-container">
+                <!-- Obrázok postavičky baníka -->
+                <img src="images/banik.png" alt="Jožino Baník" class="character-image">
+            </div>
+        </div>
+    </div>
 
 
 
-    <!-- pexeso menu -->
-    <script>
-    let allWords = {};
-    let selectedCategory = null;
-    let selectedWords = [];
+    <!-- Modálne okno pre pravidlá -->
+    <div id="rules-modal" class="modal">
+        <div class="close">X</div>
+        <div class="modal-content">
+            <h2>Pravidlá hry</h2>
+            <div class="modal-arrow-up"></div>
+            <div class="modal-text-content">
+                <p>
+                    Vitaj v hre Baník Jožino! Tvojou úlohou je preberať rolu odvážneho baníka a 
+                    hľadať vzácne poklady ukryté v hlbokách podzemnej jaskyne.
+                    <br><br>
+                    <span>Ovládanie postavy:</span><br>
+                    Použi šípky na klávesnici alebo klávesy WASD na pohyb postavy po svete.
+                    Na vykopanie pokladu stlač medzerník.
+                    <br><br>
+                    <span>Drahokamy:</span><br>
+                    V hre sa vyskytujú 3 druhy drahokamov: Zlato, Diamant a Fialový Kryštál.
+                    Na vykopanie diamantu musíš splniť rečové cvičenie. Na vykopanie kryštálu 
+                    zase posluchové cvičenie.
+                    <br><br>
+                    <span>Ciele hry:</span><br>
+                    Pokús sa nazbierať čo najviac pokladov v stanovenom čase. Každý typ 
+                    drahokamu ti prinesie iný počet bodov. Buď opatrný a užívaj si dobrodružstvo!
+                    <br><br>
+                    <span>Ovládanie postavy:</span><br>
+                    Použi šípky na klávesnici alebo klávesy WASD na pohyb postavy po svete.
+                    Na vykopanie pokladu stlač medzerník.
+                    <br><br>
+                    <span>Drahokamy:</span><br>
+                    V hre sa vyskytujú 3 druhy drahokamov: Zlato, Diamant a Fialový Kryštál.
+                    Na vykopanie diamantu musíš splniť rečové cvičenie. Na vykopanie kryštálu 
+                    zase posluchové cvičenie.
+                    <br><br>
+                    <span>Ciele hry:</span><br>
+                    Pokús sa nazbierať čo najviac pokladov v stanovenom čase. Každý typ 
+                    drahokamu ti prinesie iný počet bodov. Buď opatrný a užívaj si dobrodružstvo!
+                </p>
+            </div>
+            <div class="modal-arrow-down"></div>
+        </div>
+    </div>
 
-    async function loadAllWords() {
-        try {
-            const response = await fetch('js/pexeso/words.json');
-            allWords = await response.json();
-            renderCategoryList();
-            selectRandomLevel(); // Select "Náhodný level" by default
-            preloadCustomLevelImages(); // Preload images for "Vlastný level"
-        } catch (error) {
-            console.error('Chyba pri načítání slov:', error);
-        }
-    }
+    <div id="customLevelModal">
+        <h2>Spustiť pexeso</h2>
+        <div class="word-list" id="wordList">
+        </div>
+        <div id="wordCountContainer" style="display: none;">
+            <strong>Vybrané slova: <span id="selectedWordsCount">0</span></strong>
+        </div>
 
-    function renderCategoryList() {
-        const wordList = document.getElementById('wordList');
-        wordList.innerHTML = '';
-        document.getElementById('wordCountContainer').style.display = 'none';
+        <div class="player-setup">
+            <h3>Nastavenie hráčov</h3>
+            <div id="playerInputs">
+            <input type="text" placeholder="Hráč 1" value="Hráč 1">
+            </div>
+            <div class="game-controls">
+            <button onclick="addPlayer()">Pridať hráča</button>
+            <button onclick="removePlayer()">Odobrať hráča</button>
+            </div>
+        </div>
+        
+        <div class="game-controls">
+            <button onclick="startCustomGame()">Spustiť hru</button>
+            <button onclick="closeCustomLevel()">Zrušiť</button>
+        </div>
+    </div>
 
-        // Přidání tlačítka pro náhodný level
-        const randomLevelButton = document.createElement('button');
-        randomLevelButton.textContent = 'Základný level';
-        randomLevelButton.classList.add('category-button');
-        randomLevelButton.dataset.category = 'random';
-        randomLevelButton.addEventListener('click', selectCategory);
-        wordList.appendChild(randomLevelButton);
 
-        // Přidání tlačítek kategorií
-        Object.keys(allWords).forEach(category => {
-            const categoryButton = document.createElement('button');
-            categoryButton.textContent = `Level ${category}`;
-            categoryButton.classList.add('category-button');
-            categoryButton.dataset.category = category;
-            categoryButton.addEventListener('click', selectCategory);
-            wordList.appendChild(categoryButton);
-        });
+    <!-- Modálne okno pre informacie -->
+    <div id="about-modal" class="modal">
+        <div class="close">X</div>
+        <div class="modal-content">
+            <h2>O Projekte</h2>
+            <div class="modal-arrow-up"></div>
+            <div class="modal-text-content">
+                <p>
+                    Baník Jožino je interaktívna logopedická hra vytvorená v rámci diplomovej práce.
+                    <br><br>
+                    <span>Cieľ:</span><br>
+                    Pomôcť deťom s rozvojom správnej výslovnosti a artikulácie pomocou hravých cvičení.
+                    <br><br>
+                    <span>Technológie:</span><br>
+                    HTML5, CSS, JavaScript
+                    <br><br>
+                    <span>Autor:</span><br>
+                    Adam Reňak<br>
+                    Technická univerzita v Košiciach<br>
+                    Fakulta elektrotechniky a informatiky
+                    <br><br>
+                    <span>Rok:</span><br>
+                    2025
+                </p>
+            </div>
+            <div class="modal-arrow-down"></div>
+        </div>
+    </div>
+    
+    <!-- JavaScript pre interaktivitu -->
+    <script src="js/basics/menu.js"></script>
+    <script src="js/pexeso/menu-pexeso.js"></script>
 
-        // Přidání tlačítka pro vlastní level
-        const customLevelButton = document.createElement('button');
-        customLevelButton.textContent = 'Vlastný level';
-        customLevelButton.addEventListener('click', showAllWords);
-        wordList.appendChild(customLevelButton);
-    }
-
-    function selectCategory(event) {
-        // Odstraň zelené zvýraznění ze všech tlačítek
-        document.querySelectorAll('.category-button').forEach(btn => {
-            btn.style.backgroundColor = '';
-        });
-
-        // Zvýrazni vybrané tlačítko zeleně
-        event.target.style.backgroundColor = 'lightgreen';
-
-        // Ulož vybranou kategorii
-        selectedCategory = event.target.dataset.category;
-    }
-
-    function selectRandomLevel() {
-        const randomLevelButton = document.querySelector('button[data-category="random"]');
-        if (randomLevelButton) {
-            randomLevelButton.click();
-        }
-    }
-
-    function preloadCustomLevelImages() {
-        const allWordsFlat = Object.values(allWords).flat();
-        allWordsFlat.forEach(word => {
-            const img = new Image();
-            img.src = word.src;
-        });
-    }
-
-    function showRandomWords() {
-        document.getElementById('wordCountContainer').style.display = 'none';
-        const wordList = document.getElementById('wordList');
-        wordList.innerHTML = '';
-
-        // Sloučení všech slov z kategorií
-        const allWordsFlat = Object.values(allWords).flat();
-
-        // Náhodný výběr 15 slov
-        const randomWords = getRandomWords(allWordsFlat, 15).map(word => ({
-            ...word,
-            selected: false
-        }));
-
-        randomWords.forEach((word, index) => {
-            const wordItem = createWordItem(word, index);
-            wordList.appendChild(wordItem);
-        });
-
-        const backButton = document.createElement('button');
-        backButton.textContent = 'Naspäť';
-        backButton.addEventListener('click', renderCategoryList);
-        wordList.appendChild(backButton);
-    }
-
-    function showCategoryWords(category) {
-        document.getElementById('wordCountContainer').style.display = 'none';
-        selectedCategory = category;
-        const wordList = document.getElementById('wordList');
-        wordList.innerHTML = '';
-
-        const words = allWords[category].map(word => ({ ...word, selected: false }));
-
-        words.forEach((word, index) => {
-            const wordItem = createWordItem(word, index);
-            wordList.appendChild(wordItem);
-        });
-
-        const backButton = document.createElement('button');
-        backButton.textContent = 'Naspäť';
-        backButton.addEventListener('click', renderCategoryList);
-        wordList.appendChild(backButton);
-    }
-
-    // Funkce pro náhodný výběr slov
-    function getRandomWords(words, count) {
-        // Pokud je požadovaný počet větší než počet dostupných slov, vrátí všechna slova
-        if (count >= words.length) return words;
-
-        // Náhodný výběr slov
-        const shuffled = [...words].sort(() => 0.5 - Math.random());
-        return shuffled.slice(0, count);
-    }
-
-    function showAllWords() {
-        selectedCategory = null;
-        const wordList = document.getElementById('wordList');
-        wordList.innerHTML = '';
-
-        document.getElementById('wordCountContainer').style.display = 'block';
-
-        const allWordsFlat = Object.values(allWords).flat().map(word => ({ ...word, selected: false }));
-    allWordsFlat.forEach((word, index) => {
-        const wordItem = createWordItem(word, index);
-        wordList.appendChild(wordItem);
-    });
-
-    const backButton = document.createElement('button');
-    backButton.textContent = 'Naspäť';
-    backButton.addEventListener('click', () => {
-        renderCategoryList();
-        document.getElementById('wordCountContainer').style.display = 'none';
-    });
-    backButton.style.backgroundColor = '#ff4444';
-    backButton.style.color = 'white';
-    backButton.style.padding = '10px 20px';
-    backButton.style.border = 'none';
-    backButton.style.borderRadius = '5px';
-    backButton.style.cursor = 'pointer';
-    wordList.appendChild(backButton);
-}
-
-    function createWordItem(word, index) {
-        const wordItem = document.createElement('div');
-        wordItem.className = 'word-item';
-
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = `word-${index}`;
-        checkbox.checked = word.selected;
-        checkbox.addEventListener('change', () => toggleWordSelection(word));
-
-        const img = document.createElement('img');
-        img.src = word.src;
-        img.alt = word.word;
-
-        const label = document.createElement('label');
-        label.htmlFor = `word-${index}`;
-        label.textContent = word.word;
-
-        wordItem.appendChild(checkbox);
-        wordItem.appendChild(img);
-        wordItem.appendChild(label);
-
-        return wordItem;
-    }
-
-    function toggleWordSelection(word) {
-        if (word.selected) {
-            // Odstraň slovo ze selectedWords
-            selectedWords = selectedWords.filter(w => w !== word);
-            word.selected = false;
-        } else {
-            // Přidej slovo do selectedWords
-            selectedWords.push(word);
-            word.selected = true;
-        }
-        updateSelectedWordsCount();
-    }
-
-    function updateSelectedWordsCount() {
-        document.getElementById('selectedWordsCount').textContent = selectedWords.length;
-    }
-
-    function startCustomGame() {
-        const playerInputs = document.querySelectorAll('#playerInputs input');
-        const players = Array.from(playerInputs)
-            .filter(input => input.value.trim() !== '')
-            .map(input => ({
-                name: input.value,
-                score: 0
-            }));
-
-        if (players.length < 1) {
-            alert('Musíte zadať aspoň jedného hráča.');
-            return;
-        }
-
-        let wordsToUse;
-        if (selectedCategory) {
-            if (selectedCategory === 'random') {
-                // Náhodný level
-                const allWordsFlat = Object.values(allWords).flat();
-                wordsToUse = getRandomWords(allWordsFlat, 15);
-            } else {
-                // Náhodný výběr 15 slov z kategorie
-                wordsToUse = getRandomWords(allWords[selectedCategory], 15);
-            }
-        } else {
-            // Pro vlastní level použij vybrané slova
-            if (selectedWords.length < 2) {
-                alert('Vyberte aspoň 2 slová');
-                return;
-            }
-            wordsToUse = selectedWords;
-        }
-
-        const customWordsParam = encodeURIComponent(JSON.stringify(wordsToUse));
-        const playersParam = encodeURIComponent(JSON.stringify(players));
-
-        window.location.href = `pexesocustom.html?custom=true&words=${customWordsParam}&players=${playersParam}`;
-    }
-
-    function openCustomLevel() {
-        document.getElementById('customLevelModal').style.display = 'flex';
-    }
-
-    function closeCustomLevel() {
-        document.getElementById('customLevelModal').style.display = 'none';
-        selectedWords = [];
-        updateSelectedWordsCount();
-
-        // Zrušení výběru všech slov
-        Object.values(allWords).flat().forEach(word => {
-            word.selected = false;
-        });
-    }
-
-    function addPlayer() {
-        const playerInputs = document.getElementById('playerInputs');
-        const playerCount = playerInputs.children.length;
-
-        if (playerCount < 4) {
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.placeholder = `Hráč ${playerCount + 1}`;
-            input.value = `Hráč ${playerCount + 1}`;
-            playerInputs.appendChild(input);
-        }
-    }
-
-    function removePlayer() {
-        const playerInputs = document.getElementById('playerInputs');
-        if (playerInputs.children.length > 1) {
-            playerInputs.removeChild(playerInputs.lastChild);
-        }
-    }
-
-    // Inicializace
-    document.addEventListener('DOMContentLoaded', loadAllWords);
-    </script>
-
-    <!-- Okno -->
-    <script>
-      const infoButton = document.querySelector('.show-info');
-      const infoDialog = document.getElementById('informacie-okno');
-      const closeBtn = document.querySelector('.close');
-      infoButton.addEventListener('click', function() {
-        infoDialog.style.display = 'block';
-      });
-
-      closeBtn.addEventListener('click', function() {
-        infoDialog.style.display = 'none';
-      });
-    </script>
-
-    <!-- minkrofon -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Skontroluj, či už bolo povolenie udelené
-            if (localStorage.getItem('microphonePermission') === 'granted') {
-                console.log('Mikrofón už bol povolený.');
-                return;
-            }
-
-            // Požiadaj o povolenie na používanie mikrofónu
-            navigator.mediaDevices.getUserMedia({ audio: true })
-                .then(function(stream) {
-                    // Povolenie bolo udelené
-                    localStorage.setItem('microphonePermission', 'granted');
-                    console.log('Mikrofón bol povolený.');
-                    // Tu môžeš pridať ďalší kód, ktorý sa má spustiť po udelení povolenia
-                })
-                .catch(function(err) {
-                    // Povolenie nebolo udelené
-                    localStorage.setItem('microphonePermission', 'denied');
-                    document.body.innerHTML = '<p>Bez povolenia na používanie mikrofónu sa aplikácia nedá ďalej používať.</p>';
-                    console.error('Chyba pri získavaní prístupu k mikrofónu:', err);
-                });
-        });
-    </script>
   </body>
 </html>
 

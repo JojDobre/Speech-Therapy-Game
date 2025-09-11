@@ -564,7 +564,7 @@ function updateStarsDisplay() {
     if (!starsCountElement || !currentSelectedWorld || !playerProgress) return;
     
     const worldProgress = playerProgress.worlds[currentSelectedWorld.id];
-    const currentStars = worldProgress?.totalStars || 0;
+    const currentStars = worldProgress?.stars || 0;
     
     // Spočítaj maximálny počet hviezd pre svet
     let maxStars = 0;
@@ -625,7 +625,7 @@ function createLevelModalIfNotExists() {
                     <div class="level-progress">
                         <p><strong>Tvoj pokrok:</strong></p>
                         <div id="modal-stars" class="modal-stars"></div>
-                        <p id="modal-best-time">Najlepší čas: --:--</p>
+                        <p id="modal-best-time"><strong>Najlepší čas:</strong> --:--</p>
                     </div>
                 </div>
                 <div class="level-modal-footer">
