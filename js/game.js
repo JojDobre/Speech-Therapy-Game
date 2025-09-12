@@ -1332,11 +1332,11 @@ function calculateFinalRating() {
     
     // Výpočet hviezd podľa percentuálneho výkonu
     let stars = 0;
-    if (percentage >= 70) {
+    if (percentage >= 80) {
         stars = 3;
-    } else if (percentage >= 40) {
+    } else if (percentage >= 50) {
         stars = 2;
-    } else if (percentage >= 10) {
+    } else if (percentage >= 20) {
         stars = 1;
     } else {
         stars = 0;
@@ -1818,153 +1818,468 @@ function updategoldsCollected(count) {
 // ================================================================ //
 //////////////////////////////////////////////////////////////////////
 
-/*CVIČENIE NA ROZPOZNAVANIE ZVUKU*/
-function minigame(){
-  const soundFolder = 'zvuky/';
-  const totalLevels = 5;
-  const correctGuessesToWin = 3;
-  let currentLevel = 1;
-  let correctGuesses = 0;
-  let sound1, sound2;
-  let index1, index2;
+//////////////////////////////////////////////////////////////////////
+// ================================================================ //
+//              ===== POSLUCHOVÉ MINICVIČENIE =====                 //
+// ================================================================ //
+//////////////////////////////////////////////////////////////////////
 
-  function startGame() {
-    if (currentLevel <= totalLevels) {
-        playRandomSounds();
-        displayMessage('FONOLOGICKÉ CVIČENIE');
-        displayMessage('Sú slová rovnaké?');
-        createButtons();
+//////////////////////////////////////////
+// ====== POSLUCHOVÉ CVIČENIE ======    //
+// Premenné pre posluchové cvičenie     //
+//////////////////////////////////////////
+let listeningCurrentIndex = 0;          // Aktuálny index cvičenia
+let listeningWordPairs = [];            // Pár slov pre porovnanie
+let listeningAttempts = 0;              // Počet pokusov v aktuálnom cvičení
+let listeningMaxAttempts = 3;           // Maximálny počet pokusov na jedno cvičenie
+let listeningCorrectAnswers = 0;        // Počet správnych odpovedí
+let listeningIncorrectAnswers = 0;      // Počet nesprávnych odpovedí
+let listeningTotalExercises = 2;        // Celkový počet cvičení (rovnaké ako rečové)
+let listeningCompletedExercises = 0;    // Dokončené cvičenia
+
+// Zvukové objekty pre posluchové cvičenie
+let listeningSound1 = null;
+let listeningSound2 = null;
+
+//////////////////////////////////////////
+// Funkcia na otvorenie posluchového    //
+// cvičenia - podobne ako openCvicenie  //
+//////////////////////////////////////////
+function openListeningExercise() {
+    console.log('=== DEBUG openListeningExercise ===');
+    console.log('currentLevelConfig:', currentLevelConfig);
+    
+    // Nastavenie počtu cvičení z levelConfig - používame pocetcviceni ak existuje
+    if (currentLevelConfig && currentLevelConfig.gameConfig && currentLevelConfig.gameConfig.listeningExercises) {
+        listeningTotalExercises = currentLevelConfig.gameConfig.listeningExercises;
+        console.log(`Počet posluchových cvičení nastavený z levelConfig: ${listeningTotalExercises}`);
     } else {
-        endGame();
+        listeningTotalExercises = 2; // predvolená hodnota
+        console.log(`Používam predvolenú hodnotu posluchových cvičení: ${listeningTotalExercises}`);
     }
-  }
-  function playRandomSounds() {
-    const randomFolder = Math.floor(Math.random() * 15) + 1;
-    const soundFolder = `zvuky/${randomFolder}/`;
-    const allSounds = getSoundList(soundFolder);
-    [index1, index2] = getRandomIndexes(allSounds.length);
-    sound1 = new Howl({ src: [`${soundFolder}${allSounds[index1]}`] });
-    sound2 = new Howl({ src: [`${soundFolder}${allSounds[index2]}`] });
-    console.log('Prehrávajú sa zvuky pre kolo: ' + currentLevel);
-    sound1.play();
-    displayMessage('PREHRAVA SA ZVUK');
-    sound1.on('end', () => {
-        setTimeout(() => {
-            sound2.play();
-        }, 500); 
-    });
-  }
-  function getSoundList() {
-    const allSounds = ['1.wav', '2.wav']; 
-    return allSounds;
-  }
-  function getRandomIndexes(length) {
-    const index1 = Math.floor(Math.random() * length);
-    let index2 = Math.floor(Math.random() * length);
-    return [index1, index2];
-  }
-  function displayMessage(message) {
-    console.log(message);
-    const dialogBox = document.querySelector('.cvicenie-content-2');
-    dialogBox.innerHTML = `<h1>ROZPOZNAJ SLOVÁ</h1>
-    <p>${message}</p>
-    <center><div id="buttonsContainer"></div></center>`;
-  }
-  function createButtons() {
-    let buttonsContainer = document.getElementById('buttonsContainer');
-    if (!buttonsContainer) {
-        buttonsContainer = document.createElement('div');
-        buttonsContainer.id = 'buttonsContainer';
-    } else {
-        buttonsContainer.innerHTML = '';
+    
+    // Reset hodnôt pre nové cvičenie
+    listeningCurrentIndex = 0;
+    listeningAttempts = 0;
+    listeningCorrectAnswers = 0;
+    listeningIncorrectAnswers = 0;
+    listeningCompletedExercises = 0;
+    
+    // Generovanie párov slov pre cvičenie
+    generateListeningPairs();
+    
+    // Zobrazenie dialogového okna
+    const infoDialog = document.getElementById('zvuky');
+    if (infoDialog) {
+        infoDialog.style.display = 'block';
     }
-  const sameButton = document.createElement('img');
-  sameButton.src = 'images/rovnake.png';
-  sameButton.alt = 'Rovnaké';
-  sameButton.addEventListener('click', () => evaluateGuess(true));
-  const differentButton = document.createElement('img');
-  differentButton.src = 'images/rozdielne.png';
-  differentButton.alt = 'Rozdielne';
-  differentButton.addEventListener('click', () => evaluateGuess(false));
-  buttonsContainer.appendChild(sameButton);
-  buttonsContainer.appendChild(differentButton);
-  if (!document.getElementById('buttonsContainer')) {
-    document.body.appendChild(buttonsContainer);
-  }
-  } 
-  function evaluateGuess(isSame) {
-    sound1.stop();
-    sound2.stop();
-    if (isSame) {
-        console.log('Hráč hádal, že zvuky sú rovnaké.');
-        if (index1 === index2) {
-            correctGuesses++;
-        }
-    } else {
-        console.log('Hráč hádal, že zvuky sú rozdielne.');
-        if (index1 !== index2) {
-            correctGuesses++;
-        }
-    }
-    currentLevel++;
-    if (correctGuesses >= correctGuessesToWin) {
-        endGame(true);
-    } else {
-        startGame();
-    }
-  }
-    function endGame(hasWon = false) {
-        const message = hasWon ? 'Správne!' : 'Skús to ešte raz.';
+    document.getElementById("blur-background").style.display = "block";
+    document.body.classList.add("cvicenie-open");
+    document.body.style.overflow = "hidden";
+    
+    // Zobrazenie prvého cvičenia
+    displayListeningExercise();
+}
+
+//////////////////////////////////////////
+// Generovanie párov slov pre cvičenie //
+// Používa pôvodný systém s priečinkami//
+//////////////////////////////////////////
+function generateListeningPairs() {
+    listeningWordPairs = [];
+    
+    // Generujeme páry pre každé cvičenie
+    for (let i = 0; i < listeningTotalExercises; i++) {
+        // Náhodný výber priečinka (1-15 ako v pôvodnom kóde)
+        const randomFolder = Math.floor(Math.random() * 15) + 1;
+        const soundFolder = `zvuky/${randomFolder}/`;
         
-        if (hasWon) {
-            // Úspešné posluchové cvičenie
-            // Pre jednoduchos, predpokladáme 3 správne odpovede a 2 nesprávne (aby dosiahol 3 správne)
-            const correctAnswers = 3;
-            const incorrectAnswers = Math.max(0, currentLevel - correctAnswers - 1);
-            recordListeningExerciseResult(correctAnswers, incorrectAnswers, true);
+        // Získanie zoznamu zvukov (1.wav, 2.wav)
+        const allSounds = ['1.wav', '2.wav'];
+        
+        // Náhodný výber dvoch indexov (môžu byť rovnaké alebo rôzne)
+        const index1 = Math.floor(Math.random() * allSounds.length);
+        const index2 = Math.floor(Math.random() * allSounds.length);
+        
+        // Vytvorenie páru
+        listeningWordPairs.push({
+            folder: randomFolder,
+            soundFolder: soundFolder,
+            index1: index1,
+            index2: index2,
+            sound1Path: `${soundFolder}${allSounds[index1]}`,
+            sound2Path: `${soundFolder}${allSounds[index2]}`,
+            areSame: index1 === index2 // Sú rovnaké ak majú rovnaký index
+        });
+    }
+    
+    console.log('Generované páry zvukov pre posluchové cvičenie:', listeningWordPairs);
+}
+
+//////////////////////////////////////////
+// Zobrazenie aktuálneho cvičenia       //
+// Podobne ako displayWord()            //
+//////////////////////////////////////////
+function displayListeningExercise() {
+    if (listeningCurrentIndex >= listeningWordPairs.length) {
+        // Všetky cvičenia dokončené
+        closeListeningExercise(true);
+        return;
+    }
+    
+    const currentPair = listeningWordPairs[listeningCurrentIndex];
+    console.log(`Zobrazujem posluchové cvičenie ${listeningCurrentIndex + 1}/${listeningWordPairs.length}`);
+    console.log('Aktuálny pár:', currentPair);
+    
+    // Aktualizácia obsahu dialógu
+    const dialogContent = document.querySelector('.cvicenie-content-2');
+    if (dialogContent) {
+        // Resetovanie pokusov pre nové cvičenie
+        listeningAttempts = 0;
+        
+        dialogContent.innerHTML = `
+            <!-- Hlavička -->
+            <div class="cvicenie-text">
+                <H1 style="font-size: 30px">POSLUCHOVÉ CVIČENIE</h1>
+            </div>
+
+            <div id="listening-word-progress" class="word-progress">
+                <div class="progress-text">Kolo ${listeningCurrentIndex + 1} / ${listeningWordPairs.length}</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${((listeningCurrentIndex + 1) / listeningWordPairs.length) * 100}%"></div>
+                </div>
+            </div>
+
+            <!-- Inštrukcie -->
+            <div class="listening-instruction">
+                <p>Počúvaj pozorne a rozhodni, či sú slová rovnaké alebo rôzne</p>
+            </div>
+
+            <!-- Status zvuku -->
+            <div class="sound-status-container">
+                <div id="listening-status" class="sound-status">Pripravujem slová...</div>
+            </div>
+
+            <!-- Tlačidlá pre odpoveď -->
+            <div id="listening-buttons-container" class="listening-buttons-container" style="display: flex;">
+                <button id="listening-same-btn" class="listening-btn listening-btn-same disabled-btn" disabled>
+                    <img src="images/rovnake.png" alt="Rovnaké">
+                    <span>ROVNAKÉ</span>
+                </button>
+                <button id="listening-different-btn" class="listening-btn listening-btn-different disabled-btn" disabled>
+                    <img src="images/rozdielne.png" alt="Rozdielne">  
+                    <span>RÔZNE</span>
+                </button>
+            </div>
+        `;
+        
+        // Pripojenie event listenerov na tlačidlá
+        setTimeout(() => {
+            const sameBtn = document.getElementById('listening-same-btn');
+            const differentBtn = document.getElementById('listening-different-btn');
             
-            kov.forEach((kov, kovIndex) => {
-                blockX = kov.x / blockSize;
-                blockY = kov.y / blockSize;
-                if (blockX === targetBlockX && blockY === targetBlockY && !kov.destroyed) {
-                    kov.destroyed = true;
+            if (sameBtn) {
+                sameBtn.addEventListener('click', () => handleListeningAnswer(true));
+            }
+            if (differentBtn) {
+                differentBtn.addEventListener('click', () => handleListeningAnswer(false));
+            }
+        }, 100);
+    }
+    
+    // Spustenie prehrávania zvukov
+    setTimeout(() => {
+        playListeningSounds(currentPair);
+    }, 1000);
+}
+
+//////////////////////////////////////////
+// Prehranie zvukov pre posluchové      //
+// cvičenie - používa pôvodné cesty     //
+//////////////////////////////////////////
+function playListeningSounds(soundPair) {
+    const statusElement = document.getElementById('listening-status');
+    const sameBtn = document.getElementById('listening-same-btn');
+    const differentBtn = document.getElementById('listening-different-btn');
+    
+    // BLOKUJ tlačidlá počas prehrávania
+    if (sameBtn) {
+        sameBtn.disabled = true;
+        sameBtn.classList.add('disabled-btn');
+    }
+    if (differentBtn) {
+        differentBtn.disabled = true;
+        differentBtn.classList.add('disabled-btn');
+    }
+    
+    // Vytvorenie Howl objektov s cestami z páru
+    listeningSound1 = new Howl({ 
+        src: [soundPair.sound1Path],
+        onloaderror: () => {
+            console.warn(`Zvuk z cesty "${soundPair.sound1Path}" sa nepodarilo načítať`);
+        }
+    });
+    
+    listeningSound2 = new Howl({ 
+        src: [soundPair.sound2Path],
+        onloaderror: () => {
+            console.warn(`Zvuk z cesty "${soundPair.sound2Path}" sa nepodarilo načítať`);
+        }
+    });
+    
+    // Prehratie prvého zvuku
+    if (statusElement) {
+        statusElement.textContent = "Prehráva sa prvý zvuk...";
+    }
+    
+    console.log(`Prehrávam prvý zvuk: ${soundPair.sound1Path}`);
+    listeningSound1.play();
+    
+    // Po skončení prvého zvuku prehrať druhý
+    listeningSound1.on('end', () => {
+        setTimeout(() => {
+            if (statusElement) {
+                statusElement.textContent = "Prehráva sa druhý zvuk...";
+            }
+            console.log(`Prehrávam druhý zvuk: ${soundPair.sound2Path}`);
+            listeningSound2.play();
+            
+            // Po skončení druhého zvuku ODBLOKOVAŤ tlačidlá
+            listeningSound2.on('end', () => {
+                setTimeout(() => {
+                    if (statusElement) {
+                        statusElement.textContent = "Vyber svoju odpoveď:";
+                    }
+                    
+                    // ODBLOKOVAŤ tlačidlá
+                    if (sameBtn) {
+                        sameBtn.disabled = false;
+                        sameBtn.classList.remove('disabled-btn');
+                    }
+                    if (differentBtn) {
+                        differentBtn.disabled = false;
+                        differentBtn.classList.remove('disabled-btn');
+                    }
+                    
+                    const buttonsContainer = document.getElementById('listening-buttons-container');
+                    if (buttonsContainer) {
+                        buttonsContainer.style.display = 'flex';
+                    }
+                }, 500);
+            });
+        }, 1000); // Pauza medzi zvukmi
+    });
+}
+
+//////////////////////////////////////////
+// Spracovanie odpovede hráča           //
+// Podobne ako checkSpeechResult()      //
+//////////////////////////////////////////
+function handleListeningAnswer(playerAnswerSame) {
+    // Skrytie tlačidiel
+    const buttonsContainer = document.getElementById('listening-buttons-container');
+    if (buttonsContainer) {
+        buttonsContainer.style.display = 'none';
+    }
+    
+    // Zastavenie zvukov
+    if (listeningSound1) listeningSound1.stop();
+    if (listeningSound2) listeningSound2.stop();
+    
+    const currentPair = listeningWordPairs[listeningCurrentIndex];
+    const isCorrect = playerAnswerSame === currentPair.areSame;
+    
+    console.log(`Hráčova odpoveď: ${playerAnswerSame ? 'rovnaké' : 'rôzne'}`);
+    console.log(`Správna odpoveď: ${currentPair.areSame ? 'rovnaké' : 'rôzne'}`);
+    console.log(`Je správne: ${isCorrect}`);
+    
+    // Nájdi alebo vytvor vysledok element (rovnako ako pri rečovom cvičení)
+    let vysledokElement = document.getElementById('listening-vysledok');
+    if (!vysledokElement) {
+        // Vytvor vysledok element ak neexistuje
+        const execiseWindow = document.querySelector('#zvuky .execise-window');
+        vysledokElement = document.createElement('div');
+        vysledokElement.id = 'listening-vysledok';
+        vysledokElement.className = 'vysledok';
+        execiseWindow.appendChild(vysledokElement);
+    }
+    
+    if (isCorrect) {
+        // Správna odpoveď - rovnako ako pri rečovom cvičení
+        listeningCorrectAnswers++;
+        correctAnswers++;
+        updateAnswerCounters();
+        
+        vysledokElement.innerHTML = `<center> <img src="images/spravne.png" alt="Správne"> <div class="success-message">Výborne!</div></center>`;
+        vysledokElement.classList.add('show');
+        
+        // Použiť existujúci zvukový efekt
+        if (typeof effectSpravne !== 'undefined') {
+            effectSpravne.play();
+        }
+        
+        setTimeout(() => {
+            vysledokElement.innerHTML = ''; 
+            vysledokElement.classList.remove('show');
+            
+            // Prejsť na ďalšie cvičenie
+            listeningCurrentIndex++;
+            displayListeningExercise();
+        }, 2000);
+        
+    } else {
+        // Nesprávna odpoveď - rovnako ako pri rečovom cvičení
+        listeningIncorrectAnswers++;
+        listeningAttempts++;
+        incorrectAnswers++;
+        updateAnswerCounters();
+        
+        console.log(`Skús to znova, pokusy: ${listeningAttempts}`);
+        
+        // Vypočítaj zostávajúce pokusy
+        const remainingAttempts = listeningMaxAttempts - listeningAttempts;
+        
+        if (remainingAttempts > 0) {
+            // Ešte má pokusy - zobraz správu so zostávajúcimi pokusmi
+            const attemptMessage = `<div class="attempt-message">Zostávajúce pokusy: ${remainingAttempts}</div>`;
+            
+            vysledokElement.innerHTML = `
+                <center>
+                <img src="images/nespravne.png" alt="Nesprávne">
+                ${attemptMessage}
+                </center>
+            `;
+            vysledokElement.classList.add('show');
+            
+            // Použiť existujúci zvukový efekt
+            if (typeof effectZle !== 'undefined') {
+                effectZle.play();
+            }
+            
+            // Po 2 sekundách skryť výsledok a umožniť nový pokus
+            setTimeout(() => {
+                vysledokElement.innerHTML = '';
+                vysledokElement.classList.remove('show');
+                
+                // Znovu zobraziť tlačidlá a prehrať zvuky
+                if (buttonsContainer) {
+                    buttonsContainer.style.display = 'flex';
+                }
+                
+                const statusElement = document.getElementById('listening-status');
+                if (statusElement) {
+                    statusElement.textContent = "Počúvaj znova...";
+                }
+                
+                playListeningSounds(currentPair);
+            }, 2000);
+            
+        } else {
+            // Vyčerpané pokusy - OKAMŽITE zatvor po vyhodnotení
+            const attemptMessage = `<div class="attempt-message final-attempt">Posledný pokus vyčerpaný</div>`;
+            
+            vysledokElement.innerHTML = `
+                <center>
+                <img src="images/nespravne.png" alt="Nesprávne">
+                ${attemptMessage}
+                </center>
+            `;
+            vysledokElement.classList.add('show');
+            
+            // Použiť existujúci zvukový efekt
+            if (typeof effectZle !== 'undefined') {
+                effectZle.play();
+            }
+            
+            // OKAMŽITE zatvor po 2 sekundách (bez čakania na zmiznutie výsledku)
+            setTimeout(() => {
+                closeListeningExercise(false);
+            }, 2000);
+        }
+    }
+}
+
+//////////////////////////////////////////
+// Zatvorenie posluchového cvičenia     //
+// Podobne ako closeCvicenie()         //
+//////////////////////////////////////////
+function closeListeningExercise(success = false) {
+    // Zastavenie všetkých zvukov
+    if (listeningSound1) {
+        listeningSound1.stop();
+        listeningSound1 = null;
+    }
+    if (listeningSound2) {
+        listeningSound2.stop();
+        listeningSound2 = null;
+    }
+    
+    // OKAMŽITE skryj modal okno
+    const infoDialog = document.getElementById('zvuky');
+    if (infoDialog) {
+        infoDialog.style.display = 'none';
+    }
+    document.getElementById("blur-background").style.display = "none";
+    document.body.classList.remove("cvicenie-open");
+    document.body.style.overflow = "auto";
+    
+    // Vyčisti vysledok element
+    const vysledokElement = document.getElementById('listening-vysledok');
+    if (vysledokElement) {
+        vysledokElement.innerHTML = '';
+        vysledokElement.classList.remove('show');
+    }
+    
+    // Zaznamenanie výsledku
+    if (success) {
+        console.log('Posluchové cvičenie úspešne dokončené!');
+        listeningCompletedExercises = listeningWordPairs.length;
+        
+        // Zaznamenaj výsledok ak existuje funkcia
+        if (typeof recordListeningExerciseResult === 'function') {
+            recordListeningExerciseResult(listeningCorrectAnswers, listeningIncorrectAnswers, true);
+        }
+        
+        // Označenie kryštálu ako vykopaného
+        if (typeof kov !== 'undefined' && Array.isArray(kov)) {
+            kov.forEach((kristal, kristalIndex) => {
+                const blockX = kristal.x / blockSize;
+                const blockY = kristal.y / blockSize;
+                if (blockX === targetBlockX && blockY === targetBlockY && !kristal.destroyed) {
+                    kristal.destroyed = true;
                     kovCollected++;
-                    effectzlato.play();
-                    updateKovCount();
-                    updateKovCollected(kovCollected);
-                    checkWinConditionWithRating(); // UPRAVENÉ
+                    if (typeof effectzlato !== 'undefined') {
+                        effectzlato.play();
+                    }
+                    if (typeof updateKovCount === 'function') {
+                        updateKovCount();
+                    }
+                    if (typeof updateKovCollected === 'function') {
+                        updateKovCollected(kovCollected);
+                    }
+                    if (typeof checkWinConditionWithRating === 'function') {
+                        checkWinConditionWithRating();
+                    }
                     spaceBarPressed = 0;
                 }
             });
-        } else {
-            // Neúspešné posluchové cvičenie
-            recordListeningExerciseResult(0, 5, false); // 0 správnych, 5 nesprávnych
-            spaceBarPressed = 0;
         }
-        
-        currentLevel = 1;
-        correctGuesses = 0;
-        buttonsContainer.innerHTML = '';
-        displayMessage(message);
-        setTimeout(() => {
-            const infoDialog = document.getElementById('zvuky');
-            infoDialog.style.display = 'none';
-            document.getElementById("blur-background").style.display = "none";
-            document.body.style.overflow = "auto";
-        }, 1000);   
+    } else {
+        console.log('Posluchové cvičenie neúspešné');
+        if (typeof recordListeningExerciseResult === 'function') {
+            recordListeningExerciseResult(listeningCorrectAnswers, listeningIncorrectAnswers, false);
+        }
+        spaceBarPressed = 0;
     }
-startGame();
-document.addEventListener('DOMContentLoaded', function() {
-  minigame();
-});
-
 }
+
+//////////////////////////////////////////
+// NOVÁ FUNKCIA showInfoDialog()        //
+// Nahradenie starej funkcie            //
+//////////////////////////////////////////
 function showInfoDialog() {
-  const infoDialog = document.getElementById('zvuky');
-  infoDialog.style.display = 'block'; 
-  document.getElementById("blur-background").style.display = "block";
-  document.body.style.overflow = "hidden"; // Zabrániť posúvaniu stránky
-  minigame();
+    console.log('Otváranie posluchového cvičenia...');
+    openListeningExercise(); 
 }
 
 
