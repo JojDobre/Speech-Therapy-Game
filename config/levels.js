@@ -33,6 +33,7 @@ const LEVELS_CONFIG = {
                 diamonds: 2,
                 golds: 5,
                 crystals: 3,
+                speechExercises: 3, 
                 mapSize: { width: 16, height: 10 }
             },
             positions: {

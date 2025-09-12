@@ -84,6 +84,9 @@ let targetBlockY;
 let blockX;
 let blockY;
 
+let correctAnswers = 0;                 // Počet správnych odpovedi
+let incorrectAnswers = 0;               // Počet nesprávnych odpovedi
+
 /////////////////////////////////////////
 // Globálne premenné pre časový systém //
 /////////////////////////////////////////
@@ -1263,8 +1266,6 @@ function recordSpeechExerciseResult(attempts, success) {
         gamePerformance.speechExercises.attempts.push(0);
         console.log('Rečové cvičenie neúspešné - 0 bodov');
     }
-    
-    updatePerformanceDisplay();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -1300,8 +1301,6 @@ function recordListeningExerciseResult(correctAnswers, incorrectAnswers, complet
         gamePerformance.listeningExercises.totalPoints += points;
         console.log(`Pridané ${points} body za posluchové cvičenie`);
     }
-    
-    updatePerformanceDisplay();
 }
 
 //////////////////////////////////////
@@ -1309,8 +1308,6 @@ function recordListeningExerciseResult(correctAnswers, incorrectAnswers, complet
 //////////////////////////////////////
 function recordGoldCollected() {
     gamePerformance.golds.collected++;
-    console.log(`Gold zozbieraný: ${gamePerformance.golds.collected}/${gamePerformance.golds.total}`);
-    updatePerformanceDisplay();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1339,7 +1336,7 @@ function calculateFinalRating() {
         stars = 3;
     } else if (percentage >= 40) {
         stars = 2;
-    } else if (percentage > 0) {
+    } else if (percentage >= 10) {
         stars = 1;
     } else {
         stars = 0;
@@ -1510,27 +1507,19 @@ function saveResultsToProgress(rating) {
 //////////////////////////////////////////////////////////
 /// Aktualizácia zobrazenia výkonu v UI (voliteľné)     //
 //////////////////////////////////////////////////////////
-function updatePerformanceDisplay() {
-    // Môže aktualizovať UI elementy v reálnom čase
-    // Napríklad progress bar alebo počítadlá bodov
-    
-    const correctWords = document.getElementById('correct-words');
-    const incorrectWords = document.getElementById('incorrect-words');
-    
-    if (correctWords) {
-        const totalCorrect = gamePerformance.speechExercises.completedExercises;
-        // OPRAVA: Aktualizuj len text, zachovaj obrázok
-        correctWords.innerHTML = `${totalCorrect} <img src="images/spravne.png">`;
-        console.log(`✅ Aktualizované správne slová: ${totalCorrect}`);
-    }
-    
-    if (incorrectWords) {
-        const totalIncorrect = gamePerformance.speechExercises.totalExercises - 
-                              gamePerformance.speechExercises.completedExercises;
-        // OPRAVA: Aktualizuj len text, zachovaj obrázok
-        incorrectWords.innerHTML = `${totalIncorrect} <img src="images/nespravne.png">`;
-        console.log(`❌ Aktualizované nesprávne slová: ${totalIncorrect}`);
-    }
+function updateAnswerCounters() {
+  const correctElement = document.getElementById('correct-words');
+  const incorrectElement = document.getElementById('incorrect-words');
+  
+  if (correctElement) {
+    correctElement.innerHTML = `${correctAnswers} <img src="images/spravne.png">`;
+  }
+  
+  if (incorrectElement) {
+    incorrectElement.innerHTML = `${incorrectAnswers} <img src="images/nespravne.png">`;
+  }
+  
+  console.log(`Počítadlá aktualizované: ${correctAnswers} správnych, ${incorrectAnswers} nesprávnych`);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -1694,6 +1683,10 @@ function resetGame() {
     kovCollected = 0; // Počet zozbieraných diamantov
     goldsCollected = 0;
 
+    correctAnswers = 0;
+    incorrectAnswers = 0;
+    updateAnswerCounters();
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     generateDiamonds();
     generateKov();
@@ -1716,102 +1709,102 @@ function resetGame() {
 //  BOČNY PANEL     //
 //////////////////////
 function updateDiamondCount() {
-  const diamondCountElement = document.getElementById('diamondCount');
-  if (diamondCountElement) {
-      diamondCountElement.textContent = diamondsCollected;
-  }
+    const diamondCountElement = document.getElementById('diamondCount');
+    if (diamondCountElement) {
+        diamondCountElement.textContent = diamondsCollected;
+    }
 }
 function updateKovCount() {
-  const kovCountElement = document.getElementById('kovCount');
-  if (kovCountElement) {
-      kovCountElement.textContent = kovCollected;
-  }
+    const kovCountElement = document.getElementById('kovCount');
+    if (kovCountElement) {
+        kovCountElement.textContent = kovCollected;
+    }
 }
 function updateGoldCount() {
-  const goldCountElement = document.getElementById('goldCount');
-  if (goldCountElement) {
-      goldCountElement.textContent = goldsCollected;
-  }
+    const goldCountElement = document.getElementById('goldCount');
+    if (goldCountElement) {
+        goldCountElement.textContent = goldsCollected;
+    }
 }
 
 ///////////////////////////////////////////////////
 // Funkcia na inicializáciu zobrazenia itemu     //
 ///////////////////////////////////////////////////
 function initializeDiamonds(count) {
-  const diamondsContainer = document.querySelector('.diamonds-container');
-  // Vymažte všetky existujúce diamantové položky
-  diamondsContainer.innerHTML = '';
-  // Vytvorte a pridajte diamantové položky na základe počtu diamantov
-  for (let i = 0; i < count; i++) {
-    const diamondItem = document.createElement('div');
-    diamondItem.classList.add('diamond-item');
-    const diamondImage = document.createElement('img');
-    diamondImage.src = 'images/diamond.png';
-    diamondImage.alt = 'Diamond';
-    diamondImage.classList.add('diamond-image');
-    const diamondOverlay = document.createElement('div');
-    diamondOverlay.classList.add('diamond-overlay');
-    diamondItem.appendChild(diamondImage);
-    diamondItem.appendChild(diamondOverlay);
-    diamondsContainer.appendChild(diamondItem);
-  }
+    const diamondsContainer = document.querySelector('.diamonds-container');
+    // Vymažte všetky existujúce diamantové položky
+    diamondsContainer.innerHTML = '';
+    // Vytvorte a pridajte diamantové položky na základe počtu diamantov
+    for (let i = 0; i < count; i++) {
+        const diamondItem = document.createElement('div');
+        diamondItem.classList.add('diamond-item');
+        const diamondImage = document.createElement('img');
+        diamondImage.src = 'images/diamond.png';
+        diamondImage.alt = 'Diamond';
+        diamondImage.classList.add('diamond-image');
+        const diamondOverlay = document.createElement('div');
+        diamondOverlay.classList.add('diamond-overlay');
+        diamondItem.appendChild(diamondImage);
+        diamondItem.appendChild(diamondOverlay);
+        diamondsContainer.appendChild(diamondItem);
+    }
 }
 function initializeKov(count) {
-  const kovContainer = document.querySelector('.kov-container');
-  kovContainer.innerHTML = '';
-  for (let i = 0; i < count; i++) {
-    const kovItem = document.createElement('div');
-    kovItem.classList.add('kov-item');
-    const kovImage = document.createElement('img');
-    kovImage.src = 'images/kov.png';
-    kovImage.alt = 'Kov';
-    kovImage.classList.add('kov-image');
-    const kovOverlay = document.createElement('div');
-    kovOverlay.classList.add('kov-overlay');
-    kovItem.appendChild(kovImage);
-    kovItem.appendChild(kovOverlay);
-    kovContainer.appendChild(kovItem);
-  }
+    const kovContainer = document.querySelector('.kov-container');
+    kovContainer.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+        const kovItem = document.createElement('div');
+        kovItem.classList.add('kov-item');
+        const kovImage = document.createElement('img');
+        kovImage.src = 'images/kov.png';
+        kovImage.alt = 'Kov';
+        kovImage.classList.add('kov-image');
+        const kovOverlay = document.createElement('div');
+        kovOverlay.classList.add('kov-overlay');
+        kovItem.appendChild(kovImage);
+        kovItem.appendChild(kovOverlay);
+        kovContainer.appendChild(kovItem);
+    }
 }
 function initializeGolds(count) {
-  const goldsContainer = document.querySelector('.golds-container');
-  goldsContainer.innerHTML = '';
-  for (let i = 0; i < count; i++) {
-    const goldItem = document.createElement('div');
-    goldItem.classList.add('gold-item');
-    const goldImage = document.createElement('img');
-    goldImage.src = 'images/gold.png';
-    goldImage.alt = 'Gold';
-    goldImage.classList.add('gold-image');
-    const goldOverlay = document.createElement('div');
-    goldOverlay.classList.add('gold-overlay');
-    goldItem.appendChild(goldImage);
-    goldItem.appendChild(goldOverlay);
-    goldsContainer.appendChild(goldItem);
-  }
+    const goldsContainer = document.querySelector('.golds-container');
+    goldsContainer.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+        const goldItem = document.createElement('div');
+        goldItem.classList.add('gold-item');
+        const goldImage = document.createElement('img');
+        goldImage.src = 'images/gold.png';
+        goldImage.alt = 'Gold';
+        goldImage.classList.add('gold-image');
+        const goldOverlay = document.createElement('div');
+        goldOverlay.classList.add('gold-overlay');
+        goldItem.appendChild(goldImage);
+        goldItem.appendChild(goldOverlay);
+        goldsContainer.appendChild(goldItem);
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // Funkcia na aktualizáciu zobrazenia itemov po získaní nového itemu       //
 /////////////////////////////////////////////////////////////////////////////
 function updateDiamondsCollected(count) {
-  const diamonds = document.querySelectorAll('.diamond-item');
-  // Aktualizujte triedy pre všetky diamanty po získaní nového diamantu
-  for (let i = 0; i < count; i++) {
-    diamonds[i].classList.add('collected');
-  }
+    const diamonds = document.querySelectorAll('.diamond-item');
+    // Aktualizujte triedy pre všetky diamanty po získaní nového diamantu
+    for (let i = 0; i < count; i++) {
+        diamonds[i].classList.add('collected');
+    }
 }
 function updateKovCollected(count) {
-  const kov = document.querySelectorAll('.kov-item');
-  for (let i = 0; i < count; i++) {
-    kov[i].classList.add('collected');
-  }
+    const kov = document.querySelectorAll('.kov-item');
+    for (let i = 0; i < count; i++) {
+        kov[i].classList.add('collected');
+    }
 }
 function updategoldsCollected(count) {
-  const golds = document.querySelectorAll('.gold-item');
-  for (let i = 0; i < count; i++) {
-    golds[i].classList.add('collected');
-  }
+    const golds = document.querySelectorAll('.gold-item');
+    for (let i = 0; i < count; i++) {
+        golds[i].classList.add('collected');
+    }
 }
 
 
@@ -1992,9 +1985,9 @@ function showInfoDialog() {
 const url = 'slova.txt'; 
 let currentWordIndex = 0; 
 let wordList = []; // Pole slov na vyslovenie
-const pocetcviceni = 2;
+let pocetcviceni = 2;
 let kontrolacvicenia = 0;
-
+let slovicka = 0;
 //////////////////////////////////////////
 // Funkcia na otvorenie cvičenia        //
 // Používa slová z levelConfig          //
@@ -2005,6 +1998,15 @@ function openCvicenie() {
     console.log('currentLevelConfig:', currentLevelConfig);
     console.log('isCustomLevel:', isCustomLevel);
     console.log('URL parameters:', window.location.search);
+
+    // Nastavit počet cvičení z levelConfig
+    if (currentLevelConfig && currentLevelConfig.gameConfig && currentLevelConfig.gameConfig.speechExercises) {
+        pocetcviceni = currentLevelConfig.gameConfig.speechExercises;
+        console.log(`Počet rečových cvičení nastavený z levelConfig: ${pocetcviceni}`);
+    } else {
+        pocetcviceni = 2; // default hodnota
+        console.log(`Používam predvolenú hodnotu rečových cvičení: ${pocetcviceni}`);
+    }
     
     // Kontrola či máme dostupnú konfiguráciu levelu
     if (!currentLevelConfig || !currentLevelConfig.words || currentLevelConfig.words.length === 0) {
@@ -2020,6 +2022,7 @@ function openCvicenie() {
         wordList = shuffled.slice(0, pocetcviceni);
         
         console.log('Fallback slová (náhodne vybrané):', wordList);
+        console.log(`Finálny zoznam slov pre cvičenie (${pocetcviceni} slov):`, wordList);
         startExercise();
         return;
     }
@@ -2051,128 +2054,249 @@ function openCvicenie() {
     console.log('Finálny zoznam slov pre cvičenie:', wordList);
     startExercise();
 }
-
-
-
-/* Spustenie Cvicenia*/
+//////////////////////////////////////////
+//       Spustenie Cvicenia             //
+//////////////////////////////////////////
 function startExercise() {
-  document.getElementById("cvicenie").style.display = "block";
-  document.getElementById("blur-background").style.display = "block";
-  document.body.classList.add("cvicenie-open");
-  document.body.style.overflow = "hidden"; 
-  displayWord();
+    document.getElementById("cvicenie").style.display = "block";
+    document.getElementById("blur-background").style.display = "block";
+    document.body.classList.add("cvicenie-open");
+    document.body.style.overflow = "hidden"; 
+    displayWord();
 }
+//////////////////////////////////////////
+//       Ziskanie mikrofonu             //
+//////////////////////////////////////////
 function getLocalStream() {
-  navigator.mediaDevices
-    .getUserMedia({ video: false, audio: true })
-    .then((stream) => {
-      window.localStream = stream;
-      window.localAudio.srcObject = stream;
-      window.localAudio.autoplay = true;
-    })
-    .catch((err) => {
-      console.error(`you got an error: ${err}`);
+    navigator.mediaDevices
+        .getUserMedia({ video: false, audio: true })
+        .then((stream) => {
+            window.localStream = stream;
+            window.localAudio.srcObject = stream;
+            window.localAudio.autoplay = true;
+        })
+        .catch((err) => {
+            console.error(`you got an error: ${err}`);
+        });
+}
+//////////////////////////////////////////
+// Funkcia na zobrazenie aktuálneho     //
+// slova na vyslovenie                  //
+//////////////////////////////////////////
+function displayWord() {
+    document.getElementById("word-display").innerText = wordList[currentWordIndex].toUpperCase();
+    const imageName = wordList[currentWordIndex] + ".png"; 
+    document.getElementById("cvicenie-image").src = "images/slova/" + imageName;
+    updateWordProgress();
+}
+//////////////////////////////////////////
+// Samotna funckia na rozpoznanie       //
+//////////////////////////////////////////
+function rozpoznanieS() {
+    // Získaj tlačidlo a nastav disabled state
+    const button = document.getElementById('rozpoznanie');
+    const tlacidloDiv = document.querySelector('.tlacidlo');
+
+    // Zabráň viacnásobnému kliknutiu
+    if (button.disabled) {
+        console.log('Nahrávanie už prebieha...');
+        return;
+    }
+    
+    // disabled state pre button aj div
+    button.disabled = true;
+    tlacidloDiv.classList.add('recording');
+    button.innerHTML = '<a>NAHRÁVAM...</a>';
+    
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = 'sk-SK';
+    recognition.continuous = false;                         // rozoznávanie jedného slova
+    
+    // Spustenie nahrávania
+    recognition.start();
+    console.log('Nahrávanie spustené.');
+    let transcript = '';                                    // Premenná na uchovávanie rozpoznaného textu
+
+    const waitForEnd = new Promise((resolve) => {           //promisa, ktorá počká na ukončenie nahrávania
+        recognition.onend = () => {                         // Funkcia, ktorá sa vyvolá po ukončení nahrávania
+            // Reset tlačidla po ukončení nahrávania
+            const button = document.getElementById('rozpoznanie');
+            const tlacidloDiv = document.querySelector('.tlacidlo');
+            button.disabled = false;
+            tlacidloDiv.classList.remove('recording');
+            button.innerHTML = '<a>HOVORIŤ</a>';
+                
+            console.log('Nahrávanie ukončené.');
+            console.log('Rozpoznaný text:', transcript);
+
+            const currentWord = wordList[currentWordIndex];
+            const cleanedTranscript = transcript.trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,""); // Odstránenie interpunkčných znamienok a prevod na malé písmená
+            console.log('Rozpoznaný text:', cleanedTranscript);
+            
+            if (cleanedTranscript === currentWord.toLowerCase()) {
+                console.log('Bolo správne vyslovené slovo "' + currentWord + '".');
+                document.getElementById("vysledok").innerHTML = `<center> <img src="images/spravne.png" alt="Správne"> <div class="success-message">Výborne!</div></center>`;
+                document.getElementById("vysledok").classList.add('show');
+                effectSpravne.play();
+                correctAnswers++;
+                updateAnswerCounters();
+                currentWordIndex++;
+
+                setTimeout(() => {
+                    document.getElementById("vysledok").innerHTML = ''; 
+                    document.getElementById("vysledok").classList.remove('show');
+                    if (currentWordIndex < wordList.length) {
+                        displayWord(); // Zobraziť ďalšie slovo
+                    } else {
+                        kontrolacvicenia = 1;
+                        closeCvicenie(); // Ukončiť cvičenie
+                    }
+                }, 2000);
+            } else {
+                console.log('Slovo "' + currentWord + '" nebolo správne vyslovené.');
+                slovicka++;
+                incorrectAnswers++;
+                updateAnswerCounters();
+                console.log('Skús ho vysloviť znova, slovicka: ' +slovicka);
+                
+                // Vypočítaj zostávajúce pokusy
+                const remainingAttempts = 3 - slovicka;
+                
+                // Zobraz chybovú správu so zostávajúcimi pokusmi
+                const attemptMessage = remainingAttempts > 0 
+                    ? `<div class="attempt-message">Zostávajúce pokusy: ${remainingAttempts}</div>`
+                    : `<div class="attempt-message final-attempt">Posledný pokus vyčerpaný</div>`;
+                
+                const vysledokElement = document.getElementById("vysledok");
+                vysledokElement.innerHTML = `
+                    <center>
+                    <img src="images/nespravne.png" alt="Nesprávne">
+                    ${attemptMessage}
+                    </center>
+                `;
+                vysledokElement.classList.add('show');             
+                
+                effectZle.play();
+            }
+
+            setTimeout(() => {
+                document.getElementById("vysledok").innerHTML = '';         // Vymazanie obrázka po 2 sekundách
+                document.getElementById("vysledok").classList.remove('show');
+                if (slovicka === 3) {
+                    kontrolacvicenia = 2;
+                    closeCvicenie();                                        // Ukončiť cvičenie
+                }
+                resolve();                                                  //resolve na splnenie promisy
+            }, 2000);
+        };
+    });
+
+    recognition.onresult = function(event) {
+        transcript += event.results[0][0].transcript.trim();                // Rozpoznaný text
+    };
+
+    recognition.onerror = function(event) {                                 //upozornenie na chybu
+        console.error('Chyba pri rozpoznávaní reči:', event.error);
+    };
+
+    setTimeout(() => {                                                      // Zastavenie nahrávania po 5 sekundách
+        recognition.stop();
+    }, 5000);
+
+    waitForEnd.then(() => {                                                 // Počkáme na ukončenie nahrávania pomocou promisy
+        console.log('Vyhodnotenie hotové.');
     });
 }
-// Funkcia na zobrazenie aktuálneho slova na vyslovenie
-function displayWord() {
-  document.getElementById("word-display").innerText = wordList[currentWordIndex].toUpperCase();
-  const imageName = wordList[currentWordIndex] + ".png"; 
-  document.getElementById("cvicenie-image").src = "images/slova/" + imageName;
-}
-let slovicka = 0;
-/* Samotna funckia */
-function rozpoznanieS() {
-  const recognition = new webkitSpeechRecognition();
-  recognition.lang = 'sk-SK';
-  recognition.continuous = false; //rozoznavanie jedneho slova
-  // Spustenie nahrávania
-  recognition.start();
-  console.log('Nahrávanie spustené.');
-  let transcript = ''; // Premenná na uchovávanie rozpoznaného textu
-  const waitForEnd = new Promise((resolve) => { //promisa, ktorá počká na ukončenie nahrávania
-    recognition.onend = () => {                 // Funkcia, ktorá sa vyvolá po ukončení nahrávania
-      console.log('Nahrávanie ukončené.');
-      console.log('Rozpoznaný text:', transcript);
-      const currentWord = wordList[currentWordIndex];
-      const cleanedTranscript = transcript.trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,""); // Odstránenie interpunkčných znamienok a prevod na malé písmená
-      console.log('Rozpoznaný text:', cleanedTranscript);
-      if (cleanedTranscript === currentWord.toLowerCase()) {
-        console.log('Bolo správne vyslovené slovo "' + currentWord + '".');
-        document.getElementById("vysledok").innerHTML = '<center><img src="images/spravne.png" alt="Správne" style="width: 435px; height: 342px;"></center>';
-        effectSpravne.play();
-        currentWordIndex++;
-        setTimeout(() => {
-        document.getElementById("vysledok").innerHTML = ''; 
-        if (currentWordIndex < wordList.length) {
-          displayWord(); // Zobraziť ďalšie slovo
-        } else {
-          kontrolacvicenia = 1;
-          closeCvicenie(); // Ukončiť cvičenie
-        }
-        }, 2000);
-      } else {
-        console.log('Slovo "' + currentWord + '" nebolo správne vyslovené.');
-        slovicka++;
-        console.log('Skús ho vysloviť znova, slovicka: ' +slovicka);
-        document.getElementById("vysledok").innerHTML = '<center><img src="images/nespravne.png" alt="Nesprávne" style="width: 435px; height: 342px;"></center>';
-        effectZle.play();
-      }
-      setTimeout(() => {
-        document.getElementById("vysledok").innerHTML = ''; // Vymazanie obrázka po 2 sekundách
-        if (slovicka === 3) {
-          kontrolacvicenia = 2;
-          closeCvicenie(); // Ukončiť cvičenie
-        }
-        resolve();  //resolve na splnenie promisy
-      }, 2000);
-    };
-  });
-  recognition.onresult = function(event) {
-    transcript += event.results[0][0].transcript.trim();  // Rozpoznaný text
-  };
-  recognition.onerror = function(event) { //upozornenie na chybu
-    console.error('Chyba pri rozpoznávaní reči:', event.error);
-  };
-  setTimeout(() => {             // Zastavenie nahrávania po 5 sekundách
-    recognition.stop();
-  }, 5000);
-  waitForEnd.then(() => {       // Počkáme na ukončenie nahrávania pomocou promisy
-    console.log('Vyhodnotenie hotové.');
-  });
-}
-// Funkcia na zatvorenie cvičenia
+//////////////////////////////////////////
+//   Funkcia na zatvorenie cvičenia     //
+//////////////////////////////////////////
 function closeCvicenie() {
-  if (kontrolacvicenia === 1) {
+    if (kontrolacvicenia === 1) {
+        const attempts = 3 - slovicka;                          // Ak slovicka=0, tak 3 pokusy; ak slovicka=2, tak 1 pokus
+        recordSpeechExerciseResult(attempts, true);
 
-    const attempts = 3 - slovicka; // Ak slovicka=0, tak 3 pokusy; ak slovicka=2, tak 1 pokus
-    recordSpeechExerciseResult(attempts, true);
-
-    diamonds.forEach((diamond, diamondIndex) => {
-      blockX = diamond.x / blockSize;
-      blockY = diamond.y / blockSize;
-      if (blockX === targetBlockX && blockY === targetBlockY && !diamond.destroyed) {
-      diamond.destroyed = true; 
-      diamondsCollected++;
-      effectzlato.play();
-      updateDiamondCount();
-      updateDiamondsCollected(diamondsCollected);
-      checkWinConditionWithRating();
-      spaceBarPressed = 0;}     
-  })}
-  else if (kontrolacvicenia === 2) {
+        diamonds.forEach((diamond, diamondIndex) => {
+            blockX = diamond.x / blockSize;
+            blockY = diamond.y / blockSize;
+            if (blockX === targetBlockX && blockY === targetBlockY && !diamond.destroyed) {
+                diamond.destroyed = true; 
+                diamondsCollected++;
+                effectzlato.play();
+                updateDiamondCount();
+                updateDiamondsCollected(diamondsCollected);
+                checkWinConditionWithRating();
+                spaceBarPressed = 0;
+            }     
+        })
+    }
+    else if (kontrolacvicenia === 2) {
         recordSpeechExerciseResult(0, false);
-      spaceBarPressed = 0;
-  }
-  slovicka = 0;
-  kontrolacvicenia = 0;
-  currentWordIndex = 0;
-  wordList = [];
-  document.getElementById("cvicenie").style.display = "none";
-  document.getElementById("blur-background").style.display = "none";
-  document.body.classList.remove("cvicenie-open");
-  document.body.style.overflow = "auto"; 
+        spaceBarPressed = 0;
+    }
+
+    slovicka = 0;
+    kontrolacvicenia = 0;
+    currentWordIndex = 0;
+    wordList = [];
+    document.getElementById("cvicenie").style.display = "none";
+    document.getElementById("blur-background").style.display = "none";
+    document.body.classList.remove("cvicenie-open");
+    document.body.style.overflow = "auto"; 
+    // Reset progress indikátora
+    const progressContainer = document.getElementById('word-progress');
+    if (progressContainer) {
+        progressContainer.remove();
+    }
 }
+
+//////////////////////////////////////////
+//      Aktualizácia progress           //      
+//      indikátora pre slová            //
+//////////////////////////////////////////
+function updateWordProgress() {
+    // Nájde alebo vytvori progress kontajner
+    let progressContainer = document.getElementById('word-progress');
+    if (!progressContainer) {
+        progressContainer = createWordProgressElement();
+    }
+    
+    const currentWord = currentWordIndex + 1;
+    const totalWords = wordList.length;
+    
+    // Aktualizuje text
+    const progressText = progressContainer.querySelector('.progress-text');
+    progressText.textContent = `Slovo ${currentWord} / ${totalWords}`;
+    
+    // Aktualizuje progress bar
+    const progressBar = progressContainer.querySelector('.progress-fill');
+    const percentage = (currentWord / totalWords) * 100;
+    progressBar.style.width = `${percentage}%`;
+    
+    console.log(`Progress aktualizovaný: ${currentWord}/${totalWords} (${percentage}%)`);
+}
+
+//////////////////////////////////////////
+// Vytvorenie progress elementu         //
+// ak neexistuje                        //
+//////////////////////////////////////////
+function createWordProgressElement() {
+    const cvicenieContent = document.querySelector('.cvicenie-content');
+    
+    const progressHTML = `
+        <div id="word-progress" class="word-progress">
+        <div class="progress-text">Slovo 1 / 2</div>
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        </div>
+    `;
+    
+    // Pridaj progress na začiatok cvicenie-content
+    cvicenieContent.insertAdjacentHTML('afterbegin', progressHTML);
+    
+    return document.getElementById('word-progress');
+}
+
 const rozpoznanie = document.getElementById('rozpoznanie');
 rozpoznanie.addEventListener('click', rozpoznanieS);
 

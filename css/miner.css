@@ -552,9 +552,9 @@ body {
     width: 70%;
     height: 80%;
     max-width: 450px;
-    max-height: 450px;
+    max-height: 500px;
     min-width: 400px;
-    min-height: 400px;
+    min-height: 450px;
     background: url('../images/pozadie_button_mobile_2.png') lightgray 50% / cover no-repeat;
     
     /* Vnútorný obsah */
@@ -573,10 +573,9 @@ body {
 }
 
 .cvicenie-content {
-    padding: 20px;  
+    padding: 10px;  
     display: flex;
-    flex: 1;  
-    gap: 20px;
+    gap: 10px;
     flex-direction: column;
 }
 
@@ -646,16 +645,45 @@ body {
 
 .tlacidlo:hover {
     background-color: rgba(255, 228, 196, 0);
-    transform: scale(0.98); /* Zväčšenie tlačidla na 110% veľkosti pri prejdení myšou */
+    transform: scale(0.98); 
     border: 4px solid #9A0003;
     background: linear-gradient(0deg, #AD0003 0%, #FF2528 100%);
 }
 
 .tlacidlo:active {
     background-color: rgba(255, 228, 196, 0);
-    transform: scale(0.98); /* Zväčšenie tlačidla na 110% veľkosti pri prejdení myšou */
+    transform: scale(0.98); 
     border: 4px solid #9A0003;
     background: linear-gradient(0deg, #AD0003 0%, #FF2528 100%);
+}
+
+/* Štýl div kontajnera počas nahrávania */
+.tlacidlo.recording {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    transform: scale(0.98);
+    animation: recording-pulse 1s ease-in-out infinite alternate;
+}
+
+.tlacidlo.recording button {
+    background: transparent !important;
+    cursor: not-allowed !important;
+}
+
+.tlacidlo.recording button a {
+    color: #fff !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+/* Pulzovanie celého div-u */
+@keyframes recording-pulse {
+    0% { 
+        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+        opacity: 1;
+    }
+    100% { 
+        box-shadow: 0 0 0 10px rgba(231, 76, 60, 0);
+        opacity: 0.9;
+    }
 }
 
 .cvicenie {
@@ -674,7 +702,6 @@ body {
 .cvicenie-content-2 {
     padding: 20px;  
     display: flex;
-    flex: 1;  
     gap: 5px;
     flex-direction: column;
     justify-content: center;
@@ -732,20 +759,56 @@ body {
   scale: 0.98;
 }
 
-#vysledok {
-  width: 450px;
-  height: 450px;
-  height: auto; 
-  display: block; 
-  margin-left: 0px; 
-  margin-top: 0px;
-  margin-right: 0px;
-  margin-bottom: 0px;
-  position: absolute;
-  background-size: cover;
-  backdrop-filter: blur(2px); /* Rozmazání efektu */
-  z-index: 9999; /* Zde můžete použít libovolné číslo, které zajistí, že bude obrázek nad všemi ostatními vrstvami */
+/* Vysledok element - skrytý na začiatku */
+.vysledok {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    display: none; /* PRIDANÉ: skrytý na začiatku */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    border-radius: 30px;
+    overflow: hidden;
 }
+
+/* Keď sa zobrazuje výsledok */
+.vysledok.show {
+    display: flex;
+}
+
+/* Kontajner pre obsah vysledku */
+.vysledok center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Obrázok výsledku */
+.vysledok img {
+    max-width: 300px !important;
+    max-height: 250px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain;
+}
+
+/* Správy v rámci vysledku */
+.vysledok .attempt-message,
+.vysledok .success-message {
+    margin-top: 20px;
+    z-index: 1001;
+}
+
 
 .menu-container {
     margin-bottom: 2rem;
@@ -762,6 +825,7 @@ body {
 .main-menu li {
     margin-bottom: 1rem;
 }
+
 
 /* Štýlovanie menu tlačidiel */
 .menu-button {
@@ -1115,6 +1179,56 @@ body {
 
 
 
+
+
+
+/* Progress indikátor pre rečové cvičenie */
+.word-progress {
+  margin-bottom: -10px;
+  text-align: center;
+}
+
+.progress-text {
+  font-family: "Luckiest Guy", sans-serif;
+  font-size: 18px;
+  color: #ffffff;
+  margin-bottom: 10px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 12px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid #e1e8f0;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #27ae60, #2ecc71);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: progress-shine 2s ease-in-out infinite;
+}
+
+@keyframes progress-shine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
   
 
 
@@ -1675,6 +1789,65 @@ body {
     font-size: 20px;
 
   }
+
+
+  .execise-window {
+      width: 90%;
+      height: 80%;
+      max-width: 450px;
+      max-height: 450px;
+      padding: 1rem 2rem;
+      box-sizing: border-box;
+      border: 2px solid #ECCF17;
+  }
+
+  .tlacidlo {
+      width: 150px;
+      height: 40px;
+  }
+
+  .tlacidlo a {
+      font-size: 20px;
+  }
+
+  .tlacidlo:hover {
+      transform: scale(0.98); 
+      border: 3px solid #9A0003;
+  }
+
+  .tlacidlo:active {
+      border: 3px solid #9A0003;
+  }
+
+  .tlacidlo.recording {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      transform: scale(0.98);
+      animation: recording-pulse 1s ease-in-out infinite alternate;
+  }
+
+  .cvicenie-text {
+      font-size: 25px;
+  }
+
+  .word-progress {
+    margin-bottom: 0px;
+  }
+
+  .progress-text {
+    font-size: 14px;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 10px;
+    border: 1px solid #e1e8f0;
+  }
+
+  .progress-fill {
+    height: 100%;
+  }
+
+
 }
 
 
@@ -1682,3 +1855,86 @@ body {
 
 
 
+
+
+
+
+/* Správa o zostávajúcich pokusoch - prispôsobená exercise window */
+.attempt-message {
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 18px;
+    color: #fff;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    margin-top: 10px;
+    padding: 8px 15px;
+    background: linear-gradient(0deg, #AD0003 0%, #FF2528 100%);
+    border-radius: 20px;
+    border: 3px solid #9A0003;
+    display: inline-block;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    max-width: 280px;
+    text-transform: uppercase;
+}
+
+.attempt-message.final-attempt {
+    background: linear-gradient(0deg, #8B0000 0%, #DC143C 100%);
+    border-color: #8B0000;
+    animation: final-attempt-warning 0.5s ease-in-out 3;
+}
+
+@keyframes final-attempt-warning {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); box-shadow: 0 4px 12px rgba(220, 20, 60, 0.5); }
+}
+
+/* Správa o úspechu - prispôsobená exercise window */
+.success-message {
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 20px;
+    color: #fff;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: linear-gradient(0deg, #15981E 0%, #0F1 100%);
+    border-radius: 20px;
+    border: 3px solid #1A511D;
+    display: inline-block;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    text-transform: uppercase;
+    animation: success-celebration 0.6s ease-out;
+}
+
+@keyframes success-celebration {
+    0% { 
+        transform: scale(0.8); 
+        opacity: 0; 
+    }
+    50% { 
+        transform: scale(1.1); 
+        box-shadow: 0 4px 12px rgba(21, 152, 30, 0.5);
+    }
+    100% { 
+        transform: scale(1); 
+        opacity: 1; 
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+}
+
+/* Responzívne úpravy pre menšie okná */
+@media (max-height: 500px) {
+    .attempt-message {
+        font-size: 16px;
+        padding: 6px 12px;
+        margin-top: 8px;
+    }
+    
+    .success-message {
+        font-size: 18px;
+        padding: 8px 16px;
+        margin-top: 8px;
+    }
+}
