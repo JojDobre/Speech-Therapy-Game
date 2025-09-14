@@ -1286,20 +1286,23 @@ function recordListeningExerciseResult(correctAnswers, incorrectAnswers, complet
         
         // Výpočet bodov podľa správnych a nesprávnych odpovedí
         let points = 0;
-        if (correctAnswers >= 3) {
-            if (incorrectAnswers === 0) {
-                points = 3; // 3 správne, 0 nesprávnych
-            } else if (incorrectAnswers === 1) {
-                points = 2; // 3 správne, 1 nesprávna
-            } else if (incorrectAnswers === 2) {
-                points = 1; // 3 správne, 2 nesprávne
-            } else {
-                points = 0; // Viac ako 2 nesprávne
-            }
+        if (correctAnswers === listeningTotalExercises && incorrectAnswers === 0) {
+            // Perfektné cvičenie - všetko správne na prvý pokus
+            points = 3;
+        } else if (correctAnswers === listeningTotalExercises && incorrectAnswers <= 2) {
+            // Dobré cvičenie - všetko správne ale s chybami
+            points = 2;
+        } else if (correctAnswers === listeningTotalExercises) {
+            // Slabé cvičenie - všetko správne ale s viacerými chybami
+            points = 1;
+        } else {
+            // Neúspešné cvičenie - nie všetko správne
+            points = 0;
         }
         
         gamePerformance.listeningExercises.totalPoints += points;
-        console.log(`Pridané ${points} body za posluchové cvičenie`);
+        console.log(`Pridané ${points} body za posluchové cvičenie (${correctAnswers}/${listeningTotalExercises} správne, ${incorrectAnswers} chýb)`);
+
     }
 }
 
