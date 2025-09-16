@@ -1,56 +1,174 @@
-/* FONTY */
-@font-face {
-    font-family: 'MPLUSRounded1c-Black';
-    src: url('../fonts/MPLUSRounded1c-Black.ttf') format('truetype');
-    /* Možné ďalšie formáty fontov (woff, woff2, svg) a ich cesty by sa tiež mali uviesť */
-    font-weight: normal;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: 'MPLUSRounded1c-Medium';
-    src: url('../fonts/MPLUSRounded1c-Medium.ttf') format('truetype');
-    /* Možné ďalšie formáty fontov (woff, woff2, svg) a ich cesty by sa tiež mali uviesť */
-    font-weight: normal;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: 'MPLUSRounded1c-ExtraBold';
-    src: url('../fonts/MPLUSRounded1c-ExtraBold.ttf') format('truetype');
-    /* Možné ďalšie formáty fontov (woff, woff2, svg) a ich cesty by sa tiež mali uviesť */
-    font-weight: normal;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: 'MPLUSRounded1c-Bold';
-    src: url('../fonts/MPLUSRounded1c-Bold.ttf') format('truetype');
-    /* Možné ďalšie formáty fontov (woff, woff2, svg) a ich cesty by sa tiež mali uviesť */
-    font-weight: normal;
-    font-style: normal;
-  }
+/* ============================ */
+/* ====== GLOBÁLNE ŠTÝLY ====== */
+/* ============================ */
 
-  body {
+/* ================================================ */
+/* Reset štýlov pre konzistenciu medzi prehliadačmi */
+/* ================================================ */
+* {
     margin: 0;
-    padding: clamp(10px, 2vw, 20px);
-    min-height: 90vh;
+    padding: 0;
+    box-sizing: border-box;
+}
+/* ============================ */
+/* Základné nastavenia pre body */
+/* ============================ */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: "Luckiest Guy", sans-serif;
+    overflow: hidden; 
+    background: var(--Backgrtound, url('../images/worlds/background.jpg')) lightgray 50% / cover no-repeat;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+    cursor: url('../images/cursor.png') 5 5, auto;
+    justify-content: center;
     display: flex;
+}
+
+/* ============================= */
+/* ========== LOADING ========== */
+/* ============================= */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #2c1810 0%, #1a0f08 100%);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.loading-content {
+    text-align: center;
+    color: white;
+}
+
+.loading-logo {
+    margin-bottom: 2rem;
+}
+
+.loading-text-jozino {
+    display: flex;
+    width: 444px;
+    height: 43px;
+    transform: rotate(0.093deg);
     flex-direction: column;
-    background-image: url('../images/pozadieg.jpg');
-    background-size: cover;
-    background-position: center;
-    font-family: 'MPLUSRounded1c-Medium', sans-serif;
-    overflow-x: hidden;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    
+    /* Štýlovanie textu */
+    color: #FFF;
+    text-align: center;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 100px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 20% */
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 10;
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
 }
 
-.game-container {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 10px;
-    max-width: 900px;
-    margin: 20px auto;
+.loading-text-banik {
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 45px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 100%;
+    text-align: center;
+    text-transform: uppercase;
+    
+    /* Gradient pozadí pre text */
+    background: conic-gradient(from 90deg at 50% 50%, #ECD517 0deg, #ECBB17 360deg);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 20;
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(236, 207, 23, 0.3);
+    border-top: 4px solid #ECCF17;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-message {
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 22px;
+    color: #ECCF17;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
 }
 
 
-/* koniec hry okno */
+
+/* ============================ */
+/*  Horný, bočný menuu button   */
+/* ============================ */
+#menuButton {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 43px;
+  height: 43px;
+  border-radius: 50%;
+  background-image: url("../images/menubutton.png");
+  background-size: cover;
+  background-position: center;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  z-index: 1000;
+  cursor: url('../images/active_cursor4.png') 5 5, pointer;
+}
+.kruhove-tlacidlo {
+  width: 43px;
+  height: 43px;
+  border-radius: 50%; /* Tvar kruhu */
+  background-image: url("../images/menubutton.png"); /* Cesta k obrázku, ktorý chceš použiť ako pozadie */
+  background-size: cover; /* Upravuje veľkosť obrázku na takú, aby pokrýval celé tlačidlo */
+  background-position: center; /* Zarovnáva obrázok na strede */
+  border: none; /* Bez ohraničenia */
+  cursor: pointer; /* Zmení kurzor na ukazovateľ, aby naznačil interaktívnosť */
+  outline: none; /* Odstráni ohraničenie po kliknutí */
+  cursor: url('../images/active_cursor4.png') 5 5, pointer;
+}
+.kruhove-tlacidlo:focus {
+  outline: none; /* Odstráni ohraničenie po získaní zaostrenia */
+}
+
+
+
+/* ============================= */
+/* ==========  MODALY  ========= */
+/* ============================= */
 
 .modal {
     display: none;
@@ -59,493 +177,799 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.14);
+    backdrop-filter: blur(9px);
     z-index: 1000;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    max-width: 500px;
-    width: 90%;
-    z-index: 1001; /* Vyšší než modal */
-    position: relative;
-}
-
-.modal h2 {
-    color: #2c3e50;
-    margin-bottom: 1.5rem;
-}
-
-.game-stats {
-    background-color: #f8f9fa;
-    padding: 1rem;
-    border-radius: 10px;
-    margin: 1.5rem 0;
-}
-
-.game-stats p {
-    margin: 0.5rem 0;
-    color: #2c3e50;
-}
-
-.modal-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 1.5rem;
-}
-
-.modal-button {
-    padding: 0.8rem 1.5rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
     transition: all 0.3s ease;
 }
 
-#restartGameBtn {
-    background-color: #4CAF50;
-    color: white;
+.modal.modal-open {
+   background: rgba(0, 0, 0, 0.14);
+   backdrop-filter: blur(9px);
 }
 
-#backToMenuBtn {
-    background-color: #2196F3;
-    color: white;
-}
-
-.modal-button:hover {
-    transform: translateY(-2px);
-    opacity: 0.9;
-}
-
-#winnerInfo {
-    margin: 1rem 0;
-    padding: 1rem;
-    background-color: #e8f5e9;
-    border-radius: 10px;
-}
-
-#winnerText {
-    color: #2e7d32;
-    margin: 0;
-}
-
-
-
-
-
-/* karty */
-
-.card {
-aspect-ratio: 1;
-background-image: url("../images/pexeso.png");
-background-size: cover;
-background-position: center;
-background-repeat: no-repeat;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-cursor: pointer;
-transition: transform 0.3s;
-position: relative;
-overflow: hidden;
-transform-style: preserve-3d;
-}
-
-.card.flipped {
-background-image: url("../images/hra.png"); 
-transform: rotateY(0);
-}
-
-.card img {
-max-width: 70%;
-max-height: 60%;
-position: absolute;
-top: 10%; /* Posun obrázku nahoru */
-backface-visibility: hidden;
-transform: rotateY(180deg);
-transition: transform 0.3s;
-}
-
-.card-word {
-font-size: 15px;
-position: absolute;
-bottom: 15px; /* Umístění textu dolů */
-left: 0;
-right: 0;
-text-align: center;
-color: white;
-text-shadow: 1px 1px 2px black;
-backface-visibility: hidden;
-transform: rotateY(180deg);
-transition: transform 0.3s;
-font-family: 'MPLUSRounded1c-Bold', sans-serif;
-
-}
-
-.card.flipped {
-transform: rotateY(0);
-}
-
-.card.flipped img,
-.card.flipped .card-word {
-transform: rotateY(0);
-}
-
-.stats {
-    text-align: center;
-    margin: 20px;
-    font-size: 1.2em;
-    color: white;
-}
-
-.back-button {
+.execise-window{
     position: absolute;
-    top: 20px;
-    left: 20px;
-    text-decoration: none;
-    font-size: 24px;
-    color: black;
-}
-
-
-.mic-indicator {
-    width: 100%;
-    display: flex;
-    flex-direction: row; /* zmena na row pre horizontálne usporiadanie */
-    align-items: center; /* vertikálne zarovnanie na stred */
-    justify-content: center; /* horizontálne zarovnanie na stred */
-    gap: 10px; /* medzera medzi bodkou a tlačidlom */
-    margin: 10px 0;
-}
-
-.recording-status {
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    background-color: red;
-    animation: pulse 1s infinite;
-    display: none;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.2); opacity: 0.7; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-
-.players-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin-bottom: 20px;
-    margin-top: 20px;
-}
-
-.player-indicator {
-    background-color: #3a1304;
-    border: 3px double #96530f;
-    border-radius: 0px;
-    padding: 15px;
-    text-align: center;
-    min-width: 250px;
-    transition: all 0.3s ease;
-    margin: 0 10px;
-}
-
-.player-indicator .current-player {
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
-.player-indicator .player-name {
-    font-weight: bold;
-}
-
-.player-indicator .player-scores {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    
+    width: 70%;
+    height: 80%;
+    max-width: 450px;
+    max-height: 500px;
+    min-width: 400px;
+    min-height: 450px;
+    background: url('../images/pozadie_button_mobile_2.png') lightgray 50% / cover no-repeat;
+    
+    /* Vnútorný obsah */
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem 3rem;
+    box-sizing: border-box;
+    border: 4px solid #ECCF17;
+    border-radius: 30px;
+
+    /* Animácie */
+    transition: all 0.4s ease;
+}
+
+/* Vysledok element - skrytý na začiatku */
+.vysledok {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    display: none; /* PRIDANÉ: skrytý na začiatku */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    border-radius: 30px;
+    overflow: hidden;
+}
+
+/* Keď sa zobrazuje výsledok */
+.vysledok.show {
+    display: flex;
+}
+
+/* Kontajner pre obsah vysledku */
+.vysledok center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Obrázok výsledku */
+.vysledok img {
+    max-width: 300px !important;
+    max-height: 250px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain;
+}
+
+/* Správy v rámci vysledku */
+.vysledok .attempt-message,
+.vysledok .success-message {
+    margin-top: 20px;
+    z-index: 1001;
+}
+
+/* Style pre recove cvicenie */
+.cvicenie-content {
+    padding: 10px;  
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+}
+
+.cvicenie-text {
+    text-align: center;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    font-family: "Luckiest Guy";
+    font-size: 45px;
+    font-style: normal;
+    font-weight: 400;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.cvicenie-text p {
+    background: linear-gradient(180deg, #EF0 0%, #FFD900 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    padding-top: 15px;
+}
+
+.cvicenie-text button {
+    width: auto; 
+    max-height: 200px;
+    display: block; 
+}
+
+.cvicenie-text img{
+  min-width: 100px;
+  max-width: 300px;
+  max-height: 200px;
+  max-width: 253px;
+  height: 200px;
+  width: auto;
+}
+
+/* Štýl div kontajnera pred a po nahravani */
+.tlacidlo {
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
+    outline: none; /* Odstráňte ohraničenie */
+    transition: transform 0.2s ease; /* Animácia pre plynulé zväčšenie */
+    width: 253px;
+    height: 69px;
+    flex-shrink: 0;
+    border-radius: 30px;
+    border: 4px solid #1A511D;
+    background: linear-gradient(0deg, #15981E 0%, #0F1 100%);
+    position: relative;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+.tlacidlo button {
+    background-color: transparent;
+    border: none
+}
+.tlacidlo a {
+    text-align: center;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    font-family: "Luckiest Guy";
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #EF0 0%, #FFD900 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.tlacidlo:hover {
+    background-color: rgba(255, 228, 196, 0);
+    transform: scale(0.98); 
+    border: 4px solid #9A0003;
+    background: linear-gradient(0deg, #AD0003 0%, #FF2528 100%);
+}
+.tlacidlo:active {
+    background-color: rgba(255, 228, 196, 0);
+    transform: scale(0.98); 
+    border: 4px solid #9A0003;
+    background: linear-gradient(0deg, #AD0003 0%, #FF2528 100%);
+}
+/* Štýl div kontajnera počas nahrávania */
+.tlacidlo.recording {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    transform: scale(0.98);
+    animation: recording-pulse 1s ease-in-out infinite alternate;
+}
+.tlacidlo.recording button {
+    background: transparent !important;
+    cursor: not-allowed !important;
+}
+.tlacidlo.recording button a {
+    color: #fff !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+/* Pulzovanie celého div-u */
+@keyframes recording-pulse {
+    0% { 
+        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+        opacity: 1;
+    }
+    100% { 
+        box-shadow: 0 0 0 10px rgba(231, 76, 60, 0);
+        opacity: 0.9;
+    }
+}
+
+
+/* Style pre posluchove cvicenie */
+.cvicenie {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.14);
+    backdrop-filter: blur(9px);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+.cvicenie-content-2 {
+    padding: 20px;  
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+    justify-content: center;
+}
+.cvicenie-content-2 p {
+   color: #FFF;
+   text-align: center;
+   font-family: "Luckiest Guy", sans-serif;
+   font-size: 22px;
+   font-style: normal;
+   font-weight: 100;
+   line-height: normal;
+   margin: 0;
+   padding: 0px 10px;
+   letter-spacing: 1.6px;
+}
+.cvicenie-content-2 h1 {
+    text-align: center;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    font-family: "Luckiest Guy";
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #EF0 0%, #FFD900 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.buttonsContainer {
+  gap: 10px;
+}
+#buttonsContainer img {
+  width: 50px;  /* Prispôsobte veľkosť podľa potreby */
+  padding: 2px;
+  height: 50px;
+  cursor: url('../images/active_cursor4.png') 5 5, pointer;
+}
+.buttonsContainer:hover img {
+  scale: 0.98;
+}
+
+
+/* Modal pre pauzu/back to menu */
+.main-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.main-menu li {
+    margin-bottom: 1rem;
+}
+/* Štýlovanie menu tlačidiel */
+.menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative; 
+    
+    /* Rozměry tlačidla podľa Figma */
+    width: 250px;
+    height: 64px;
+    flex-shrink: 0;
+    border-radius: 30px;
+    
+    /* Tieň pre tlačidlá */
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
+    
+    /* Štandardné neaktívne tlačidlo */
+    border: 4px solid #AC3F0B;
+    background: url('../images/pozadie_button.png') lightgray 50% / cover no-repeat;
+    
+    /* Prechod pre animácie */
+    transition: all 0.3s ease;
+    
+    /* Text štýlovanie */
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; /* 50% */
+    text-transform: uppercase;
+    text-align: center;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    
+    /* Základná farba textu pre neaktívne tlačidlá */
+    color: #FFF;
+
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
+    z-index: 10000;
+}
+/* Hover efekt pre menu tlačidlá */
+.menu-button:hover {
+    box-shadow: inset 0 0 20px 2px rgba(236, 207, 23, 0.3);
+    border: 4px solid #ECCF17;
+    scale: 0.98;
+}
+/* Aktívne tlačidlo pri stlačení */
+.menu-button:active {
+    transform: rotate(0.093deg) translateY(0) scale(0.98);
+    filter: drop-shadow(2px 4px 4px rgba(0, 0, 0, 0.3));
+}
+
+
+/*Modal pre endgame - game over*/
+.stats{
+    padding-bottom: 15px;
+    justify-content: center;
+    align-items: center;
+}
+.stats a {
+    text-align: center;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    font-family: "Luckiest Guy";
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; /* 50% */
+    text-transform: uppercase;
+
+    background: linear-gradient(180deg, #EF0 0%, #FFD900 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.stats span {
+    color: #FFF;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    font-family: "Luckiest Guy";
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    justify-content: center;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.stats img {
+    width: 24px;
+    height: 24px;
+}
+/* Hviezdy v modali */
+.modal-stars {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    margin-top: -15px;
+}
+.modal-stars img {
+    width: 50px;
+    height: 50px;
+}
+.gameend{
+  height: auto;
+  width: auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column; 
+  text-align: center;
+}
+
+/*Dialogové okno pre menu */
+.dialogove-okno {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.14);
+    backdrop-filter: blur(9px);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+.close {
+   position: absolute;
+   top: 20px;
+   right: 30px;
+   color: #FFF;
+   text-align: center;
+   font-family: "Luckiest Guy", sans-serif;
+   font-size: 64px;
+   font-style: normal;
+   font-weight: 400;
+   line-height: normal;
+   cursor: url('../images/active_cursor4.png') 5 5, pointer;
+   z-index: 1001;
+   transition: transform 0.4s ease;
+}
+.close:hover {
+    transform: rotate(15deg) scale(1.05);
+}
+
+#blur-background {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(4px); /* Rozmazanie všetkého pod #blur-background */
+  z-index: 999; 
+}
+.cvicenie-open #blur-background {
+  filter: blur(4px) grayscale(50%); /* Aplikuj rozmazanie a zosvetlenie pozadia, keď je dialogové okno otvorené */
+}
+
+
+/* ============================= */
+/* =========  OKNO HRY  ======== */
+/* ============================= */
+.main-container {
+    width: 100%;
+    margin: 0 auto; 
+    background-color: #17284900;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    grid-template-columns: 800px 300px;
+    justify-content: center;
+    text-align: center;
+    gap: 20px;
+    align-content: center;
+}
+
+/* ============================= */
+/* ======== HORNÝ PANEL ======== */
+/* ============================= */
+.top-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    height: 80px;
+    flex-shrink: 0;
+}
+
+.panel-item {
+    width: 253px;
+    height: 69px;
+    border-radius: 30px;
+    border: 4px solid #AC3F0B;
+    background-image: url('../images/pozadie_button_mobile_2.png');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: #FFF;
+    text-align: center;
+    text-transform: uppercase;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+}
+
+/* Stredný panel - PEXESO s odlišným borderom a textom */
+.game-title {
+    border: 4px solid #ECCF17 !important;
+}
+
+.game-title span {
+    background: linear-gradient(180deg, #EF0 0%, #FFD900 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: unset;
+}
+
+/* ============================= */
+/* ==========  CANVAS ========== */
+/* ============================= */
+.content-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-content: center;
+    margin: 0 auto;
+    background-color: #17284900;
+}
+
+/* Hlavný herný canvas */
+#gameCanvas {
+    background-image: url("../images/pozadie.jpg");
+    min-width: 800px;
+    min-height: 800px;
+    max-height: 800px;
+    max-width: 800px;
+    display: flex;
+    overflow: hidden;
+    border-radius: 10px;
+    border: 4px solid #AC3F0B;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    flex: 1; 
+    transition: all 0.4s ease;
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
+    gap: 10px; 
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-container {
+    display: flex;
+    width: 150px;
+    height: 150px;
+    background-image: url('../images/pozadie_button_mobile_2.png');
+    margin: 10px;
+    border: 2px solid #ECCF17 !important;
+    border-radius: 10px;
+    justify-items: center;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
+    transition: all 0.5s ease;
+
+}
+
+#gameCanvas.cards-16 .card-container {
+    width: 160px;
+    height: 160px;
+    margin: 12px;
+}
+
+/* Pre 20 kariet (4x5) - predvolená veľkosť */
+#gameCanvas.cards-20 .card-container {
+    width: 150px;
+    height: 150px;
+    margin: 10px;
+}
+
+/* Pre 24 kariet (4x6) */
+#gameCanvas.cards-24 .card-container {
+    width: 130px;
+    height: 130px;
+    margin: 8px;
+}
+
+/* Pre 25 kariet (5x5) */
+#gameCanvas.cards-25 .card-container {
+    width: 120px;
+    height: 120px;
+    margin: 6px;
+}
+
+/* Pre 30 kariet (5x6) */
+#gameCanvas.cards-30 .card-container {
+    width: 110px;
+    height: 110px;
+    margin: 5px;
+}
+
+/* Pre 36 kariet (6x6) */
+#gameCanvas.cards-36 .card-container {
+    width: 100px;
+    height: 100px;
+    margin: 4px;
+}
+
+/* Responzívne veľkosti obrázkov podľa počtu kariet */
+#gameCanvas.cards-16 .card-container img {
+    width: 90px;
+    height: 90px;
+}
+
+#gameCanvas.cards-20 .card-container img {
+    width: 80px;
+    height: 80px;
+}
+
+#gameCanvas.cards-24 .card-container img {
+    width: 70px;
+    height: 70px;
+}
+
+#gameCanvas.cards-25 .card-container img {
+    width: 65px;
+    height: 65px;
+}
+
+#gameCanvas.cards-30 .card-container img {
+    width: 60px;
+    height: 60px;
+}
+
+#gameCanvas.cards-36 .card-container img {
+    width: 50px;
+    height: 50px;
+}
+
+/* Responzívne veľkosti textu */
+#gameCanvas.cards-16 .card-container span {
+    font-size: 32px;
+}
+
+#gameCanvas.cards-20 .card-container span {
+    font-size: 28px;
+}
+
+#gameCanvas.cards-24 .card-container span,
+#gameCanvas.cards-25 .card-container span {
+    font-size: 24px;
+}
+
+#gameCanvas.cards-30 .card-container span,
+#gameCanvas.cards-36 .card-container span {
+    font-size: 20px;
+}
+
+/* Responzívne veľkosti textu na otočených kartách */
+#gameCanvas.cards-16 .card-container.flipped span {
+    font-size: 18px;
+}
+
+#gameCanvas.cards-20 .card-container.flipped span {
+    font-size: 16px;
+}
+
+#gameCanvas.cards-24 .card-container.flipped span,
+#gameCanvas.cards-25 .card-container.flipped span {
     font-size: 14px;
 }
 
-.player-indicator .player-scores div {
-    margin: 5px 0;
+#gameCanvas.cards-30 .card-container.flipped span,
+#gameCanvas.cards-36 .card-container.flipped span {
+    font-size: 12px;
 }
 
-.player-indicator.active-player {
-    transform: scale(1.1);
-    border: 3px solid #1eff00;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    background-size: 100% 100%;
+.card-container:hover {
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
+    box-shadow: 0 0 20px 2px #ECCF17 inset;
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
+    scale: 0.98;
 }
 
-
-
-
-
-
-
-
-
-/* Rozmazané pozadie */
-
-/* Pridáme wrapper pre hlavný obsah */
-.game-wrapper {
-    transition: filter 0.3s ease;
+.card-container span {
+    background: linear-gradient(180deg, #EF0 0%, #FFD900 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: unset;
 }
 
-/* Keď je speech container aktívny, aplikujeme blur na wrapper */
-.blur-background .game-wrapper {
-    filter: blur(5px);
-    z-index: -1;
+.card-container img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
 }
 
-/* Obrázok slova */
-.match-text {
-    font-size: 1.2em;
-    position: relative;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    margin: 5% auto 5% auto;
-    
-}
-
-/* Tlačidlo mikrofónu */
-#micButton {
-    padding: 10px 20px;
-    border-radius: 25px;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2em;
-    background: linear-gradient(45deg, #ff6b6b, #4ecdc4); /* rozprávkové farby */
-    color: white;
-    transition: all 0.3s ease;
-}
-
-/* Neaktívny stav tlačidla */
-#micButton:not(.active) {
-    background: linear-gradient(45deg, #ff9a9e, #fad0c4);
-}
-
-/* Aktívny stav tlačidla */
-#micButton.active {
-    background: linear-gradient(45deg, #4facfe, #00f2fe);
-}
-
-/* Text pre zostávajúce pokusy */
-.attempts-left {
-    margin-top: 15px;
-    color: #838383;
-    font-size: 0.9em;
-}
-
-.word-image {
-    max-width: 100px; 
-    max-height: 100px;
-    height: auto;
-    margin: 2% auto 2% auto;
-    display: block;
-}
-
-.speech-container {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #3a1304;
-    border: 3px solid #96530f;
-    padding: 20px;
-    text-align: center;
-    display: none;
-    z-index: 1000;
-    flex-direction: column;
-    align-items: center;
-    min-width: 300px; /* zabezpečí minimálnu šírku pre obsah */
-    filter: blur(0px);
-}
-
-.feedback-image {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 300px;
-    height: auto;
-    z-index: 1001; /* aby bol nad rozmazaným obsahom */
-}
-
-
-
-
-/* Média dotaz pro mobilní zařízení */
-@media screen and (max-width: 768px) {
-    body {
-        height: 100vh;
-        background-size: cover;
-        background-position: center;
-    }
-
-    .game-container {
-        grid-template-columns: repeat(4, 1fr); /* Méně sloupců pro menší obrazovky */
-        gap: 5px;
-        margin: 10px auto;
-        padding: 0 10px;
-    }
-
-    .card {
-        aspect-ratio: 1;
-        font-size: 12px;
-    }
-
-    .card img {
-        max-width: 60%;
-        max-height: 50%;
-        top: 15%; /* Mírná úprava pozice */
-    }
-
-    .card-word {
-        font-size: 12px;
-        bottom: 10px;
-    }
-
-    .stats {
-        font-size: 1em;
-        margin: 10px;
-    }
-
-    .back-button {
-        top: 10px;
-        left: 10px;
-        font-size: 20px;
-    }
-
-    .speech-container {
-        bottom: 10px;
-        width: 90%;
-        padding: 10px;
-    }
-
-    .players-container {
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 10px;
-        margin-top: 10px;
-    }
-
-    .player-indicator {
-        min-width: 200px;
-        margin: 5px 0;
-        padding: 10px;
-    }
-
-    .player-indicator .current-player {
-        font-size: 14px;
-    }
-
-    .modal-content {
-        width: 90%;
-        padding: 20px;
-    }
-}
-
-/* Pro velmi malé obrazovky (mobilní telefony) */
-@media screen and (max-width: 480px) {
-    .game-container {
-        grid-template-columns: repeat(3, 1fr); /* Ještě méně sloupců */
-        gap: 3px;
-    }
-
-    .card {
-        font-size: 10px;
-    }
-
-    .card img {
-        max-width: 50%;
-        max-height: 40%;
-    }
-
-    .card-word {
-        font-size: 10px;
-    }
-
-    .player-indicator {
-        min-width: 180px;
-    }
-}
-
-
-/* Responzivní úpravy pro tablety a mobilní zařízení */
-@media screen and (max-width: 1024px) {
-    .player-indicator {
-        width: calc(50% - 20px); /* Rozdělení na 2 sloupce */
-        min-width: 200px;
-        margin: 10px;
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .players-container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .player-indicator {
-        width: 90%; /* Téměř plná šířka */
-        max-width: 400px;
-        min-width: 180px;
-        margin: 10px 0;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .player-indicator {
-        width: 95%; /* Ještě větší šířka */
-        padding: 10px;
-    }
-
-    .player-indicator .current-player {
-        font-size: 14px;
-    }
-
-    .player-indicator .player-scores {
-        font-size: 12px;
-    }
-}
-
-/* Zbytek původního CSS zůstává stejný */
-.player-indicator .current-player {
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
-.player-indicator .player-name {
-    font-weight: bold;
-}
-
-.player-indicator .player-scores {
+/* side panel s hráčmi */
+.side-panel {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 300px;
+    min-height: 800px;
+    max-height: 800px;
+
+}
+.players-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    min-height: 158px;
+    border-radius: 30px;
+    border: 4px solid #AC3F0B;
+    background-image: url('../images/pozadie_button_mobile_2.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 20px;
+    box-sizing: border-box;
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
 }
 
-.player-indicator .player-scores div {
-    margin: 5px 0;
+.players-panel :active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    min-height: 158px;
+    background-image: url('../images/pozadie_button_mobile_2.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 20px;
+    box-sizing: border-box;
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
+    border-radius: 30px;
+    border: 4px solid #ECCF17;
+    box-shadow: 0 0 20px 2px #ECCF17 inset;
 }
 
-.player-indicator.active-player {
-    transform: scale(1.05);
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+.players-panel span {
+    font-size: 60px;
+    color: #FFF;
+    text-align: center;
+    text-transform: uppercase;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
 }
+
+.players-panel h1 {
+    font-size: 40px;
+    margin: 0;
+    padding: 0;
+}
+
+.players-panel .name  {
+    background: linear-gradient(180deg, #EF0 0%, #FFD900 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: unset;
+}
+
+.player-1 .name {
+    background: linear-gradient(176deg, #00E5FF 3.52%, #2494A1 96.48%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.player-2 .name {
+    background: linear-gradient(176deg, #1EFF00 3.52%, #8EE046 96.48%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.player-3 .name {
+    background: linear-gradient(176deg, #5579D4 3.52%, #008CFF 96.48%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.player-4 .name {
+    background: linear-gradient(176deg, #D455D2 3.52%, #F0D 96.48%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
 
 
 
