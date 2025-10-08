@@ -810,7 +810,7 @@ body {
 
 /* Hlavička modalu */
 .level-modal-header {
-    padding: 20px 25px;
+    padding: 20px 25px 10px 25px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -831,11 +831,45 @@ body {
 
 /* Telo modalu */
 .level-modal-body {
-    padding: 25px;
+    padding: 10px 25px;
     display: flex;
-    gap: 30px;
+    gap: 10px;
     flex: 1;
     overflow-y: auto;
+    flex-direction: column;
+}
+
+.level-modal-body::-webkit-scrollbar {
+    width: 8px; 
+}
+
+.level-modal-body::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2); 
+    border-radius: 10px; 
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.level-modal-body::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ECCF17 0%, #FBDB68 50%, #FFD900 100%); 
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); 
+    transition: all 0.3s ease; 
+}
+
+.level-modal-body::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #FFE94A 0%, #ECCF17 50%, #FBDB68 100%);
+    transform: scaleX(1.2); 
+    box-shadow: 0 3px 6px rgba(236, 207, 23, 0.4); 
+    border-color: rgba(255, 255, 255, 0.4); 
+}
+
+.level-modal-body::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(180deg, #ECD517 0%, #ECBB17 100%); 
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.level-modal-body::-webkit-scrollbar-corner {
+    background: transparent;
 }
 
 .level-info,
@@ -901,7 +935,7 @@ body {
 
 /* Pätka modalu */
 .level-modal-footer {
-    padding: 20px 25px;
+    padding: 10px 25px 20px 25px;
     display: flex;
     gap: 15px;
     justify-content: center;
@@ -981,17 +1015,9 @@ body {
     box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
 }
 
-
-
-
-
-
-
-
-
 /* ===== TRAINING MODAL STYLES ===== */
 .words-display-section {
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 .words-display-section h3 {
@@ -1002,6 +1028,16 @@ body {
     text-align: left;
 }
 
+.subtitle-modal {
+    color: #ECCF17;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 24px;
+    margin-bottom: 10px;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    text-transform: uppercase;
+}
+
 .words-scrollable-container {
     max-height: 200px;
     overflow-y: auto;
@@ -1009,6 +1045,53 @@ body {
     border-radius: 10px;
     background: rgba(0, 0, 0, 0.3);
     padding: 10px;
+}
+
+.words-scrollable-container::-webkit-scrollbar {
+    width: 8px; 
+}
+
+.words-scrollable-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2); 
+    border-radius: 10px; 
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.words-scrollable-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ECCF17 0%, #FBDB68 50%, #FFD900 100%); 
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); 
+    transition: all 0.3s ease; 
+}
+
+.words-scrollable-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #FFE94A 0%, #ECCF17 50%, #FBDB68 100%);
+    transform: scaleX(1.2); 
+    box-shadow: 0 3px 6px rgba(236, 207, 23, 0.4); 
+    border-color: rgba(255, 255, 255, 0.4); 
+}
+
+.words-scrollable-container::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(180deg, #ECD517 0%, #ECBB17 100%); 
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Corner (roh scrollbaru) - skrytý */
+.words-scrollable-container::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+/* ===== ALTERNATÍVNY ŠTÝL PRE FIREFOX ===== */
+@supports (-moz-appearance: none) {
+    .words-scrollable-container {
+        scrollbar-width: thin; 
+        scrollbar-color: #ECCF17 rgba(0, 0, 0, 0.2); 
+    }
+}
+
+/* ===== SMOOTH SCROLLING ===== */
+.words-scrollable-container {
+    scroll-behavior: smooth; /* Plynulé scrollovanie */
 }
 
 .words-list {
@@ -1025,10 +1108,10 @@ body {
     border-radius: 15px;
     font-family: "Luckiest Guy", sans-serif;
     font-size: 14px;
-    cursor: pointer;
     transition: all 0.3s ease;
     border: 2px solid transparent;
     user-select: none;
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
 }
 
 .word-item:hover {
@@ -1046,7 +1129,7 @@ body {
 .word-item.locked {
     background: rgba(255, 255, 255, 0.15) !important;
     color: rgba(255, 255, 255, 0.8) !important;
-    cursor: pointer !important;
+    cursor: url('../images/active_cursor4.png') 5 5, pointer !important;
     font-style: normal !important;
 }
 
@@ -1061,7 +1144,7 @@ body {
     border: 2px solid #fff !important;
 }
 .words-options {
-    margin: 20px 0;
+    margin: 0;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -1070,7 +1153,6 @@ body {
 .checkbox-option {
     display: flex;
     align-items: center;
-    cursor: pointer;
     font-family: "Luckiest Guy", sans-serif;
     font-size: 16px;
     color: white;
@@ -1078,6 +1160,7 @@ body {
     padding: 10px 15px;
     border-radius: 20px;
     transition: all 0.3s ease;
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
 }
 
 .checkbox-option:hover {
@@ -1087,7 +1170,7 @@ body {
 .checkbox-option input[type="checkbox"] {
     margin-right: 10px;
     transform: scale(1.2);
-    cursor: pointer;
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
 }
 
 .items-settings {
@@ -1144,7 +1227,26 @@ body {
 }
 
 
+/* ===== DODATOČNÉ ŠTÝLY PRE LEPŠÍ UX ===== */
 
+/* Indikátor že obsah je scrollovateľný - jemný gradient na spodku */
+.words-scrollable-container::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.3), transparent);
+    pointer-events: none; /* Neblokuje interakcie */
+    border-radius: 0 0 8px 8px; /* Zaoblené spodné rohy */
+    transition: opacity 0.3s ease;
+}
+
+/* Skry gradient keď je scrollnuté na spodok */
+.words-scrollable-container.scrolled-to-bottom::after {
+    opacity: 0;
+}
 
 
 
@@ -1523,6 +1625,13 @@ body {
 
 /* Pre mobilné zariadenia */
 @media (max-width: 900px) {
+    .words-scrollable-container::-webkit-scrollbar {
+        width: 12px; /* Širší pre touch zariadenia */
+    }
+    
+    .words-scrollable-container::-webkit-scrollbar-thumb {
+        border-radius: 6px; /* Menej zaoblené pre mobilné */
+    }
 
     .back-button {
         position: absolute;
@@ -1703,6 +1812,43 @@ body {
         width: 50px;
     }
 
+    .players-controls {
+        gap: 8px;
+    }
+    
+    .player-count-control {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 12px;
+    }
+    
+    .player-count-control select {
+        width: 100%;
+        min-width: unset;
+    }
+    
+    .player-input-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        padding: 10px 12px;
+    }
+    
+    .player-input-group label {
+        min-width: unset;
+        font-size: 13px;
+    }
+    
+    .player-name-input {
+        width: 100%;
+        margin-left: 0;
+        font-size: 13px;
+    }
+    
+    .players-settings h3 {
+        font-size: 20px;
+    }
 }
 
 @media (max-width: 670px) {
@@ -2163,6 +2309,32 @@ body {
     .btn-primary:hover a {
         font-size: 20px;
     }
+
+    .players-settings {
+        padding: 12px;
+        margin-top: 10px;
+    }
+    
+    .players-settings h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    
+    .player-count-control label,
+    .player-input-group label {
+        font-size: 12px;
+    }
+    
+    .player-count-control select,
+    .player-name-input {
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+
+    .words-scrollable-container::-webkit-scrollbar {
+        width: 14px;
+    }
+
 }
 
 @media (max-width: 290px) {
@@ -2374,3 +2546,141 @@ body {
         width: 8px;
     }
 }
+
+
+/* ===== ACCESSIBILITY - pre používateľov ktorí preferujú menšie animácie ===== */
+@media (prefers-reduced-motion: reduce) {
+    .words-scrollable-container::-webkit-scrollbar-thumb {
+        transition: none; /* Bez animácií */
+    }
+    
+    .words-scrollable-container {
+        scroll-behavior: auto; /* Bez smooth scrollingu */
+    }
+}
+
+
+
+
+
+
+/* ====================================
+   PEXESO TRAINING MODAL - CSS ŠTÝLY
+   Dodatočné štýly pre pexeso tréning modal
+   Pridať do worldsmenu.css súboru
+==================================== */
+
+/* Dodatočné štýly pre players nastavenia v pexeso modali */
+.players-settings {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 12px;
+    border: 2px solid rgba(236, 207, 23, 0.3);
+    margin-top: 15px;
+}
+
+.players-settings h3 {
+    color: #ECCF17;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    margin: 0 0 15px 0;
+    text-align: center;
+    -webkit-text-stroke: 1px #000;
+}
+
+.players-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.player-count-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(236, 207, 23, 0.2);
+}
+
+.player-count-control label {
+    color: #FFF;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    -webkit-text-stroke: 0.5px #000;
+}
+
+.player-count-control select {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #ECCF17;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 14px;
+    color: #333;
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
+    min-width: 160px;
+}
+
+.player-count-control select:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(236, 207, 23, 0.5);
+}
+
+.players-names-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.player-input-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    border: 1px solid rgba(236, 207, 23, 0.1);
+}
+
+.player-input-group label {
+    color: #FFF;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    -webkit-text-stroke: 0.5px #000;
+    min-width: 70px;
+}
+
+.player-name-input {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ECCF17;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 14px;
+    color: #333;
+    flex: 1;
+    margin-left: 10px;
+}
+
+.player-name-input:focus {
+    outline: none;
+    box-shadow: 0 0 6px rgba(236, 207, 23, 0.4);
+    border-color: #ECCF17;
+}
+
+.player-name-input::placeholder {
+    color: #666;
+    font-style: normal;
+}
+
+
+
+
+
+

@@ -131,8 +131,9 @@
             <div class="level-modal-body">
                 <!-- Scrollovateľný div so slovami -->
                 <div class="words-display-section">
-                    <h3 id="words-section-title">Naučené slová zo sveta R:</h3>
+                    <h2 class="subtitle-modal">Výber slóv pre minihru</h3>
                     <div id="words-scrollable-container" class="words-scrollable-container">
+                        <h3 id="words-section-title">Naučené slová zo sveta R:</h3>
                         <div id="words-list" class="words-list">
                             <!-- Slová sa budú generovať JavaScriptom -->
                         </div>
@@ -156,11 +157,11 @@
 
                 <!-- Nastavenia počtu itemov -->
                 <div class="items-settings">
-                    <h3>Nastavenia baní:</h3>
+                    <h2 class="subtitle-modal">Nastavenia bane:</h2>
                     <div class="items-controls">
                         <div class="item-control">
                             <label>Diamanty (rečové cvičenia):</label>
-                            <input type="number" id="diamonds-count" min="1" max="10" value="2">
+                            <input type="number" id="diamonds-count" min="0" max="10" value="2">
                         </div>
                         <div class="item-control">
                             <label>Goldy (jednoduché):</label>
@@ -175,7 +176,7 @@
             </div>
             <div class="level-modal-footer">
                 <button id="start-training-btn" class="btn-primary">
-                    <a>Spustiť tréning</a>
+                    <a>Spustiť minihru</a>
                 </button>
             </div>
         </div>

@@ -719,10 +719,342 @@ const LEVELS_CONFIG = {
             isUnlocked: true
         }
         // Tu by pokračovali ďalšie levely sveta S...
-    ]
+    ],
 
-    // Tu by pokračovali konfigurácie pre všetky ostatné svety...
-    // world_z, world_c, world_sh, world_zh, world_ch, world_d, world_t, world_n, world_k, world_g
+    // ===============================
+    // SVET Č - Písmeno Č  
+    // ===============================
+    world_ch: [
+        {
+            id: 'ch_001',
+            worldId: 'world_ch',
+            levelNumber: 1,
+            name: 'Prvé Č-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['čaj', 'čas', 'čap', 'čip'],
+            gameConfig: {
+                diamonds: 2,
+                golds: 5,
+                crystals: 3,
+                speechExercises: 1,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 3, y: 8 },  // diamant na pozícii 3,8
+                    { x: 12, y: 7 }  // diamant na pozícii 12,7
+                ],
+                golds: [
+                    { x: 2, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 8 },   // gold na pozícii 7,8
+                    { x: 14, y: 6 },   // gold na pozícii 14,6
+                    { x: 9, y: 8 },
+                    { x: 10, y: 13 }
+                ],
+                crystals: [
+                    { x: 9, y: 12 },    // kryštál na pozícii 9,7
+                    { x: 3, y: 12 },
+                    { x: 11, y: 9 }  
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: null,
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: true
+        },
+        {
+            id: 'ch_002',
+            worldId: 'world_ch',
+            levelNumber: 2,
+            name: 'Prvé Č-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['čap', 'čiapka', 'čaj', 'česť', 'čip'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 3,
+                crystals: 2,
+                speechExercises: 2,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 3, y: 8 },  // diamant na pozícii 3,8
+                    { x: 12, y: 7 },  // diamant na pozícii 12,7
+                    { x: 7, y: 13 }
+                ],
+                golds: [
+                    { x: 2, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 8 },   // gold na pozícii 7,8
+                    { x: 10, y: 8 }
+                ],
+                crystals: [
+                    { x: 9, y: 7 },    // kryštál na pozícii 9,7
+                    { x: 10, y: 12 }
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'ch_001',
+                minStars: 1
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'ch_003',
+            worldId: 'world_ch',
+            levelNumber: 3,
+            name: 'Prvé Č-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['čip', 'čaj', 'čas', 'čap', 'čiapka'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 5,
+                crystals: 1,
+                speechExercises: 2,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 3, y: 8 },  // diamant na pozícii 3,8
+                    { x: 12, y: 7 },  // diamant na pozícii 12,7
+                    { x: 10, y: 12 }
+                ],
+                golds: [
+                    { x: 2, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 8 },   // gold na pozícii 7,8
+                    { x: 14, y: 6 },   // gold na pozícii 14,6
+                    { x: 9, y: 8 },
+                    { x: 10, y: 8 }
+                ],
+                crystals: [
+                    { x: 9, y: 7 }    // kryštál na pozícii 9,7
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'ch_002',
+                minStars: 2
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'ch_004',
+            worldId: 'world_ch',
+            levelNumber: 4,
+            name: 'Prvé Č-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['čiapka', 'čaj', 'čip', 'čas', 'česť'], 
+            gameConfig: {
+                diamonds: 4,
+                golds: 3,
+                crystals: 1,
+                speechExercises: 2,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 4, y: 8 },  // diamant na pozícii 3,8
+                    { x: 10, y: 7 },  // diamant na pozícii 12,7
+                    { x: 4, y: 12 },
+                    { x: 9, y: 14 }
+                ],
+                golds: [
+                    { x: 3, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 8 },   // gold na pozícii 7,8
+                    { x: 14, y: 6 }   // gold na pozícii 14,6
+                ],
+                crystals: [
+                    { x: 7, y: 11 }    // kryštál na pozícii 9,7
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'ch_003',
+                minStars: 3
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'ch_005',
+            worldId: 'world_ch',
+            levelNumber: 5,
+            name: 'Prvé R-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['čaj', 'čip', 'čap', 'česť', 'čiapka', 'čudo', 'čas', 'čelo'], 
+            gameConfig: {
+                diamonds: 4,
+                golds: 2,
+                crystals: 2,
+                speechExercises: 3,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 6, y: 4 },  // diamant na pozícii 3,8
+                    { x: 9, y: 7 },  // diamant na pozícii 12,7
+                    { x: 2, y: 10 },
+                    { x: 1, y: 14 }
+                ],
+                golds: [
+                    { x: 3, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 8 }   // gold na pozícii 7,8
+                ],
+                crystals: [
+                    { x: 7, y: 11 },    // kryštál na pozícii 9,7
+                    { x: 3, y: 6 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'ch_004',
+                minStars: 4
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'ch_006',
+            worldId: 'world_ch',
+            levelNumber: 6,
+            name: 'Prvé Č-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['čelo', 'čiapka', 'čap', 'čiara', 'česať', 'čudo', 'čip', 'čaj'], 
+            gameConfig: {
+                diamonds: 4,
+                golds: 2,
+                crystals: 2,
+                speechExercises: 2,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 5 },  // diamant na pozícii 3,8
+                    { x: 4, y: 7 },  // diamant na pozícii 12,7
+                    { x: 6, y: 10 },
+                    { x: 2, y: 14 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 12 }   // gold na pozícii 7,8
+                ],
+                crystals: [
+                    { x: 7, y: 11 },    // kryštál na pozícii 9,7
+                    { x: 10, y: 6 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'ch_005',
+                minStars: 5
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'ch_007',
+            worldId: 'world_ch',
+            levelNumber: 6,
+            name: 'Prvé Č-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['čelo', 'čiapka', 'čajník', 'čerta', 'česať'], 
+            gameConfig: {
+                diamonds: 2,
+                golds: 2,
+                crystals: 2,
+                speechExercises: 2,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 5 },  // diamant na pozícii 3,8
+                    { x: 4, y: 7 },  // diamant na pozícii 12,7
+                    { x: 6, y: 10 },
+                    { x: 2, y: 14 }
+                ],
+                golds: [
+                    { x: 3, y: 8 },   // gold na pozícii 2,9
+                    { x: 7, y: 12 }   // gold na pozícii 7,8
+                ],
+                crystals: [
+                    { x: 7, y: 11 },    // kryštál na pozícii 9,7
+                    { x: 10, y: 9 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'ch_006',
+                minStars: 5
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'ch_008',
+            worldId: 'world_ch',
+            levelNumber: 6,
+            name: 'Prvé Č-čka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['čitateľ', 'čerešňa', 'čarodej', 'čajník', 'čarovný'],
+            gameConfig: {
+                diamonds: 2,
+                golds: 2,
+                crystals: 2,
+                speechExercises: 2,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 6 },  // diamant na pozícii 3,8
+                    { x: 6, y: 14 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 11 },   // gold na pozícii 7,8
+                    { x: 8, y: 12 },
+                    { x: 1, y: 5 }
+                ],
+                crystals: [
+                    { x: 9, y: 11 },    // kryštál na pozícii 9,7
+                    { x: 14, y: 8 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'ch_007',
+                minStars: 5
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+    ]
+    
 };
 
 /**

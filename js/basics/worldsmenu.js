@@ -292,7 +292,7 @@ function setupTrainingModalEvents() {
 }
 
 /**
- * Nastavenie event listenerov
+ * Aktualizácia setupEventListeners funkcie - pridanie pexeso button listenera
  */
 function setupEventListeners() {
     console.log('Nastavujem event listenery...');
@@ -301,6 +301,7 @@ function setupEventListeners() {
     const prevButton = document.getElementById('prev-world');
     const nextButton = document.getElementById('next-world');
     const banikButton = document.getElementById('banik-button');
+    const pexesoButton = document.getElementById('pexeso-button'); // PRIDANÉ
     
     if (prevButton) {
         prevButton.addEventListener('click', () => {
@@ -318,12 +319,19 @@ function setupEventListeners() {
         banikButton.addEventListener('click', openTrainingModal);
     }
     
+    // PRIDANÉ: Event listener pre pexeso training
+    if (pexesoButton) {
+        pexesoButton.addEventListener('click', openPexesoTrainingModal);
+        console.log('✅ Pexeso button event listener nastavený');
+    }
+    
     // Tlačidlá svetov - pridajú sa dynamicky v updateWorldButtons()
     // Level cards - pridajú sa dynamicky v updateLevelsGrid()
     
     // Event listener pre level modal zatvorenie
     setupLevelModalListeners();
     setupTrainingModalListeners();
+    setupPexesoTrainingModalListeners(); // PRIDANÉ
 }
 
 /**
@@ -1092,3 +1100,471 @@ function debugTrainingModal() {
     console.log('Current selected world:', currentSelectedWorld);
     console.log('============================');
 }
+
+
+
+// ==========================================
+// PRIDANIE PEXESO CUSTOM LEVEL PODPORY DO WORLDSMENU.JS
+// ==========================================
+
+
+// ==========================================
+// PEXESO TRAINING MODAL FUNKCIE
+// ==========================================
+
+/**
+ * Otvorenie pexeso training modalu
+ */
+function openPexesoTrainingModal() {
+    console.log('🎮 Otváram pexeso trénovací modal pre svet:', currentSelectedWorld.name);
+    
+    // Vytvor modal ak neexistuje
+    createPexesoTrainingModalIfNotExists();
+    
+    // Naplň modal dátami
+    populatePexesoTrainingModal();
+
+    // Nastav event listenery PO vytvorení modalu
+    setupPexesoTrainingModalEvents();
+    
+    // Zobraz modal
+    const modal = document.getElementById('pexeso-training-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+/**
+ * Vytvorenie pexeso training modalu ak neexistuje
+ */
+function createPexesoTrainingModalIfNotExists() {
+    if (document.getElementById('pexeso-training-modal')) return;
+    
+    const modalHTML = `
+    <div id="pexeso-training-modal" class="level-modal-overlay" style="display: none;">
+        <div class="close" id="pexeso-training-modal-close">×</div>
+        <div class="level-modal-content">
+            <div class="level-modal-header">
+                <h2>TRÉNOVACIA PEXESO</h2>
+            </div>
+            <div class="level-modal-body">
+                <!-- Scrollovateľný div so slovami -->
+                <div class="words-display-section">
+                    <h3 id="pexeso-words-section-title">Naučené slová zo sveta R:</h3>
+                    <div id="pexeso-words-scrollable-container" class="words-scrollable-container">
+                        <div id="pexeso-words-list" class="words-list">
+                            <!-- Slová sa budú generovať JavaScriptom -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Možnosti zobrazenia slov -->
+                <div class="words-options">
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="pexeso-show-locked-words">
+                        <span class="checkmark"></span>
+                        Zobraziť aj nenaučené slová z tohto sveta
+                    </label>
+                    
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="pexeso-show-all-worlds-words">
+                        <span class="checkmark"></span>
+                        Zobraziť slová zo všetkých svetov
+                    </label>
+                </div>
+
+                <!-- Nastavenia pexeso hry -->
+                <div class="items-settings">
+                    <h3>Nastavenia pexeso hry:</h3>
+                    <div class="items-controls">
+                        <div class="item-control">
+                            <label>Počet párov kariet:</label>
+                            <input type="number" id="pexeso-pairs-count" min="3" max="18" value="10">
+                        </div>
+                        <div class="item-control">
+                            <label>Časový limit (sekundy, 0 = bez limitu):</label>
+                            <input type="number" id="pexeso-time-limit" min="0" max="600" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nastavenie hráčov -->
+                <div class="players-settings">
+                    <h3>Nastavenie hráčov:</h3>
+                    <div class="players-controls">
+                        <div class="player-count-control">
+                            <label>Počet hráčov:</label>
+                            <select id="pexeso-players-count">
+                                <option value="1">1 hráč (vs čas)</option>
+                                <option value="2">2 hráči</option>
+                                <option value="3">3 hráči</option>
+                                <option value="4">4 hráči</option>
+                            </select>
+                        </div>
+                        <div id="pexeso-players-names" class="players-names-container">
+                            <!-- Mená hráčov sa vygenerujú dynamicky -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="level-modal-footer">
+                <button id="pexeso-start-training-btn" class="btn-primary">
+                    <a>Spustiť pexeso tréning</a>
+                </button>
+            </div>
+        </div>
+    </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    console.log('✅ Pexeso training modal vytvorený');
+}
+
+/**
+ * Naplnenie pexeso training modalu dátami
+ */
+function populatePexesoTrainingModal() {
+    // Aktualizuj názov sveta
+    const wordsTitle = document.getElementById('pexeso-words-section-title');
+    if (wordsTitle) {
+        wordsTitle.textContent = `Naučené slová zo sveta ${currentSelectedWorld.name}:`;
+    }
+    
+    // Načítaj len slová z odomknutých levelov
+    const unlockedWords = getUnlockedWorldWords();
+    populatePexesoWordsList(unlockedWords);
+    
+    // Reset checkboxov
+    const showLockedCheckbox = document.getElementById('pexeso-show-locked-words');
+    const showAllWorldsCheckbox = document.getElementById('pexeso-show-all-worlds-words');
+    if (showLockedCheckbox) showLockedCheckbox.checked = false;
+    if (showAllWorldsCheckbox) showAllWorldsCheckbox.checked = false;
+    
+    // Nastav predvolené hodnoty pre pexeso
+    const pairsCountInput = document.getElementById('pexeso-pairs-count');
+    const timeLimitInput = document.getElementById('pexeso-time-limit');
+    const playersCountSelect = document.getElementById('pexeso-players-count');
+    
+    if (pairsCountInput) pairsCountInput.value = 10;
+    if (timeLimitInput) timeLimitInput.value = 0;
+    if (playersCountSelect) {
+        playersCountSelect.value = "1";
+        updatePexesoPlayersNames(1);
+    }
+}
+
+/**
+ * Naplnenie zoznamu slov pre pexeso
+ * @param {Array} words - Pole slov na zobrazenie
+ */
+function populatePexesoWordsList(words) {
+    const wordsList = document.getElementById('pexeso-words-list');
+    if (!wordsList) return;
+    
+    wordsList.innerHTML = '';
+    
+    if (words.length === 0) {
+        wordsList.innerHTML = '<p style="color: #666; text-align: center;">Žiadne slová nie sú dostupné.</p>';
+        return;
+    }
+    
+    words.forEach(word => {
+        const wordItem = document.createElement('div');
+        wordItem.className = 'word-item';
+        wordItem.dataset.word = word.text || word;
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = `pexeso-word-${word.text || word}`;
+        
+        const label = document.createElement('label');
+        label.htmlFor = checkbox.id;
+        label.textContent = word.text || word;
+        
+        const image = document.createElement('img');
+        image.src = `images/slova/${word.text || word}.png`;
+        image.alt = word.text || word;
+        image.onerror = () => {
+            image.style.display = 'none';
+        };
+        
+        wordItem.appendChild(checkbox);
+        wordItem.appendChild(label);
+        wordItem.appendChild(image);
+        
+        // Event listener pre označovanie slov
+        wordItem.addEventListener('click', (e) => {
+            if (e.target !== checkbox) {
+                checkbox.checked = !checkbox.checked;
+            }
+            wordItem.classList.toggle('selected', checkbox.checked);
+        });
+        
+        wordsList.appendChild(wordItem);
+    });
+}
+
+/**
+ * Aktualizácia zobrazenia slov v pexeso modali
+ */
+function updatePexesoWordsDisplay() {
+    const showLocked = document.getElementById('pexeso-show-locked-words')?.checked || false;
+    const showAllWorlds = document.getElementById('pexeso-show-all-worlds-words')?.checked || false;
+    const wordsTitle = document.getElementById('pexeso-words-section-title');
+    
+    let words = [];
+    let titleText = '';
+    
+    if (showAllWorlds) {
+        words = getAllWordsFromAllWorlds();
+        titleText = showLocked ? 'Všetky slová zo všetkých svetov:' : 'Naučené slová zo všetkých svetov:';
+        if (!showLocked) {
+            words = words.filter(w => w.isUnlocked);
+        }
+    } else {
+        if (showLocked) {
+            words = getAllCurrentWorldWords();
+            titleText = `Všetky slová zo sveta ${currentSelectedWorld.name}:`;
+        } else {
+            words = getUnlockedWorldWords();
+            titleText = `Naučené slová zo sveta ${currentSelectedWorld.name}:`;
+        }
+    }
+    
+    if (wordsTitle) wordsTitle.textContent = titleText;
+    populatePexesoWordsList(words);
+}
+
+/**
+ * Aktualizácia polí pre mená hráčov
+ * @param {number} playersCount - Počet hráčov
+ */
+function updatePexesoPlayersNames(playersCount) {
+    const playersNamesContainer = document.getElementById('pexeso-players-names');
+    if (!playersNamesContainer) return;
+    
+    playersNamesContainer.innerHTML = '';
+    
+    for (let i = 1; i <= playersCount; i++) {
+        const playerInput = document.createElement('input');
+        playerInput.type = 'text';
+        playerInput.id = `pexeso-player-${i}-name`;
+        playerInput.placeholder = `Hráč ${i}`;
+        playerInput.value = `Hráč ${i}`;
+        playerInput.className = 'player-name-input';
+        
+        const playerLabel = document.createElement('label');
+        playerLabel.htmlFor = playerInput.id;
+        playerLabel.textContent = `Hráč ${i}:`;
+        
+        const playerDiv = document.createElement('div');
+        playerDiv.className = 'player-input-group';
+        playerDiv.appendChild(playerLabel);
+        playerDiv.appendChild(playerInput);
+        
+        playersNamesContainer.appendChild(playerDiv);
+    }
+}
+
+/**
+ * Nastavenie event listenerov pre pexeso training modal
+ */
+function setupPexesoTrainingModalEvents() {
+    const showLockedCheckbox = document.getElementById('pexeso-show-locked-words');
+    const showAllWorldsCheckbox = document.getElementById('pexeso-show-all-worlds-words');
+    const closeBtn = document.getElementById('pexeso-training-modal-close');
+    const startBtn = document.getElementById('pexeso-start-training-btn');
+    const playersCountSelect = document.getElementById('pexeso-players-count');
+    
+    console.log('🎮 Nastavujem event listenery pre pexeso training modal');
+    
+    if (showLockedCheckbox) {
+        showLockedCheckbox.addEventListener('change', updatePexesoWordsDisplay);
+        console.log('✅ Pexeso show locked words checkbox listener nastavený');
+    }
+    
+    if (showAllWorldsCheckbox) {
+        showAllWorldsCheckbox.addEventListener('change', function() {
+            console.log('Pexeso show all worlds checkbox clicked');
+            if (this.checked) {
+                if (showLockedCheckbox) showLockedCheckbox.checked = true;
+            }
+            updatePexesoWordsDisplay();
+        });
+        console.log('✅ Pexeso show all worlds checkbox listener nastavený');
+    }
+    
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closePexesoTrainingModal);
+        console.log('✅ Pexeso close button listener nastavený');
+    }
+    
+    if (startBtn) {
+        startBtn.addEventListener('click', startPexesoTrainingLevel);
+        console.log('✅ Pexeso start button listener nastavený');
+    }
+    
+    if (playersCountSelect) {
+        playersCountSelect.addEventListener('change', function() {
+            const playersCount = parseInt(this.value);
+            updatePexesoPlayersNames(playersCount);
+        });
+        console.log('✅ Pexeso players count select listener nastavený');
+    }
+}
+
+/**
+ * Spustenie pexeso tréningového levelu
+ */
+function startPexesoTrainingLevel() {
+    console.log('🚀 Spúšťam pexeso tréning...');
+    
+    // Zbieranie vybraných slov
+    const selectedWordElements = document.querySelectorAll('#pexeso-words-list .word-item input[type="checkbox"]:checked');
+    const selectedWords = Array.from(selectedWordElements).map(el => el.closest('.word-item').dataset.word);
+    
+    if (selectedWords.length < 3) {
+        alert('Prosím vyberte aspoň 3 slová pre pexeso tréning!');
+        return;
+    }
+    
+    // Získanie nastavení
+    const pairsCount = parseInt(document.getElementById('pexeso-pairs-count').value) || 10;
+    const timeLimit = parseInt(document.getElementById('pexeso-time-limit').value) || 0;
+    const playersCount = parseInt(document.getElementById('pexeso-players-count').value) || 1;
+    
+    // Kontrola, či máme dostatok slov pre požadovaný počet párov
+    if (selectedWords.length < pairsCount) {
+        const message = `Máte vybratých len ${selectedWords.length} slov, ale požadujete ${pairsCount} párov. Znížte počet párov alebo pridajte viac slov.`;
+        alert(message);
+        return;
+    }
+    
+    // Získanie mien hráčov
+    const players = [];
+    for (let i = 1; i <= playersCount; i++) {
+        const nameInput = document.getElementById(`pexeso-player-${i}-name`);
+        const name = nameInput ? nameInput.value.trim() : `Hráč ${i}`;
+        players.push({ name: name || `Hráč ${i}`, score: 0 });
+    }
+    
+    console.log('🎯 Pexeso tréning nastavenia:', {
+        words: selectedWords,
+        pairs: pairsCount,
+        timeLimit: timeLimit,
+        players: players
+    });
+    
+    // Zatvor modal
+    closePexesoTrainingModal();
+    
+    // Vytvor URL pre custom pexeso hru
+    const customWordsParam = encodeURIComponent(JSON.stringify(selectedWords));
+    const playersParam = encodeURIComponent(JSON.stringify(players));
+    
+    let gameUrl = `pexeso.html?custom=true&words=${customWordsParam}&players=${playersParam}&pairs=${pairsCount}`;
+    
+    if (timeLimit > 0) {
+        gameUrl += `&timeLimit=${timeLimit}`;
+    }
+    
+    console.log('🚀 Navigujem na:', gameUrl);
+    window.location.href = gameUrl;
+}
+
+/**
+ * Zatvorenie pexeso training modalu
+ */
+function closePexesoTrainingModal() {
+    const modal = document.getElementById('pexeso-training-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+/**
+ * Nastavenie event listenerov pre pexeso training modal
+ */
+function setupPexesoTrainingModalListeners() {
+    // Zatvorenie modalu kliknutím na overlay
+    document.addEventListener('click', (e) => {
+        if (e.target.id === 'pexeso-training-modal') {
+            closePexesoTrainingModal();
+        }
+    });
+    
+    // Zatvorenie modalu ESC klávesou
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('pexeso-training-modal');
+            if (modal && modal.style.display !== 'none') {
+                closePexesoTrainingModal();
+            }
+        }
+    });
+}
+
+// ==========================================
+// POMOCNÉ FUNKCIE PRE ZÍSKANIE SLOV
+// ==========================================
+
+/**
+ * Získanie všetkých slov zo všetkých svetov
+ * @returns {Array} Pole všetkých slov
+ */
+function getAllWordsFromAllWorlds() {
+    const allWords = [];
+    
+    if (typeof LEVELS_CONFIG === 'undefined') {
+        console.warn('⚠️ LEVELS_CONFIG nie je dostupný');
+        return [];
+    }
+    
+    Object.keys(LEVELS_CONFIG).forEach(worldId => {
+        const worldLevels = LEVELS_CONFIG[worldId] || [];
+        worldLevels.forEach(level => {
+            if (level.words) {
+                level.words.forEach(word => {
+                    if (!allWords.find(w => w.text === word)) {
+                        const levelProgress = playerProgress?.worlds?.[level.worldId]?.levels?.[level.id];
+                        const isUnlocked = levelProgress?.isUnlocked || level.isUnlocked || false;
+                        
+                        allWords.push({
+                            text: word,
+                            worldId: level.worldId,
+                            levelId: level.id,
+                            isUnlocked: isUnlocked
+                        });
+                    }
+                });
+            }
+        });
+    });
+    
+    return allWords.sort((a, b) => a.text.localeCompare(b.text));
+}
+
+// ==========================================
+// DEBUG FUNKCIE
+// ==========================================
+
+/**
+ * Debug funkcia pre pexeso training modal
+ */
+function debugPexesoTrainingModal() {
+    console.log('=== PEXESO TRAINING MODAL DEBUG ===');
+    console.log('Modal element:', document.getElementById('pexeso-training-modal'));
+    console.log('Close button:', document.getElementById('pexeso-training-modal-close'));
+    console.log('Start button:', document.getElementById('pexeso-start-training-btn'));
+    console.log('Show locked checkbox:', document.getElementById('pexeso-show-locked-words'));
+    console.log('Show all worlds checkbox:', document.getElementById('pexeso-show-all-worlds-words'));
+    console.log('Players count select:', document.getElementById('pexeso-players-count'));
+    console.log('Current selected world:', currentSelectedWorld);
+    console.log('==================================');
+}
+
+// Pridanie do globálnych funkcií pre testovanie
+window.debugPexesoTrainingModal = debugPexesoTrainingModal;
+window.openPexesoTrainingModal = openPexesoTrainingModal;
