@@ -30,28 +30,22 @@ const LEVELS_CONFIG = {
             difficulty: 1,
             words: ['rak', 'ryba', 'ruka'],
             gameConfig: {
-                diamonds: 2,
-                golds: 5,
-                crystals: 3,
-                speechExercises: 3,
+                diamonds: 1,
+                golds: 2,
+                crystals: 1,
+                speechExercises: 1,
                 listeningExercises: 1, 
                 mapSize: { width: 16, height: 10 }
             },
             positions: {
                 diamonds: [
-                    { x: 3, y: 8 },  // diamant na pozícii 3,8
                     { x: 12, y: 7 }  // diamant na pozícii 12,7
                 ],
                 golds: [
                     { x: 2, y: 9 },   // gold na pozícii 2,9
-                    { x: 7, y: 8 },   // gold na pozícii 7,8
-                    { x: 14, y: 6 },   // gold na pozícii 14,6
-                    { x: 9, y: 8 },
                     { x: 10, y: 13 }
                 ],
                 crystals: [
-                    { x: 9, y: 12 },    // kryštál na pozícii 9,7
-                    { x: 3, y: 12 },
                     { x: 11, y: 9 }  
                 ],
                 player: { x: 1, y: 1 }

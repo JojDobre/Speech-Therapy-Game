@@ -180,34 +180,34 @@ const LEVELS = {
             [
                 {
                     x: 100,
-                    y: 700,
-                    width: 20,
-                    height: 50,
+                    y: 686,
+                    width: 64,
+                    height: 64,
                     active: true,
                     flagHeight: 30,
                     isStart: true
                 },
                 {
-                    x: 1500,
-                    y: 700,
-                    width: 20,
-                    height: 50,
+                    x: 1300,
+                    y: 686,
+                    width: 64,
+                    height: 64,
                     active: false,
                     flagHeight: 30
                 },
                 {
                     x: 3000,
-                    y: 700,
-                    width: 20,
-                    height: 50,
+                    y: 686,
+                    width: 64,
+                    height: 64,
                     active: false,
                     flagHeight: 30
                 },
                 {
                     x: 4500,
-                    y: 700,
-                    width: 20,
-                    height: 50,
+                    y: 686,
+                    width: 64,
+                    height: 64,
                     active: false,
                     flagHeight: 30
                 }
@@ -215,14 +215,20 @@ const LEVELS = {
             
             // Diamond mince (špeciálne mince s rečovými cvičeniami)
             [
-                new Coin(800, 300, 'diamond'),
-                new Coin(2500, 400, 'diamond'),
-                new Coin(4000, 350, 'diamond'),
-                new Coin(5500, 300, 'diamond')
+                new Coin(800, 300, 'blueDiamond'),
+                new Coin(2500, 400, 'silver'),
+                new Coin(4000, 350, 'blueDiamond'),
+                new Coin(5500, 300, 'blueDiamond')
             ],
             
             // Koncový bod
-            { x: 5900, y: 300, width: 50, height: 50 } // endPoint
+            { 
+                x: 5800, 
+                y: 558,      // ⬅️ Upravené aby stál na zemi (750 - 128 = 622)
+                width: 192,   // ⬅️ Rovnaká šírka ako checkpoint
+                height: 320, // ⬅️ DVOJNÁSOBNÁ VÝŠKA (2x vyšší ako checkpoint)
+                isFinish: true
+            }
         )
     }
 };

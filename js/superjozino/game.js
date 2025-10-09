@@ -1,3 +1,515 @@
+/**
+ * ANIMATION MANAGER
+ * Správa animácií postavy - načítavanie a prehrávanie frame-ov
+ */
+class AnimationManager {
+    constructor() {
+        // Cesta k sprite-om
+        this.basePath = 'images/superjozino/assets/player/keyframes/yellow_hat/';
+        
+        // Definícia animácií a počtu frame-ov
+        this.animations = {
+            idle: { frames: 20, speed: 15 },      // 000-019, pomalšie
+            walk: { frames: 8, speed: 10 },      // 000-007
+            run: { frames: 8, speed: 6 },        // 000-007, rýchlejšie
+            jump: { frames: 10, speed: 8 },      // 000-009
+            falling: { frames: 10, speed: 8 }    // 000-009
+        };
+        
+        // Načítané obrázky
+        this.images = {};
+        
+        // Aktuálny stav animácie
+        this.currentAnimation = 'idle';
+        this.currentFrame = 0;
+        this.frameCounter = 0;
+        this.direction = 'right'; // 'left', 'right', 'front'
+        
+        // Načítanie všetkých sprite-ov
+        this.loadAllSprites();
+    }
+    
+    /**
+     * Načítanie všetkých sprite frame-ov
+     */
+    loadAllSprites() {
+        console.log('🎨 Načítavam sprite-y postavy...');
+        
+        for (let animName in this.animations) {
+            this.images[animName] = [];
+            const frameCount = this.animations[animName].frames;
+            
+            for (let i = 0; i < frameCount; i++) {
+                const img = new Image();
+                // Formát názvu: __yellow_hat_idle_000.png
+                const frameNumber = i.toString().padStart(3, '0');
+                img.src = `${this.basePath}__yellow_hat_${animName}_${frameNumber}.png`;
+                
+                this.images[animName].push(img);
+                
+                // Log pre prvý frame každej animácie (pre debugging)
+                if (i === 0) {
+                    img.onload = () => {
+                        console.log(`✅ Načítaná animácia: ${animName} (${frameCount} frame-ov)`);
+                    };
+                    img.onerror = () => {
+                        console.error(`❌ Chyba pri načítaní: ${img.src}`);
+                    };
+                }
+            }
+        }
+    }
+    
+    /**
+     * Nastavenie animácie
+     * @param {string} animationName - Názov animácie (idle, walk, run, jump, falling)
+     */
+    setAnimation(animationName) {
+        if (this.currentAnimation !== animationName) {
+            this.currentAnimation = animationName;
+            this.currentFrame = 0;
+            this.frameCounter = 0;
+        }
+    }
+    
+    /**
+     * Nastavenie smeru
+     * @param {string} direction - 'left', 'right', 'front'
+     */
+    setDirection(direction) {
+        this.direction = direction;
+    }
+    
+    /**
+     * Update animácie (volať v game loop-e)
+     */
+    update() {
+        const anim = this.animations[this.currentAnimation];
+        if (!anim) return;
+        
+        this.frameCounter++;
+        
+        // Keď uplynie dosť frame-ov, prejdi na ďalší sprite
+        if (this.frameCounter >= anim.speed) {
+            this.frameCounter = 0;
+            this.currentFrame++;
+            
+            // Loop animácie
+            if (this.currentFrame >= anim.frames) {
+                this.currentFrame = 0;
+            }
+        }
+    }
+    
+    /**
+     * Vykreslenie aktuálneho frame-u
+     * @param {CanvasRenderingContext2D} ctx - Canvas kontext
+     * @param {number} x - X pozícia
+     * @param {number} y - Y pozícia
+     * @param {number} width - Šírka
+     * @param {number} height - Výška
+     */
+    draw(ctx, x, y, width, height) {
+        const frameImage = this.images[this.currentAnimation]?.[this.currentFrame];
+        
+        if (!frameImage || !frameImage.complete) {
+            ctx.fillStyle = 'red';
+            ctx.fillRect(x, y, width, height);
+            return;
+        }
+        
+        ctx.save();
+        
+        // ⭐ PRIDAJ TOTO - vypne anti-aliasing
+        ctx.imageSmoothingEnabled = false;
+        
+        // Ak ide doľava, zrkadlovo otočíme sprite
+        if (this.direction === 'left') {
+            ctx.translate(x + width, y);
+            ctx.scale(-1, 1);
+            ctx.drawImage(frameImage, 0, 0, width, height);
+        } else {
+            ctx.drawImage(frameImage, x, y, width, height);
+        }
+        
+        ctx.restore();
+    }
+}
+
+/**
+ * COIN ANIMATION MANAGER
+ * Správa animácií odmien - mince, diamanty
+ */
+class CoinAnimationManager {
+    constructor() {
+        // Cesta k obrázkom odmien
+        this.basePath = 'images/superjozino/assets/treasure/';
+        
+        // Definícia typov odmien
+        this.coinTypes = {
+            // 💛 Normálne mince
+            gold: {
+                folder: 'Gold Coin',
+                frames: 4,
+                speed: 20
+            },
+            
+            // 🥈 Strieborné mince - posluchové cvičenia (TODO: overiť cestu)
+            silver: {
+                folder: 'Silver Coin',
+                frames: 4,
+                speed: 20
+            },
+            
+            // 💙 Modrý diamant - rečové cvičenia
+            blueDiamond: {
+                folder: 'Blue Diamond',
+                frames: 4,
+                speed: 12
+            },
+            
+            // 💚 Zelený diamant - bonusový predmet (power-up)
+            greenDiamond: {
+                folder: 'Green Diamond',
+                frames: 4,
+                speed: 20
+            },
+            
+            // ❤️ Červený diamant - bonusový predmet (extra život)
+            redDiamond: {
+                folder: 'Red Diamond',
+                frames: 4,
+                speed: 20
+            }
+        };
+        
+        // Načítané obrázky
+        this.images = {};
+        
+        // Globálny frame counter (všetky mince sa animujú synchronizovane)
+        this.globalFrame = 0;
+        this.frameCounter = 0;
+        
+        // Načítanie všetkých sprite-ov
+        this.loadAllSprites();
+    }
+    
+    /**
+     * Načítanie všetkých sprite frame-ov
+     */
+    loadAllSprites() {
+        console.log('💰 Načítavam sprite-y odmien...');
+        
+        for (let typeName in this.coinTypes) {
+            const coinType = this.coinTypes[typeName];
+            this.images[typeName] = [];
+            
+            for (let i = 1; i <= coinType.frames; i++) {
+                const img = new Image();
+                // Formát: 01.png, 02.png, 03.png, 04.png
+                const frameNumber = i.toString().padStart(2, '0');
+                img.src = `${this.basePath}${coinType.folder}/${frameNumber}.png`;
+                
+                this.images[typeName].push(img);
+                
+                // Log pre prvý frame každého typu (pre debugging)
+                if (i === 1) {
+                    img.onload = () => {
+                        console.log(`✅ Načítaná odmena: ${typeName} (${coinType.frames} frame-ov)`);
+                    };
+                    img.onerror = () => {
+                        console.error(`❌ Chyba pri načítaní: ${img.src}`);
+                    };
+                }
+            }
+        }
+    }
+    
+    /**
+     * Update animácie (volať v game loop-e)
+     */
+    update() {
+        this.frameCounter++;
+        
+        // Všetky mince používajú rovnakú rýchlosť animácie
+        if (this.frameCounter >= 20) { // speed z coinTypes
+            this.frameCounter = 0;
+            this.globalFrame++;
+            
+            // Loop animácie (4 frame-y: 0,1,2,3,0,1,2,3...)
+            if (this.globalFrame >= 4) {
+                this.globalFrame = 0;
+            }
+        }
+    }
+    
+    /**
+     * Vykreslenie odmeny
+     * @param {CanvasRenderingContext2D} ctx - Canvas kontext
+     * @param {string} type - Typ odmeny ('gold', 'blueDiamond', 'greenDiamond', 'redDiamond')
+     * @param {number} x - X pozícia
+     * @param {number} y - Y pozícia
+     * @param {number} size - Veľkosť (šírka/výška)
+     */
+    draw(ctx, type, x, y, size) {
+        const frameImage = this.images[type]?.[this.globalFrame];
+        
+        if (!frameImage || !frameImage.complete) {
+            // Placeholder ak sprite ešte nie je načítaný
+            ctx.fillStyle = type === 'gold' ? '#FFD700' : '#00FFFF';
+            ctx.beginPath();
+            ctx.arc(x + size/2, y + size/2, size/2, 0, Math.PI * 2);
+            ctx.fill();
+            return;
+        }
+        
+        // Vypni anti-aliasing pre pixel-perfect rendering
+        ctx.imageSmoothingEnabled = false;
+        
+        // Zachovanie aspect ratio (pôvodných proporcií obrázka)
+        const imgWidth = frameImage.naturalWidth || frameImage.width;
+        const imgHeight = frameImage.naturalHeight || frameImage.height;
+        const aspectRatio = imgWidth / imgHeight;
+        
+        let drawWidth = size;
+        let drawHeight = size;
+        
+        // Ak obrázok nie je štvorec, zachováme proporcie
+        if (aspectRatio > 1) {
+            // Širší ako vyšší
+            drawHeight = size / aspectRatio;
+        } else if (aspectRatio < 1) {
+            // Vyšší ako širší
+            drawWidth = size * aspectRatio;
+        }
+        
+        // Vycentruj obrázok
+        const offsetX = (size - drawWidth) / 2;
+        const offsetY = (size - drawHeight) / 2;
+        
+        // Vykresli animovaný sprite so zachovanými proporciami
+        ctx.drawImage(frameImage, x + offsetX, y + offsetY, drawWidth, drawHeight);
+    }
+}
+
+/**
+ * CHECKPOINT ANIMATION MANAGER
+ * Správa animácií checkpointov - neaktívny, aktivácia, idle
+ */
+class CheckpointAnimationManager {
+    constructor() {
+        // Cesta k obrázkom checkpointov
+        this.basePath = 'images/superjozino/assets/checkpoint/';
+        
+        // Sprite sheety (veľké obrázky s frame-mi)
+        this.spriteSheets = {
+            noflag: null,      // Jednoduchý obrázok (stĺpik bez vlajky)
+            flag: null,        // 1664x64px (26 frame-ov po 64px)
+            idleflag: null     // 640x64px (10 frame-ov po 64px)
+        };
+        
+        // Definícia animácií
+        this.animations = {
+            inactive: {
+                spriteSheet: 'noflag',
+                frames: 1,
+                speed: 0  // Žiadna animácia
+            },
+            activating: {
+                spriteSheet: 'flag',
+                frames: 26,
+                frameWidth: 64,
+                speed: 3,  // Rýchla animácia aktivácie
+                loop: false  // Prehráva sa len raz
+            },
+            idle: {
+                spriteSheet: 'idleflag',
+                frames: 10,
+                frameWidth: 64,
+                speed: 8,  // Pomalšia idle animácia
+                loop: true
+            }
+        };
+        
+        // Načítanie sprite sheetov
+        this.loadSprites();
+    }
+    
+    /**
+     * Načítanie všetkých sprite sheetov
+     */
+    loadSprites() {
+        console.log('🚩 Načítavam sprite-y checkpointov...');
+        
+        // Načítaj noflag
+        this.spriteSheets.noflag = new Image();
+        this.spriteSheets.noflag.src = `${this.basePath}noflag.png`;
+        this.spriteSheets.noflag.onload = () => {
+            console.log('✅ Načítaný checkpoint: noflag');
+        };
+        
+        // Načítaj flag (aktivácia)
+        this.spriteSheets.flag = new Image();
+        this.spriteSheets.flag.src = `${this.basePath}flag.png`;
+        this.spriteSheets.flag.onload = () => {
+            console.log('✅ Načítaný checkpoint: flag (26 frame-ov)');
+        };
+        
+        // Načítaj idleflag
+        this.spriteSheets.idleflag = new Image();
+        this.spriteSheets.idleflag.src = `${this.basePath}idleflag.png`;
+        this.spriteSheets.idleflag.onload = () => {
+            console.log('✅ Načítaný checkpoint: idleflag (10 frame-ov)');
+        };
+    }
+    
+    /**
+     * Update animácie checkpointu
+     * @param {Object} checkpoint - Checkpoint objekt
+     */
+    updateCheckpoint(checkpoint) {
+        // Inicializuj animačné vlastnosti ak neexistujú
+        if (!checkpoint.animState) {
+            // Prvý checkpoint (isStart) a finish začínajú ako idle
+            if (checkpoint.isStart || checkpoint.isFinish) {
+                checkpoint.animState = 'idle';
+            } else {
+                checkpoint.animState = 'inactive';
+            }
+            checkpoint.animFrame = 0;
+            checkpoint.animCounter = 0;
+        }
+        
+        const anim = this.animations[checkpoint.animState];
+        if (!anim || anim.frames <= 1) return;
+        
+        checkpoint.animCounter++;
+        
+        // Posun na ďalší frame
+        if (checkpoint.animCounter >= anim.speed) {
+            checkpoint.animCounter = 0;
+            checkpoint.animFrame++;
+            
+            // Koniec animácie
+            if (checkpoint.animFrame >= anim.frames) {
+                if (anim.loop) {
+                    // Loop animácia (idle)
+                    checkpoint.animFrame = 0;
+                } else {
+                    // Animácia sa prehráva len raz (activating)
+                    checkpoint.animFrame = anim.frames - 1; // Zostaň na poslednom frame
+                    checkpoint.animState = 'idle'; // Prejdi do idle stavu
+                    checkpoint.animFrame = 0;
+                }
+            }
+        }
+    }
+    
+    /**
+     * Aktivácia checkpointu (spustenie animácie)
+     * @param {Object} checkpoint - Checkpoint objekt
+     */
+    activateCheckpoint(checkpoint) {
+        if (checkpoint.animState !== 'inactive') return;
+        
+        console.log('🚩 Aktivujem checkpoint!');
+        checkpoint.animState = 'activating';
+        checkpoint.animFrame = 0;
+        checkpoint.animCounter = 0;
+    }
+    
+    /**
+     * Vykreslenie checkpointu
+     * @param {CanvasRenderingContext2D} ctx - Canvas kontext
+     * @param {Object} checkpoint - Checkpoint objekt
+     */
+    draw(ctx, checkpoint) {
+        // Inicializuj animačný stav ak neexistuje
+        if (!checkpoint.animState) {
+            // Prvý checkpoint (isStart) začína ako idle, ostatné ako inactive
+            if (checkpoint.isStart || checkpoint.isFinish) {
+                checkpoint.animState = 'idle';
+            } else {
+                checkpoint.animState = checkpoint.active ? 'idle' : 'inactive';
+            }
+            checkpoint.animFrame = 0;
+            checkpoint.animCounter = 0;
+        }
+        
+        const anim = this.animations[checkpoint.animState];
+        const spriteSheet = this.spriteSheets[anim.spriteSheet];
+        
+        if (!spriteSheet || !spriteSheet.complete) {
+            // Placeholder - starý spôsob vykreslenia
+            this.drawOldStyle(ctx, checkpoint);
+            return;
+        }
+        
+        // Vypni anti-aliasing
+        ctx.imageSmoothingEnabled = false;
+        
+        // Výpočet pozície frame-u v sprite sheete
+        let sourceX = 0;
+        if (anim.frames > 1) {
+            sourceX = checkpoint.animFrame * anim.frameWidth;
+        }
+        
+        // Vypočítaj veľkosť vykreslenia
+        const drawWidth = checkpoint.width || 64;
+        const drawHeight = checkpoint.height || 64;
+        
+        // Pre finish flag môžeme upraviť pozíciu aby bol vyššie
+        let drawY = checkpoint.y;
+        if (checkpoint.isFinish) {
+            // Posun Y hore aby vlajka bola vyššie (ale collision box zostane rovnaký)
+            drawY = checkpoint.y - (drawHeight - 64) / 2;
+        }
+        
+        // Vykresli checkpoint
+        ctx.drawImage(
+            spriteSheet,
+            sourceX, 0,              // Pozícia v sprite sheete
+            anim.frameWidth || 64, 64,  // Veľkosť frame-u v sprite sheete
+            checkpoint.x,
+            drawY,
+            drawWidth,   // Veľkosť na canvase
+            drawHeight
+        );
+    }
+    
+    /**
+     * Starý štýl vykreslenia (fallback)
+     */
+    drawOldStyle(ctx, checkpoint) {
+        // Kreslenie stožiaru vlajky
+        ctx.fillStyle = '#8B4513';
+        ctx.fillRect(
+            checkpoint.x,
+            checkpoint.y,
+            checkpoint.width,
+            checkpoint.height
+        );
+
+        // Kreslenie vlajky
+        ctx.beginPath();
+        ctx.fillStyle = checkpoint.isStart ? '#00FF00' : (checkpoint.active ? '#FF0000' : '#800000');
+        
+        if (checkpoint.active) {
+            // Vztýčená vlajka
+            ctx.moveTo(checkpoint.x, checkpoint.y);
+            ctx.lineTo(checkpoint.x + 30, checkpoint.y + 15);
+            ctx.lineTo(checkpoint.x, checkpoint.y + 30);
+        } else {
+            // Spustená vlajka
+            ctx.moveTo(checkpoint.x, checkpoint.y + checkpoint.height - 30);
+            ctx.lineTo(checkpoint.x + 30, checkpoint.y + checkpoint.height - 15);
+            ctx.lineTo(checkpoint.x, checkpoint.y + checkpoint.height);
+        }
+        ctx.fill();
+    }
+}
+
+
 class Game {
     constructor() {
         this.canvas = document.getElementById('gameCanvas');
@@ -6,8 +518,9 @@ class Game {
         this.height = 800;
         
         // Herné vlastnosti
-        this.gravity = 0.3;
-        this.friction = 0.8;
+        this.gravity = 0.1;
+        this.friction = 0.7;
+        this.maxFallSpeed = 8; 
         this.currentLevel = 1;
         this.gameState = 'playing'; // 'playing', 'paused', 'completed'
         this.lives = 3;
@@ -30,22 +543,94 @@ class Game {
 
 
         // Inicializácia hráča
+        // Inicializácia hráča
         this.player = {
             x: 100,
             y: 100,
-            width: 32,
-            height: 32,
+            
+            // COLLISION BOX - skutočná veľkosť pre kolízie (menšia!)
+            width: 32,      // Šírka collision boxu (užší)
+            height: 64,     // Výška collision boxu (vyšší, ale menší ako sprite)
+            
+            // SPRITE - veľkosť obrázka (väčší pre vizuál)
+            spriteWidth: 96,   // Šírka sprite-u
+            spriteHeight: 96,  // Výška sprite-u
+            
+            // OFFSET - posun sprite-u relatívne k collision boxu
+            spriteOffsetX: -32,  // Posun doľava aby bol sprite centrovaný (96-32)/2 = 32
+            spriteOffsetY: -22,  // Posun hore aby nohy boli na spodku collision boxu
+            
             velocityX: 0,
             velocityY: 0,
             speed: 3,
-            jumpForce: -12,
+            jumpForce: -7,
             isJumping: false
         };
+        this.animationManager = new AnimationManager();
+        this.coinAnimationManager = new CoinAnimationManager();
+        this.checkpointAnimationManager = new CheckpointAnimationManager();
+
 
         // Kamera
         this.camera = {
             x: 0,
             y: 0
+        };
+
+        
+        // ==========================================
+        // NAČÍTANIE SPRITE SHEETOV
+        // ==========================================
+
+        // Terrain sprite sheet (obsahuje zem, platformy, bloky)
+        this.terrainSprite = new Image();
+        this.terrainSprite.src = 'images/superjozino/assets/terrain.png';
+        this.terrainSprite.loaded = false;
+
+        // Event listener pre načítanie sprite sheetu
+        this.terrainSprite.onload = () => {
+            this.terrainSprite.loaded = true;
+            console.log('✅ Terrain sprite sheet načítaný');
+        };
+
+        this.terrainSprite.onerror = () => {
+            console.error('❌ Chyba pri načítaní terrain sprite sheetu!');
+            console.error('Skontroluj cestu: images/superjozino/assets/terrain.png');
+        };
+
+        // Definícia tile-ov v sprite sheete (súradnice a rozmery)
+        this.tiles = {
+            ground: {
+                x: 98,      // Pozícia X v sprite sheete
+                y: 2,       // Pozícia Y v sprite sheete
+                width: 45,  // Šírka tile-u
+                height: 45  // Výška tile-u
+            },
+            // Platformy (4 typy)
+            platform1: {
+                x: 193,     // Začiatok x
+                y: 2,       // Začiatok y
+                width: 46,  // Šírka (239 - 193)
+                height: 13  // Výška (15 - 2)
+            },
+            platform2: {
+                x: 193,     // Začiatok x
+                y: 16,      // Začiatok y
+                width: 14,  // Šírka (207 - 193)
+                height: 14  // Výška (30 - 16)
+            },
+            platform3: {
+                x: 209,     // Začiatok x
+                y: 16,      // Začiatok y
+                width: 30,  // Šírka (239 - 209)
+                height: 30  // Výška (46 - 16)
+            },
+            platform4: {
+                x: 242,     // Začiatok x
+                y: 2,       // Začiatok y
+                width: 14,  // Šírka (256 - 242)
+                height: 44  // Výška (46 - 2)
+            }
         };
 
         // Speech UI
@@ -294,15 +879,22 @@ class Game {
 
     activateCheckpoint(checkpoint) {
         // Deaktivujeme predchádzajúci checkpoint
-        if (this.lastCheckpoint) {
+        if (this.lastCheckpoint && this.lastCheckpoint !== checkpoint) {
             this.lastCheckpoint.active = false;
+            // Resetuj animáciu predchádzajúceho checkpointu
+            this.lastCheckpoint.animState = 'inactive';
+            this.lastCheckpoint.animFrame = 0;
         }
 
         // Aktivujeme nový checkpoint
         checkpoint.active = true;
         this.lastCheckpoint = checkpoint;
 
-        // Tu môžeme pridať zvukový efekt alebo animáciu
+        // Spustíme animáciu aktivácie
+        this.checkpointAnimationManager.activateCheckpoint(checkpoint);
+        
+        console.log('🚩 Checkpoint aktivovaný!');
+        // TODO: Pridať zvukový efekt
     }
 
     respawnAtCheckpoint() {
@@ -488,16 +1080,13 @@ class Game {
 
     handleSpecialBlockCollision() {
         for (let block of this.currentLevelData.specialBlocks) {
-            if (!block.hit && 
-                this.player.velocityY < 0 && 
-                this.checkCollision({
-                    x: this.player.x,
-                    y: this.player.y,
-                    width: this.player.width,
-                    height: this.player.height
-                }, block)) {
+            if (!block.hit && this.checkCollision(this.player, block)) {
+                // Zberie sa pri akomkoľvek kontakte (nie len pri skoku zdola)
                 block.hit = true;
                 this.collectSpecialItem(block.itemType);
+                
+                // Zvukový efekt alebo animácia (TODO)
+                console.log(`✨ Získaný bonus: ${block.itemType}`);
             }
         }
     }
@@ -505,11 +1094,24 @@ class Game {
     collectSpecialItem(type) {
         switch(type) {
             case 'powerup':
+                // 💚 Zelený diamant - Power-up
+                // TODO: Implementovať power-up efekt (napr. dočasná nezraniteľnosť, rýchlejší beh...)
+                console.log('💚 Power-up aktivovaný!');
+                // Dočasne pridáme body
+                if (!this.score) this.score = 0;
                 this.score += 1000;
                 break;
+                
             case 'extraLife':
+                // ❤️ Červený diamant - Extra život
                 this.lives++;
+                console.log(`❤️ Extra život! Teraz máš ${this.lives} životov.`);
                 break;
+        }
+        
+        // Ulož do collected items
+        if (!this.currentLevelData.collectedSpecialItems) {
+            this.currentLevelData.collectedSpecialItems = [];
         }
         this.currentLevelData.collectedSpecialItems.push(type);
     }
@@ -525,22 +1127,52 @@ class Game {
     }
 
     handleCoinCollection() {
-        // Normálne mince
+        // Zbieranie normálnych mincí (gold, silver)
         for (let coin of this.currentLevelData.coins) {
             if (!coin.collected && this.checkCollision(this.player, coin)) {
                 coin.collected = true;
-                this.collectedCoins++;
+                
+                if (coin.type === 'gold') {
+                    // Normálna zlatá minca
+                    this.collectedCoins++;
+                    // TODO: Pridať zvuk zbierania mince
+                    
+                } else if (coin.type === 'silver') {
+                    // Strieborná minca - posluchové cvičenie
+                    if (!coin.listeningExercise.completed) {
+                        this.gameState = 'listening';
+                        // TODO: Spustiť posluchové cvičenie
+                        console.log('🎧 Posluchové cvičenie!');
+                        coin.listeningExercise.completed = true;
+                        this.collectedCoins++;
+                    }
+                }
             }
         }
 
-        // Diamond mince
+        // Zbieranie diamantov (blue, green, red)
         for (let diamond of this.currentLevelData.diamonds) {
             if (!diamond.collected && this.checkCollision(this.player, diamond)) {
-                if (!diamond.speechExercise.completed) {
-                    this.gameState = 'speech';
-                    this.showSpeechExercise(diamond.speechExercise);
-                    diamond.collected = true;
-                    this.collectedDiamonds++;
+                diamond.collected = true;
+                
+                if (diamond.type === 'blueDiamond') {
+                    // Modrý diamant - rečové cvičenie
+                    if (!diamond.speechExercise.completed) {
+                        this.gameState = 'speech';
+                        this.showSpeechExercise(diamond.speechExercise);
+                        this.collectedDiamonds++;
+                    }
+                    
+                } else if (diamond.type === 'greenDiamond') {
+                    // Zelený diamant - power-up
+                    this.collectSpecialItem('powerup');
+                    console.log('💚 Power-up získaný!');
+                    // TODO: Implementovať power-up efekt
+                    
+                } else if (diamond.type === 'redDiamond') {
+                    // Červený diamant - extra život
+                    this.collectSpecialItem('extraLife');
+                    console.log('❤️ Extra život získaný!');
                 }
             }
         }
@@ -685,6 +1317,10 @@ class Game {
         if (this.camera.x > this.currentLevelData.width - this.width) {
             this.camera.x = this.currentLevelData.width - this.width;
         }
+        
+        // KRITICKÉ: Zaokrúhli kameru na celé pixely (eliminuje biele čiary)
+        this.camera.x = Math.round(this.camera.x);
+        this.camera.y = Math.round(this.camera.y);
     }
 
     hitByEnemy() {
@@ -823,6 +1459,12 @@ class Game {
 
         // Aplikácia fyziky
         this.player.velocityY += this.gravity;
+
+        // Obmedzenie maximálnej rýchlosť padania (terminal velocity)
+        if (this.player.velocityY > this.maxFallSpeed) {
+            this.player.velocityY = this.maxFallSpeed;
+        }
+
         this.player.velocityX *= this.friction;
 
         // Aktualizácia pozície a kolízie
@@ -861,38 +1503,259 @@ class Game {
             this.player.x = this.currentLevelData.width - this.player.width;
         }
 
+
+
+        // === ANIMÁCIE POSTAVY ===
+        // Určenie smeru
+        if (this.player.velocityX > 0.1) {
+            this.animationManager.setDirection('right');
+        } else if (this.player.velocityX < -0.1) {
+            this.animationManager.setDirection('left');
+        }
+
+        // Určenie animácie podľa stavu
+        if (this.player.isJumping && this.player.velocityY < 0) {
+            // Skáče hore
+            this.animationManager.setAnimation('jump');
+        } else if (this.player.velocityY > 1) {
+            // Padá dole
+            this.animationManager.setAnimation('falling');
+        } else if (Math.abs(this.player.velocityX) > 2) {
+            // Beží
+            this.animationManager.setAnimation('run');
+        } else if (Math.abs(this.player.velocityX) > 0.1) {
+            // Chodí
+            this.animationManager.setAnimation('walk');
+        } else {
+            // Stojí
+            this.animationManager.setAnimation('idle');
+        }
+
+        // Update animácie
+        this.animationManager.update();
+        // Update animácií odmien (mince, diamanty)
+        this.coinAnimationManager.update();
+
+        for (let checkpoint of this.currentLevelData.checkpoints) {
+            this.checkpointAnimationManager.updateCheckpoint(checkpoint);
+        }
+
+        // Update animácie finish flag
+        if (this.currentLevelData.endPoint) {
+            this.checkpointAnimationManager.updateCheckpoint(this.currentLevelData.endPoint);
+        }
+
+
         // Aktualizácia pozície kamery
         this.updateCamera();
     }
 
-    drawCheckpoint(checkpoint) {
-        // Kreslenie stožiaru vlajky
-        this.ctx.fillStyle = '#8B4513';
-        this.ctx.fillRect(
-            checkpoint.x,
-            checkpoint.y,
-            checkpoint.width,
-            checkpoint.height
-        );
 
-        // Kreslenie vlajky
-        this.ctx.beginPath();
-        // Farba vlajky závisí od typu checkpointu
-        this.ctx.fillStyle = checkpoint.isStart ? '#00FF00' : (checkpoint.active ? '#FF0000' : '#800000');
-        
-        if (checkpoint.active) {
-            // Vztýčená vlajka
-            this.ctx.moveTo(checkpoint.x, checkpoint.y);
-            this.ctx.lineTo(checkpoint.x + 30, checkpoint.y + 15);
-            this.ctx.lineTo(checkpoint.x, checkpoint.y + 30);
-        } else {
-            // Spustená vlajka
-            this.ctx.moveTo(checkpoint.x, checkpoint.y + checkpoint.height - 30);
-            this.ctx.lineTo(checkpoint.x + 30, checkpoint.y + checkpoint.height - 15);
-            this.ctx.lineTo(checkpoint.x, checkpoint.y + checkpoint.height);
+
+    /**
+     * Vykreslenie jedného tile-u zo sprite sheetu
+     * @param {string} tileName - Názov tile-u (napr. 'ground')
+     * @param {number} x - X pozícia kde vykresliť
+     * @param {number} y - Y pozícia kde vykresliť
+     * @param {number} width - Šírka výsledného tile-u
+     * @param {number} height - Výška výsledného tile-u
+     */
+    drawTile(tileName, x, y, width, height) {
+        // Skontroluj, či je sprite sheet načítaný
+        if (!this.terrainSprite.loaded) {
+            // Ak ešte nie je načítaný, vykresli placeholder (farebný obdĺžnik)
+            this.ctx.fillStyle = '#8B4513'; // Hnedá farba
+            this.ctx.fillRect(x, y, width, height);
+            return;
         }
-        this.ctx.fill();
+
+        // Získaj definíciu tile-u
+        const tile = this.tiles[tileName];
+        if (!tile) {
+            console.error(`Tile "${tileName}" neexistuje v definícii!`);
+            return;
+        }
+
+        // Vykresli tile zo sprite sheetu
+        // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+        // sx, sy = pozícia v sprite sheete
+        // sWidth, sHeight = veľkosť v sprite sheete
+        // dx, dy = pozícia na canvase
+        // dWidth, dHeight = veľkosť na canvase
+        this.ctx.drawImage(
+            this.terrainSprite,     // Sprite sheet
+            tile.x,                 // X v sprite sheete
+            tile.y,                 // Y v sprite sheete
+            tile.width,             // Šírka v sprite sheete
+            tile.height,            // Výška v sprite sheete
+            x,                      // X na canvase
+            y,                      // Y na canvase
+            width,                  // Šírka na canvase
+            height                  // Výška na canvase
+        );
     }
+
+    /**
+     * Vykreslenie veľkej plochy tile-om (opakovaním)
+     * Používa sa pre zem, dlhé platformy atď.
+     * @param {string} tileName - Názov tile-u
+     * @param {number} x - Začiatočná X pozícia
+     * @param {number} y - Začiatočná Y pozícia
+     * @param {number} width - Celková šírka plochy
+     * @param {number} height - Celková výška plochy
+     */
+    drawTiledArea(tileName, x, y, width, height) {
+        const tile = this.tiles[tileName];
+        if (!tile) {
+            console.error(`Tile "${tileName}" neexistuje!`);
+            return;
+        }
+
+        // Vypočítaj, koľko tile-ov potrebujeme v X a Y smere
+        const tilesX = Math.ceil(width / tile.width);
+        const tilesY = Math.ceil(height / tile.height);
+
+        // Vykresli tile-y v mriežke s malým prekrytím (eliminuje čierne čiary)
+        for (let row = 0; row < tilesY; row++) {
+            for (let col = 0; col < tilesX; col++) {
+                // Zaokrúhli pozície na celé pixely (zabráni sub-pixel renderingu)
+                const tileX = Math.floor(x + (col * tile.width));
+                const tileY = Math.floor(y + (row * tile.height));
+                
+                // Vypočítaj skutočnú veľkosť tile-u (posledné tile-y môžu byť orezané)
+                let tileWidth = tile.width;
+                let tileHeight = tile.height;
+                
+                // Pre posledný tile v rade - orez šírku
+                if (col === tilesX - 1 && (x + width) < (tileX + tile.width)) {
+                    tileWidth = Math.ceil(x + width - tileX);
+                }
+                
+                // Pre posledný tile v stĺpci - orez výšku
+                if (row === tilesY - 1 && (y + height) < (tileY + tile.height)) {
+                    tileHeight = Math.ceil(y + height - tileY);
+                }
+                
+                // Pridaj 1px prekrytie okrem posledných tile-ov (eliminuje čierne čiary)
+                const drawWidth = (col < tilesX - 1) ? tileWidth + 1 : tileWidth;
+                const drawHeight = (row < tilesY - 1) ? tileHeight + 1 : tileHeight;
+                
+                // Vykresli tile
+                this.drawTile(tileName, tileX, tileY, drawWidth, drawHeight);
+            }
+        }
+    }
+
+    /**
+ * Vykreslenie zeme - horizontálne opakuje tile, vertikálne natiahne
+ * @param {string} tileName - Názov tile-u
+ * @param {number} x - X pozícia
+ * @param {number} y - Y pozícia
+ * @param {number} width - Celková šírka
+ * @param {number} height - Celková výška (tile sa natiahne na túto výšku)
+ */
+drawGroundTerrain(tileName, x, y, width, height) {
+    // Skontroluj, či je sprite načítaný
+    if (!this.terrainSprite.loaded) {
+        this.ctx.fillStyle = '#8B4513';
+        this.ctx.fillRect(x, y, width, height);
+        return;
+    }
+
+    const tile = this.tiles[tileName];
+    if (!tile) {
+        console.error(`Tile "${tileName}" neexistuje!`);
+        return;
+    }
+
+    // Vypočítaj koľko tile-ov potrebujeme v ŠÍRKE (horizontálne opakujeme)
+    const tilesX = Math.ceil(width / tile.width);
+
+    // V ŠÍRKE opakujeme tile-y, v VÝŠKE jeden tile natiahneme
+    for (let col = 0; col < tilesX; col++) {
+        const tileX = Math.floor(x + (col * tile.width));
+        
+        // Šírka tile-u (posledný môže byť orezaný)
+        let tileWidth = tile.width;
+        if (col === tilesX - 1 && (x + width) < (tileX + tile.width)) {
+            tileWidth = Math.ceil(x + width - tileX);
+        }
+
+        // Pridaj 1px prekrytie okrem posledného tile-u (eliminuje vertikálne čiary)
+        const drawWidth = (col < tilesX - 1) ? tileWidth + 1 : tileWidth;
+
+        // Vykresli tile - šírka sa opakuje, výška sa natiahne
+        this.ctx.drawImage(
+            this.terrainSprite,     // Sprite sheet
+            tile.x,                 // X v sprite sheete
+            tile.y,                 // Y v sprite sheete
+            tile.width,             // Šírka v sprite sheete (celá šírka tile-u)
+            tile.height,            // Výška v sprite sheete (celá výška tile-u)
+            tileX,                  // X na canvase
+            y,                      // Y na canvase
+            drawWidth,              // Šírka na canvase (opakuje sa)
+            height                  // Výška na canvase (NATIAHNE SA na celú výšku!)
+        );
+    }
+}
+
+/**
+ * Vykreslenie platformy - horizontálne opakuje tile, vertikálne natiahne
+ * @param {string} tileName - Názov platformy (platform1, platform2, platform3, platform4)
+ * @param {number} x - X pozícia
+ * @param {number} y - Y pozícia
+ * @param {number} width - Celková šírka
+ * @param {number} height - Celková výška
+ */
+drawPlatform(tileName, x, y, width, height) {
+    // Skontroluj, či je sprite načítaný
+    if (!this.terrainSprite.loaded) {
+        this.ctx.fillStyle = '#CD853F';
+        this.ctx.fillRect(x, y, width, height);
+        return;
+    }
+
+    const tile = this.tiles[tileName];
+    if (!tile) {
+        console.error(`Tile "${tileName}" neexistuje!`);
+        return;
+    }
+
+    // Vypočítaj koľko tile-ov potrebujeme v ŠÍRKE
+    const tilesX = Math.ceil(width / tile.width);
+
+    // V ŠÍRKE opakujeme tile-y, v VÝŠKE natiahnutie
+    for (let col = 0; col < tilesX; col++) {
+        const tileX = Math.floor(x + (col * tile.width));
+        
+        // Šírka tile-u (posledný môže byť orezaný)
+        let tileWidth = tile.width;
+        if (col === tilesX - 1 && (x + width) < (tileX + tile.width)) {
+            tileWidth = Math.ceil(x + width - tileX);
+        }
+
+        // Pridaj 1px prekrytie okrem posledného tile-u
+        const drawWidth = (col < tilesX - 1) ? tileWidth + 1 : tileWidth;
+
+        // Vykresli tile
+        this.ctx.drawImage(
+            this.terrainSprite,     // Sprite sheet
+            tile.x,                 // X v sprite sheete
+            tile.y,                 // Y v sprite sheete
+            tile.width,             // Šírka v sprite sheete
+            tile.height,            // Výška v sprite sheete
+            tileX,                  // X na canvase
+            y,                      // Y na canvase
+            drawWidth,              // Šírka na canvase
+            height                  // Výška na canvase (natiahne sa)
+        );
+    }
+}
+
+
+
+
+
 
     draw() {
         // Vyčistenie canvas
@@ -908,22 +1771,68 @@ class Game {
         this.ctx.fillStyle = '#87CEEB'; // svetlomodrá obloha
         this.ctx.fillRect(this.camera.x, 0, this.width, this.height);
 
-        // Vykreslenie platforiem
-        this.ctx.fillStyle = '#8B4513';
-        for (let platform of this.currentLevelData.platforms) {
-            this.ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+        // Vykreslenie platforiem a zeme
+this.ctx.imageSmoothingEnabled = false;
+
+for (let platform of this.currentLevelData.platforms) {
+    if (platform.type === 'ground') {
+        // Automaticky predĺž zem až po spodný okraj canvasu
+        const groundHeight = this.height - platform.y; // Výška od platformy po spodok
+        
+        // Zem - horizontálne opakuje tile, vertikálne natiahne
+        this.drawGroundTerrain('ground', platform.x, platform.y, platform.width, groundHeight);
+        
+        // Pridaj čierny okraj okolo celej platformy zeme
+        this.ctx.strokeStyle = '#000000'; // Čierna farba
+        this.ctx.lineWidth = 1; // Hrúbka okraja (2px)
+        this.ctx.strokeRect(platform.x, platform.y, platform.width, groundHeight);
+    } else {
+        // Platformy - vykresli pomocou sprite sheetu
+        // Automatický výber typu platformy podľa veľkosti
+        let platformType = 'platform3'; // Default (30x30px)
+        
+        if (platform.height <= 15) {
+            platformType = 'platform1'; // Tenká (13px výška)
+        } else if (platform.width <= 20) {
+            platformType = 'platform2'; // Malá štvorcová (14x14px)
+        } else if (platform.height >= 35) {
+            platformType = 'platform4'; // Vysoká (44px výška)
         }
+        
+        // Vykresli platformu
+        this.drawPlatform(platformType, platform.x, platform.y, platform.width, platform.height);
+        
+        // Pridaj čierny okraj aj okolo platforiem
+        this.ctx.strokeStyle = '#000000'; // Čierna farba
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(platform.x, platform.y, platform.width, platform.height);
+    }
+}
 
         // Vykreslenie checkpointov
         for (let checkpoint of this.currentLevelData.checkpoints) {
-            this.drawCheckpoint(checkpoint);
+            this.checkpointAnimationManager.draw(this.ctx, checkpoint);
         }
 
         // Vykreslenie špeciálnych blokov
         for (let block of this.currentLevelData.specialBlocks) {
             if (!block.hit) {
-                this.ctx.fillStyle = 'purple';
-                this.ctx.fillRect(block.x, block.y, block.width, block.height);
+                // Určenie typu diamantu podľa itemType
+                let diamondType = 'greenDiamond'; // Default
+                if (block.itemType === 'extraLife') {
+                    diamondType = 'redDiamond';
+                } else if (block.itemType === 'powerup') {
+                    diamondType = 'greenDiamond';
+                }
+                
+                // Vykresli animovaný diamant
+                this.coinAnimationManager.draw(
+                    this.ctx,
+                    diamondType,
+                    block.x,
+                    block.y,
+                    block.width
+                );
             }
         }
 
@@ -939,66 +1848,68 @@ class Game {
             this.ctx.fillRect(wall.x, wall.y, wall.width, wall.height);
         }
 
-        // Vykreslenie normálnych mincí
+
+        // Vykreslenie všetkých mincí (gold, silver)
         for (let coin of this.currentLevelData.coins) {
             if (!coin.collected) {
-                this.ctx.fillStyle = 'gold';
-                this.ctx.beginPath();
-                this.ctx.arc(coin.x + coin.width/2, coin.y + coin.height/2, 
-                           coin.width/2, 0, Math.PI * 2);
-                this.ctx.fill();
+                this.coinAnimationManager.draw(
+                    this.ctx,
+                    coin.getAnimationType(),  // 'gold' alebo 'silver'
+                    coin.x,
+                    coin.y,
+                    coin.width
+                );
             }
         }
 
-        // Vykreslenie diamond mincí
+        // Vykreslenie všetkých diamantov (blue, green, red)
         for (let diamond of this.currentLevelData.diamonds) {
             if (!diamond.collected) {
-                // Vykreslenie diamantu
-                this.ctx.fillStyle = '#00ffff';
-                this.ctx.beginPath();
-                this.ctx.moveTo(diamond.x + diamond.width/2, diamond.y);
-                this.ctx.lineTo(diamond.x + diamond.width, diamond.y + diamond.height/2);
-                this.ctx.lineTo(diamond.x + diamond.width/2, diamond.y + diamond.height);
-                this.ctx.lineTo(diamond.x, diamond.y + diamond.height/2);
-                this.ctx.closePath();
-                this.ctx.fill();
-
-                // Obrys diamantu
-                this.ctx.strokeStyle = 'white';
-                this.ctx.stroke();
+                this.coinAnimationManager.draw(
+                    this.ctx,
+                    diamond.getAnimationType(),  // 'blueDiamond', 'greenDiamond', 'redDiamond'
+                    diamond.x,
+                    diamond.y,
+                    diamond.width
+                );
             }
         }
 
-        // Vykreslenie hráča (s efektom nezraniteľnosti)
-        this.ctx.fillStyle = this.isInvulnerable ? 'rgba(255,0,0,0.5)' : 'red';
-        this.ctx.fillRect(
-            this.player.x,
-            this.player.y,
-            this.player.width,
-            this.player.height
+        // Vykreslenie hráča (animovaná postava)
+        if (this.isInvulnerable) {
+            // Efekt blikania pri nezraniteľnosti
+            this.ctx.globalAlpha = Math.sin(Date.now() / 100) > 0 ? 1 : 0.3;
+        }
+
+        // Vykresli sprite s offsetom relatívne k collision boxu
+        this.animationManager.draw(
+            this.ctx,
+            this.player.x + this.player.spriteOffsetX,  // Použije offset z player objektu
+            this.player.y + this.player.spriteOffsetY,
+            this.player.spriteWidth,                     // Použije sprite rozmery
+            this.player.spriteHeight
         );
 
-        // Vykreslenie cieľa
+        // Reset alpha
+        this.ctx.globalAlpha = 1;
+
+        // Reset alpha
+        this.ctx.globalAlpha = 1;
+
+        // Vykreslenie cieľa (finish flag)
         const endPoint = this.currentLevelData.endPoint;
-        this.ctx.fillStyle = 'gold';
-        this.ctx.fillRect(endPoint.x, endPoint.y, endPoint.width, endPoint.height);
-        
-        // Pridanie vlajky na cieľ
-        this.ctx.fillStyle = '#00FF00';
-        this.ctx.beginPath();
-        this.ctx.moveTo(endPoint.x + endPoint.width/2, endPoint.y);
-        this.ctx.lineTo(endPoint.x + endPoint.width, endPoint.y + endPoint.height/3);
-        this.ctx.lineTo(endPoint.x + endPoint.width/2, endPoint.y + endPoint.height/2);
-        this.ctx.fill();
 
-        // Vykreslenie hráča
-        this.ctx.fillStyle = this.isInvulnerable ? 'rgba(255,0,0,0.5)' : 'red';
-        this.ctx.fillRect(
-            this.player.x,
-            this.player.y,
-            this.player.width,
-            this.player.height
-        );
+        // Priprav endPoint ako finish flag checkpoint
+        if (!endPoint.isFinish) {
+            endPoint.isFinish = true;
+            endPoint.animState = 'idle'; // Vždy viditeľný
+            endPoint.animFrame = 0;
+            endPoint.animCounter = 0;
+        }
+
+        // Vykresli finish flag pomocou checkpoint animation managera
+        this.checkpointAnimationManager.draw(this.ctx, endPoint);
+
 
         // Debug informácie
         if (this.debug) {
@@ -1048,29 +1959,62 @@ class Game {
     }
 }
 
+/**
+ * COIN CLASS - Reprezentuje odmeny v hre
+ * Typy: gold, silver, blueDiamond, greenDiamond, redDiamond
+ */
 class Coin {
-    constructor(x, y, type = 'normal') {
+    constructor(x, y, type = 'gold') {
         this.x = x;
         this.y = y;
-        this.width = 20;
-        this.height = 20;
-        this.type = type;
+        this.width = 40;   // Väčšie pre lepšiu viditeľnosť
+        this.height = 40;
+        this.type = type;  // 'gold', 'silver', 'blueDiamond', 'greenDiamond', 'redDiamond'
         this.collected = false;
-        this.speechExercise = type === 'diamond' ? {
+        
+        // Rečové cvičenie (len pre Blue Diamond)
+        this.speechExercise = type === 'blueDiamond' ? {
             word: this.getRandomWord(),
             imageUrl: this.getRandomImage(),
             attempts: 0,
             completed: false
         } : null;
+        
+        // Posluchové cvičenie (len pre Silver Coin)
+        this.listeningExercise = type === 'silver' ? {
+            completed: false,
+            attempts: 0
+        } : null;
+        
+        // Bonusové predmety (Green/Red Diamond)
+        this.bonusType = null;
+        if (type === 'greenDiamond') {
+            this.bonusType = 'powerup';
+        } else if (type === 'redDiamond') {
+            this.bonusType = 'extraLife';
+        }
     }
-
+    
+    /**
+     * Získanie náhodného slova pre rečové cvičenie
+     */
     getRandomWord() {
-        const words = ['pes', 'mačka', 'auto', 'dom', 'strom'];
+        const words = ['pes', 'mačka', 'auto', 'dom', 'strom', 'slnko', 'voda', 'ruka'];
         return words[Math.floor(Math.random() * words.length)];
     }
-
+    
+    /**
+     * Získanie náhodného obrázka pre rečové cvičenie
+     */
     getRandomImage() {
         return `images/${this.getRandomWord()}.png`;
+    }
+    
+    /**
+     * Získanie animačného typu pre CoinAnimationManager
+     */
+    getAnimationType() {
+        return this.type; // 'gold', 'silver', 'blueDiamond', 'greenDiamond', 'redDiamond'
     }
 }
 

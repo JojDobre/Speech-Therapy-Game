@@ -173,6 +173,29 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- NOVÁ SEKCIA: Tlačidlo pre rozšírené nastavenia -->
+                <button id="toggle-advanced-settings" class="toggle-advanced-btn">
+                    <span id="toggle-icon">▼</span> Rozšírené nastavenia
+                </button>
+
+                <!-- NOVÁ SEKCIA: Rozšírené nastavenia (skryté defaultne) -->
+                <div id="advanced-settings" class="advanced-settings" style="display: none;">
+                    <div class="item-control">
+                        <label>
+                            Počet slov v rečovom cvičení:
+                            <span class="help-tooltip" title="Koľko slov sa má zobraziť v rámci jedného rečového cvičenia (diamant)"></span>
+                        </label>
+                        <input type="number" id="speech-exercises-count" min="1" max="5" value="2">
+                    </div>
+                    <div class="item-control">
+                        <label>
+                            Počet slov v posluchovom cvičení:
+                            <span class="help-tooltip" title="Koľko slov sa má zobraziť v rámci jedného posluchového cvičenia (kryštál)"></span>
+                        </label>
+                        <input type="number" id="listening-exercises-count" min="1" max="5" value="1">
+                    </div>
+                </div>
             </div>
             <div class="level-modal-footer">
                 <button id="start-training-btn" class="btn-primary">

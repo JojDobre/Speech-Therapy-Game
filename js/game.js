@@ -1638,10 +1638,8 @@ function checkWinConditionWithRating() {
         
         // Vypočítaj hodnotenie
         const rating = calculateFinalRating();
-        
-        // Ulož výsledky
-        saveResultsToProgress(rating);
-        
+        const saveResult = saveResultsToProgress(rating);
+
         // Aktualizuj navigáciu
         updateDialogNavigation();
         

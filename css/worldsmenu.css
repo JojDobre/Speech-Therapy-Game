@@ -1026,6 +1026,8 @@ body {
     font-size: 18px;
     margin-bottom: 10px;
     text-align: left;
+    -webkit-text-stroke: 1px #000;
+    font-weight: 400;
 }
 
 .subtitle-modal {
@@ -1036,6 +1038,8 @@ body {
     text-align: center;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     text-transform: uppercase;
+    -webkit-text-stroke: 1px #000;
+    font-weight: 400;
 }
 
 .words-scrollable-container {
@@ -1185,6 +1189,7 @@ body {
     font-size: 18px;
     margin-bottom: 15px;
     text-align: center;
+    
 }
 
 .items-controls {
@@ -1207,6 +1212,7 @@ body {
     font-size: 14px;
     color: white;
     flex: 1;
+    cursor: url('../images/cursor.png') 5 5, auto;
 }
 
 .item-control input[type="number"] {
@@ -2323,6 +2329,7 @@ body {
     .player-count-control label,
     .player-input-group label {
         font-size: 12px;
+        cursor: url('../images/cursor.png') 5 5, auto;
     }
     
     .player-count-control select,
@@ -2611,6 +2618,7 @@ body {
     font-size: 16px;
     font-weight: 400;
     -webkit-text-stroke: 0.5px #000;
+    cursor: url('../images/cursor.png') 5 5, auto;
 }
 
 .player-count-control select {
@@ -2654,6 +2662,7 @@ body {
     font-weight: 400;
     -webkit-text-stroke: 0.5px #000;
     min-width: 70px;
+    cursor: url('../images/cursor.png') 5 5, auto;
 }
 
 .player-name-input {
@@ -2684,3 +2693,87 @@ body {
 
 
 
+
+
+
+
+
+
+
+
+/* Tlačidlo pre rozšírené nastavenia */
+.toggle-advanced-btn {
+    width: 100%;
+    background: rgba(236, 207, 23, 0.2);
+    border: 2px solid #ECCF17;
+    border-radius: 12px;
+    padding: 12px 20px;
+    margin-top: 15px;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 16px;
+    color: white;
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.toggle-advanced-btn:hover {
+    background: rgba(236, 207, 23, 0.3);
+    transform: scale(0.98);
+}
+
+.toggle-advanced-btn:active {
+    transform: scale(0.98);
+}
+
+/* Ikona šípky v tlačidle */
+#toggle-icon {
+    font-size: 14px;
+    transition: transform 0.3s ease;
+}
+
+/* Rotácia šípky keď sú rozšírené nastavenia otvorené */
+.toggle-advanced-btn.active #toggle-icon {
+    transform: rotate(180deg);
+}
+
+/* Panel rozšírených nastavení */
+.advanced-settings {
+    margin-top: 15px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(236, 207, 23, 0.2);
+    border-radius: 12px;
+    animation: slideDown 0.3s ease;
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Upravené štýly pre item-control v rozšírených nastaveniach */
+.advanced-settings .item-control {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(236, 207, 23, 0.3);
+    cursor: url('../images/cursor.png') 5 5, auto;
+}
+
+.advanced-settings .item-control label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: url('../images/cursor.png') 5 5, auto;
+}
