@@ -79,25 +79,115 @@ const LEVELS = {
             
             // Nepriatelia
             [
-                // Sekcia 1
-                { x: 400, y: 700, width: 50, height: 50, startX: 400, endX: 650, speed: 2, direction: 1 },
-                
-                // Sekcia 2
-                { x: 1200, y: 700, width: 50, height: 50, startX: 1100, endX: 1400, speed: 3, direction: 1 },
-                
-                // Sekcia 3
-                { x: 1900, y: 700, width: 50, height: 50, startX: 1900, endX: 2150, speed: 2.5, direction: 1 },
-                
-                // Sekcia 4
-                { x: 2700, y: 700, width: 50, height: 50, startX: 2800, endX: 3000, speed: 1, direction: 1 },
-                { x: 3200, y: 300, width: 50, height: 50, startX: 3200, endX: 3350, speed: 0.5, direction: 1 },
-                
-                // Sekcia 5
-                { x: 3600, y: 700, width: 50, height: 50, startX: 3600, endX: 3900, speed: 3.5, direction: 1 },
-                
-                // Sekcia 6
-                { x: 4400, y: 700, width: 50, height: 50, startX: 4400, endX: 4800, speed: 3, direction: 1 },
-                { x: 4900, y: 300, width: 25, height: 25, startX: 4900, endX: 5000, speed: 4, direction: 1 }
+    // ========== SEKCIA 1 ==========
+    // 🟢 Zelené prasa (iba walk, speed 1)
+    new GreenPig(400, 720, { 
+        startX: 400, 
+        endX: 650
+    }),
+
+    new Chameleon(400, 460, {
+        startX: 400,
+        endX: 500,
+        speed: 0.7,
+        detectionRange: 100,  // Detekuje hráča na 150px
+        tongueRange: 80      // Jazyk siaha na 100px
+    }),
+
+    // 🦇 SimpleBat - horizontálny let (konštantná výška)
+    new SimpleBat(800, 400, {
+        startX: 800,
+        endX: 1000,
+        speed: 1
+    }),
+
+    // 🦇 WaveBat - vlnovitý let
+    new WaveBat(1900, 150, {
+        startX: 400,
+        endX: 700,
+        speed: 1.2
+    }),
+
+    // 🦇 SleepingBat - zavesený na platforme (y=600 je platforma)
+    new SleepingBat(2000, 620, {
+        patrolStartX: 1700,      // Kde začne lietať
+        patrolEndX: 2100,        // Kde skončí lietať
+        sleepDuration: 320,      // ~5 sekundy spí
+        flyDuration: 1000,        // ~3 sekundy letí
+        speed: 1
+    }),
+    
+    // ========== SEKCIA 2 ==========
+    // 🔴 Červené prasa (iba run, rýchle)
+    new RedPig(1200, 720, { 
+        startX: 1100, 
+        endX: 1400,
+        speed: 1.8  // Môžeš nastaviť inú rýchlosť (default 1.7)
+    }),
+
+    // 👻 PatrolGhost - klasický duch (prechádza stenami)
+    new PatrolGhost(1200, 500, {
+        startX: 1100,
+        endX: 1400,
+        speed: 1.5  // Trochu rýchlejší
+    }),
+    
+    // ========== SEKCIA 3 ==========
+    // 🔵 Combo prasa (walk -> idle -> run -> idle)
+    new ComboPig(1900, 720, { 
+        startX: 1900, 
+        endX: 2150
+    }),
+
+    // 👻 PatrolGhost cez stenu (ukážka prechádzania)
+    new PatrolGhost(2000, 600, {
+        startX: 1900,
+        endX: 2300,  // Prejde cez stenu medzi 2000-2100
+        speed: 1
+    }),
+    
+    // ========== SEKCIA 4 ==========
+    // 🟢 Zelené na zemi
+    new GreenPig(2700, 720, { 
+        startX: 2800, 
+        endX: 3000
+    }),
+
+    // 👻 PhasingGhost - mizne a objavuje sa
+    new PhasingGhost(2800, 450, {
+        startX: 2700,
+        endX: 3000,
+        speed: 1.2,
+        visibleDuration: 180,    // ~3 sekundy viditeľný
+        invisibleDuration: 120   // ~2 sekundy neviditeľný
+    }),
+
+    // 🔴 Červené na platforme
+    new RedPig(3200, 320, { 
+        startX: 3200, 
+        endX: 3350,
+        speed: 1.5
+    }),
+    
+    // ========== SEKCIA 5 ==========
+    // 🔵 Combo prasa (má čas sa zastaviť a rozbehnutť)
+    new ComboPig(3600, 720, { 
+        startX: 3600, 
+        endX: 3900
+    }),
+    
+    // ========== SEKCIA 6 ==========
+    // 🔴 Červené prasa (rýchle)
+    new RedPig(4400, 720, { 
+        startX: 4400, 
+        endX: 4800,
+        speed: 2  // Najrýchlejšie
+    }),
+    // 🟢 Zelené prasa (malé, na platforme)
+    new ComboPig(4900, 320, { 
+        startX: 4900, 
+        endX: 5000,
+    })
             ],
             
             // Medzery (gaps)

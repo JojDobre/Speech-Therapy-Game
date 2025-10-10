@@ -52,9 +52,8 @@
                         <li><a href="#pravidla" alt="Pravidlá" class="menu-button show-rules">PRAVIDLÁ</a></li>
                         <li><a href="#projekt" alt="O projekte" class="menu-button show-about">O PROJEKTE</a></li>
                         <li><a href="game.html" alt="Banik" class="menu-button"><span>TEST Bana</span></a></li>
-                        <li><a onclick="openCustomLevel()" alt="Pexeso" class="menu-button"><span>TEST Pexeso</span></a></li>
+                        <li><a href="pexeso.html" alt="Jozino" class="menu-button"><span>Test PEXESO</span></a></li>
                         <li><a href="superjozino.html" alt="Jozino" class="menu-button"><span>TEST JOZINO</span></a></li>
-                        <li><a href="pexeso.html" alt="Jozino" class="menu-button"><span>PEXESO</span></a></li>
                     </ul>
                 </nav>
             </div>
@@ -116,32 +115,6 @@
             <div class="modal-arrow-down"></div>
         </div>
     </div>
-
-    <div id="customLevelModal">
-        <h2>Spustiť pexeso</h2>
-        <div class="word-list" id="wordList">
-        </div>
-        <div id="wordCountContainer" style="display: none;">
-            <strong>Vybrané slova: <span id="selectedWordsCount">0</span></strong>
-        </div>
-
-        <div class="player-setup">
-            <h3>Nastavenie hráčov</h3>
-            <div id="playerInputs">
-            <input type="text" placeholder="Hráč 1" value="Hráč 1">
-            </div>
-            <div class="game-controls">
-            <button onclick="addPlayer()">Pridať hráča</button>
-            <button onclick="removePlayer()">Odobrať hráča</button>
-            </div>
-        </div>
-        
-        <div class="game-controls">
-            <button onclick="startCustomGame()">Spustiť hru</button>
-            <button onclick="closeCustomLevel()">Zrušiť</button>
-        </div>
-    </div>
-
 
     <!-- Modálne okno pre informacie -->
     <div id="about-modal" class="modal">

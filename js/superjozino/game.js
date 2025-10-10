@@ -1,3 +1,26 @@
+//////////////////////////////////////////////
+// ============ LOADING SCREEN ============ //
+// Čakanie na načítanie DOM obsahu          //
+// Skrytie loading screen s animáciou       //
+//////////////////////////////////////////////
+document.addEventListener('DOMContentLoaded', function() {
+    window.addEventListener('load', function() {
+        setTimeout(hideLoadingScreen, 1000); // Čaká 1 sekundu potom skryje
+    });
+    
+    console.log('Hra načítaná.');
+});
+
+function hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+        loadingScreen.style.opacity = '0';
+        setTimeout(() => {
+            loadingScreen.style.display = 'none';
+        }, 500);
+    }
+}
+
 /**
  * ANIMATION MANAGER
  * Správa animácií postavy - načítavanie a prehrávanie frame-ov
@@ -136,6 +159,1424 @@ class AnimationManager {
     }
 }
 
+// ============================================
+// ENEMY SYSTEM - Systém nepriateľov
+// ============================================
+
+/**
+ * ENEMY ANIMATION MANAGER
+ * Správa animácií pre všetkých nepriateľov v hre
+ */
+class EnemyAnimationManager {
+    constructor() {
+        // Základná cesta k sprite-om nepriateľov
+        this.basePath = 'images/superjozino/assets/mobs/';
+        
+        // Načítané sprite sheety pre každý typ nepriateľa
+        this.spriteSheets = {};
+        
+        // Konfigurácia pre každý typ nepriateľa
+        this.enemyConfig = {
+            AngryPig: {
+                path: 'AngryPig/',
+                animations: {
+                    idle: { 
+                        frames: 9, 
+                        frameWidth: 36, 
+                        frameHeight: 30,
+                        speed: 12,  // Pomalšia idle animácia
+                        loop: true 
+                    },
+                    walk: { 
+                        frames: 16, 
+                        frameWidth: 36, 
+                        frameHeight: 30,
+                        speed: 8,   // Stredná rýchlosť animácie
+                        loop: true 
+                    },
+                    run: { 
+                        frames: 12, 
+                        frameWidth: 36, 
+                        frameHeight: 30,
+                        speed: 6,   // Rýchlejšia animácia
+                        loop: true 
+                    },
+                    hit: { 
+                        frames: 5, 
+                        frameWidth: 36, 
+                        frameHeight: 30,
+                        speed: 4,   // Rýchla hit animácia
+                        loop: false // Prehráva sa len raz
+                    }
+                }
+            },
+            Bat: {
+                path: 'Bat/',
+                animations: {
+                    idle: {
+                        frames: 12,
+                        frameWidth: 46,
+                        frameHeight: 30,
+                        speed: 10,  // Pomalá idle animácia (spí)
+                        loop: true
+                    },
+                    flying: {
+                        frames: 7,
+                        frameWidth: 46,
+                        frameHeight: 30,
+                        speed: 8,   // Stredná rýchlosť mávnutia krídel
+                        loop: true
+                    },
+                    ceiling_in: {  // Zasypanie (návrat na strop)
+                        frames: 7,
+                        frameWidth: 46,
+                        frameHeight: 30,
+                        speed: 10,
+                        loop: false  // Prehráva sa len raz
+                    },
+                    ceiling_out: {  // Prebúdzanie (opustenie stropu)
+                        frames: 7,
+                        frameWidth: 46,
+                        frameHeight: 30,
+                        speed: 10,
+                        loop: false  // Prehráva sa len raz
+                    },
+                    hit: {
+                        frames: 5,
+                        frameWidth: 46,
+                        frameHeight: 30,
+                        speed: 4,
+                        loop: false
+                    }
+                }
+            },
+            Ghost: {
+                path: 'Ghost/',
+                animations: {
+                    idle: {
+                        frames: 10,
+                        frameWidth: 44,
+                        frameHeight: 30,
+                        speed: 8,   // Stredná rýchlosť animácie (vlnenie ducha)
+                        loop: true
+                    },
+                    appear: {
+                        frames: 4,
+                        frameWidth: 44,
+                        frameHeight: 30,
+                        speed: 8,   // Rýchlosť zjavenia
+                        loop: false  // Prehráva sa len raz
+                    },
+                    disappear: {
+                        frames: 4,
+                        frameWidth: 44,
+                        frameHeight: 30,
+                        speed: 8,   // Rýchlosť zmiznutia
+                        loop: false  // Prehráva sa len raz
+                    },
+                    hit: {
+                        frames: 5,  // Použijeme idle animáciu aj pre hit (ghost sa nedá zabiť)
+                        frameWidth: 44,
+                        frameHeight: 30,
+                        speed: 4,
+                        loop: false
+                    }
+                }
+            },
+            Chameleon: {
+                path: 'Chameleon/',
+                animations: {
+                    idle: {
+                        frames: 13,
+                        frameWidth: 84,
+                        frameHeight: 38,
+                        speed: 10,  // Pomalá idle animácia
+                        loop: true
+                    },
+                    run: {
+                        frames: 8,
+                        frameWidth: 84,
+                        frameHeight: 38,
+                        speed: 8,   // Bežná rýchlosť
+                        loop: true
+                    },
+                    attack: {
+                        frames: 10,
+                        frameWidth: 84,
+                        frameHeight: 38,
+                        speed: 5,   // Rýchla attack animácia
+                        loop: false  // Prehráva sa len raz
+                    },
+                    hit: {
+                        frames: 5,
+                        frameWidth: 84,
+                        frameHeight: 38,
+                        speed: 4,
+                        loop: false
+                    }
+                }
+            }
+        };
+        
+        // Načítanie sprite sheetov
+        this.loadAllSprites();
+    }
+    
+    /**
+     * Načítanie všetkých sprite sheetov pre nepriateľov
+     */
+    loadAllSprites() {
+        console.log('👹 Načítavam sprite-y nepriateľov...');
+        
+        // Pre každý typ nepriateľa
+        for (let enemyType in this.enemyConfig) {
+            const config = this.enemyConfig[enemyType];
+            const enemyPath = this.basePath + config.path;
+            
+            // Inicializuj objekt pre tento typ nepriateľa
+            this.spriteSheets[enemyType] = {};
+            
+            // Načítaj každú animáciu
+            for (let animName in config.animations) {
+                const img = new Image();
+                img.src = `${enemyPath}${animName}.png`;
+                
+                // Ulož sprite sheet
+                this.spriteSheets[enemyType][animName] = img;
+                
+                // Log pre debugging
+                img.onload = () => {
+                    const anim = config.animations[animName];
+                    console.log(`✅ ${enemyType} - ${animName}: ${anim.frames} frame-ov (${anim.frameWidth}x${anim.frameHeight}px)`);
+                };
+                
+                img.onerror = () => {
+                    console.error(`❌ Chyba pri načítaní: ${img.src}`);
+                };
+            }
+        }
+    }
+    
+    /**
+     * Vykreslenie konkrétneho nepriateľa
+     * @param {CanvasRenderingContext2D} ctx - Canvas kontext
+     * @param {Enemy} enemy - Objekt nepriateľa
+     */
+    draw(ctx, enemy) {
+        // Kontrola či je nepriateľ viditeľný
+        if (!enemy.visible) return;
+        
+        // Získaj konfiguráciu pre tento typ nepriateľa
+        const config = this.enemyConfig[enemy.type];
+        if (!config) {
+            console.error(`❌ Neznámy typ nepriateľa: ${enemy.type}`);
+            return;
+        }
+        
+        // Získaj aktuálnu animáciu
+        const animConfig = config.animations[enemy.currentAnimation];
+        if (!animConfig) {
+            console.error(`❌ Neznáma animácia: ${enemy.currentAnimation} pre ${enemy.type}`);
+            return;
+        }
+        
+        // Získaj sprite sheet pre túto animáciu
+        const spriteSheet = this.spriteSheets[enemy.type][enemy.currentAnimation];
+        if (!spriteSheet || !spriteSheet.complete) {
+            // Placeholder ak sprite ešte nie je načítaný
+            ctx.fillStyle = 'red';
+            ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+            return;
+        }
+        
+        // Vypočítaj pozíciu frame-u v sprite sheete
+        const frameX = enemy.animationFrame * animConfig.frameWidth;
+        const frameY = 0; // Všetky frame-y sú v jednom riadku
+        
+        // Vypni anti-aliasing pre pixel-perfect rendering
+        ctx.imageSmoothingEnabled = false;
+        
+        // Zrkadlenie sprite-u podľa smeru pohybu
+        ctx.save();
+        
+        if (enemy.direction === 1) {  // ⬅️ ZMENENÉ: Bolo -1, teraz 1
+            // Otočenie doprava (flip horizontal)
+            ctx.translate(enemy.x + enemy.width, enemy.y);
+            ctx.scale(-1, 1);
+            ctx.drawImage(
+                spriteSheet,
+                frameX, frameY,                          // Pozícia v sprite sheete
+                animConfig.frameWidth, animConfig.frameHeight, // Veľkosť frame-u
+                0, 0,                                    // Pozícia na canvase (upravené kvôli flip)
+                enemy.width, enemy.height                // Veľkosť vykreslenia
+            );
+        } else {
+            // Normálne vykreslenie doľava (bez flip)
+            ctx.drawImage(
+                spriteSheet,
+                frameX, frameY,                          // Pozícia v sprite sheete
+                animConfig.frameWidth, animConfig.frameHeight, // Veľkosť frame-u
+                enemy.x, enemy.y,                        // Pozícia na canvase
+                enemy.width, enemy.height                // Veľkosť vykreslenia
+            );
+        }
+
+        ctx.restore();
+    }
+    
+    /**
+     * Aktualizácia animácie nepriateľa
+     * @param {Enemy} enemy - Objekt nepriateľa
+     */
+    updateAnimation(enemy) {
+        const config = this.enemyConfig[enemy.type];
+        if (!config) return;
+        
+        const animConfig = config.animations[enemy.currentAnimation];
+        if (!animConfig) return;
+        
+        // Počítadlo frame-ov pre rýchlosť animácie
+        enemy.animationCounter++;
+        
+        if (enemy.animationCounter >= animConfig.speed) {
+            enemy.animationCounter = 0;
+            enemy.animationFrame++;
+            
+            // Kontrola konca animácie
+            if (enemy.animationFrame >= animConfig.frames) {
+                if (animConfig.loop) {
+                    // Loop animácia - vráť sa na začiatok
+                    enemy.animationFrame = 0;
+                } else {
+                    // Non-loop animácia (napr. hit) - zostane na poslednom frame
+                    enemy.animationFrame = animConfig.frames - 1;
+                    enemy.animationFinished = true;
+                }
+            }
+        }
+    }
+}
+
+/**
+ * ENEMY - Základná trieda pre nepriateľa
+ */
+class Enemy {
+    constructor(x, y, type, config = {}) {
+        // Pozícia
+        this.x = x;
+        this.y = y;
+        
+        // Typ nepriateľa (AngryPig, Bat, Ghost, atď.)
+        this.type = type;
+        
+        // Veľkosť collision boxu
+        this.width = config.width || 40;
+        this.height = config.height || 30;
+        
+        // Pohyb
+        this.startX = config.startX || x;
+        this.endX = config.endX || x + 200;
+        this.speed = config.speed || 2;
+        this.direction = 1; // 1 = doprava, -1 = doľava
+        
+        // Vlastnosti
+        this.hp = config.hp || 1;
+        this.maxHp = config.hp || 1;
+        this.damage = config.damage || 1; // Koľko životov zoberie hráčovi
+        this.killable = config.killable !== undefined ? config.killable : true;
+        this.stunnable = config.stunnable !== undefined ? config.stunnable : false;
+        
+        // Stav
+        this.visible = true;
+        this.alive = true;
+        this.dying = false;
+        this.stunned = false;
+        this.stunnedTimer = 0;
+        
+        // Animácia
+        this.currentAnimation = 'walk';
+        this.animationFrame = 0;
+        this.animationCounter = 0;
+        this.animationFinished = false;
+        
+        // Správanie (pre rôzne typy nepriateľov)
+        this.behaviorType = config.behaviorType || 'patrol'; // patrol, flying, stationary
+    }
+    
+    /**
+     * Nastavenie animácie
+     * @param {string} animationName - Názov animácie
+     */
+    setAnimation(animationName) {
+        if (this.currentAnimation !== animationName) {
+            this.currentAnimation = animationName;
+            this.animationFrame = 0;
+            this.animationCounter = 0;
+            this.animationFinished = false;
+        }
+    }
+    
+    /**
+     * Aktualizácia nepriateľa
+     */
+    update() {
+        // Ak umiera, nezastavuj update
+        if (!this.alive && !this.dying) return;
+        
+        // Ak umiera, nerobíme pohyb
+        if (this.dying) {
+            return;
+        }
+
+        // Ak je omráčený, počítaj čas
+        if (this.stunned) {
+            this.stunnedTimer--;
+            if (this.stunnedTimer <= 0) {
+                this.stunned = false;
+                this.setAnimation('walk');
+            }
+            return;
+        }
+        
+        // Ak je omráčený, počítaj čas
+        if (this.stunned) {
+            this.stunnedTimer--;
+            if (this.stunnedTimer <= 0) {
+                this.stunned = false;
+                this.setAnimation('walk');
+            }
+            return;
+        }
+        
+        // ⬅️ Pohyb podľa typu správania
+        if (this.behaviorType === 'patrol') {
+            this.patrolBehavior();
+        } else if (this.behaviorType === 'flying') {
+            this.patrolBehavior();
+        } else if (this.behaviorType === 'sleeping') {
+            // SleepingBat má vlastnú update()
+        } else if (this.behaviorType === 'ghost') {
+            this.patrolBehavior();
+        } else if (this.behaviorType === 'chameleon') {  // ⬅️ PRIDANÉ
+            // Chameleon má vlastnú update() metódu
+            // (nepotrebujeme tu nič robiť)
+        }
+    }
+    
+    /**
+     * Správanie: Patrola medzi dvoma bodmi
+     */
+    patrolBehavior() {
+        // Pohyb
+        this.x += this.speed * this.direction;
+        
+        // Zmena smeru pri dosiahnutí hraníc
+        if (this.x <= this.startX) {
+            this.direction = 1;
+            this.x = this.startX;
+        } else if (this.x >= this.endX) {
+            this.direction = -1;
+            this.x = this.endX;
+        }
+        
+        // Animácia podľa rýchlosti (striedanie walk/run)
+        // Ak sa pohybuje rýchlo, použij run, inak walk
+        if (Math.abs(this.speed) > 1.3) {
+            this.setAnimation('run');
+        } else {
+            this.setAnimation('walk');
+        }
+    }
+    
+    /**
+     * Zasah od hráča (skok zhora)
+     */
+    hit() {
+        if (!this.alive) return;
+        
+        this.hp--;
+        
+        if (this.hp <= 0) {
+            if (this.killable) {
+                // ⬅️ OPRAVA: Namiesto alive=false použijeme dying stav
+                this.dying = true;  // ⬅️ NOVÝ STAV
+                this.alive = false; // Stále označíme ako neživý (pre kolízie)
+                this.setAnimation('hit');
+                
+                // Skryje sa po dokončení animácie
+                // Hit má 5 frame-ov, speed 4 = 5*4 = 20 update cyklov pri 60 FPS = ~333ms
+                setTimeout(() => {
+                    this.visible = false;
+                    this.dying = false; // ⬅️ Reset stavu
+                }, 400); // ⬅️ Trochu dlhší timeout aby určite stihla dobehnúť
+                
+            } else if (this.stunnable) {
+                // Omráčiteľný nepriateľ - dočasne sa zastaví
+                this.stunned = true;
+                this.stunnedTimer = 120;
+                this.setAnimation('hit');
+                this.hp = this.maxHp;
+            }
+        }
+    }
+    
+    /**
+     * Kontrola kolízie s iným objektom (napr. hráčom)
+     * @param {Object} other - Objekt na kontrolu kolízie
+     * @returns {boolean} - True ak došlo ku kolízii
+     */
+    collidesWith(other) {
+        return this.alive &&
+               this.x < other.x + other.width &&
+               this.x + this.width > other.x &&
+               this.y < other.y + other.height &&
+               this.y + this.height > other.y;
+    }
+}
+
+/**
+ * ANGRY PIG - Špecifická trieda pre AngryPig nepriateľa
+ */
+class AngryPig extends Enemy {
+    constructor(x, y, config = {}) {
+        // Predvolené hodnoty pre AngryPig
+        const pigConfig = {
+            width: 40,        // Stredná veľkosť
+            height: 30,
+            speed: config.speed || 1,  // Stredná rýchlosť
+            hp: 1,            // Zabije sa jedným skokom
+            damage: 1,        // Zoberie 1 život hráčovi
+            killable: true,   // Dá sa zabiť
+            stunnable: false, // Nedá sa omráčiť
+            behaviorType: 'patrol',
+            ...config         // Prepíš default hodnoty ak sú v config
+        };
+        
+        // Zavolaj konštruktor rodiča
+        super(x, y, 'AngryPig', pigConfig);
+    }
+}
+
+
+
+/**
+ * GREEN PIG - Zelené prasa (iba walk, pomalé)
+ * Jednoduché prasa ktoré len pomaly chodí
+ */
+class GreenPig extends Enemy {
+    constructor(x, y, config = {}) {
+        const pigConfig = {
+            width: 40,
+            height: 30,
+            speed: 1,         // ⬅️ Vždy 1 (walk animácia)
+            hp: 1,
+            damage: 1,
+            killable: true,
+            stunnable: false,
+            behaviorType: 'patrol',
+            ...config
+        };
+        
+        super(x, y, 'AngryPig', pigConfig);
+        this.pigType = 'green'; // Označenie typu
+    }
+    
+    /**
+     * Prepísané správanie - vždy iba walk
+     */
+    patrolBehavior() {
+        // Pohyb
+        this.x += this.speed * this.direction;
+        
+        // Zmena smeru
+        if (this.x <= this.startX) {
+            this.direction = 1;
+            this.x = this.startX;
+        } else if (this.x >= this.endX) {
+            this.direction = -1;
+            this.x = this.endX;
+        }
+        
+        // ⬅️ Vždy iba walk animácia
+        this.setAnimation('walk');
+    }
+}
+
+/**
+ * RED PIG - Červené prasa (iba run, rýchle)
+ * Agresívne prasa ktoré stále beží
+ */
+class RedPig extends Enemy {
+    constructor(x, y, config = {}) {
+        const pigConfig = {
+            width: 40,
+            height: 30,
+            speed: config.speed || 1.7,  // ⬅️ Default rýchlejšie (1.5-2)
+            hp: 1,
+            damage: 1,
+            killable: true,
+            stunnable: false,
+            behaviorType: 'patrol',
+            ...config
+        };
+        
+        super(x, y, 'AngryPig', pigConfig);
+        this.pigType = 'red';
+    }
+    
+    /**
+     * Prepísané správanie - vždy iba run
+     */
+    patrolBehavior() {
+        // Pohyb
+        this.x += this.speed * this.direction;
+        
+        // Zmena smeru
+        if (this.x <= this.startX) {
+            this.direction = 1;
+            this.x = this.startX;
+        } else if (this.x >= this.endX) {
+            this.direction = -1;
+            this.x = this.endX;
+        }
+        
+        // ⬅️ Vždy iba run animácia
+        this.setAnimation('run');
+    }
+}
+
+/**
+ * COMBO PIG - Kombinované prasa (walk -> idle -> run -> idle)
+ * Inteligentné prasa s meniacim sa správaním
+ */
+class ComboPig extends Enemy {
+    constructor(x, y, config = {}) {
+        const pigConfig = {
+            width: 40,
+            height: 30,
+            speed: 1,  // Začína pomaly
+            hp: 1,
+            damage: 1,
+            killable: true,
+            stunnable: false,
+            behaviorType: 'patrol',
+            ...config
+        };
+        
+        super(x, y, 'AngryPig', pigConfig);
+        this.pigType = 'combo';
+        
+        // ⬅️ State machine pre kombináciu správania
+        this.state = 'walking';  // walking, waiting_to_run, running, waiting_to_walk
+        this.stateTimer = 0;
+        this.waitTime = 120;     // ~2 sekundy čakania pri 60 FPS
+        
+        // Rýchlosti pre rôzne stavy
+        this.walkSpeed = 1;
+        this.runSpeed = 1.8;
+    }
+    
+    /**
+     * Prepísané update - vlastný state machine
+     */
+    update() {
+        // Ak umiera, nezastavuj update
+        if (!this.alive && !this.dying) return;
+        
+        // Ak umiera, nerobíme pohyb
+        if (this.dying) {
+            return;
+        }
+        if (this.stunned) {
+            this.stunnedTimer--;
+            if (this.stunnedTimer <= 0) {
+                this.stunned = false;
+                this.state = 'walking';
+                this.speed = this.walkSpeed;
+            }
+            return;
+        }
+        
+        // Pohyb
+        this.x += this.speed * this.direction;
+        
+        // Zmena smeru na krajoch
+        let reachedEnd = false;
+        if (this.x <= this.startX) {
+            this.direction = 1;
+            this.x = this.startX;
+            reachedEnd = true;
+        } else if (this.x >= this.endX) {
+            this.direction = -1;
+            this.x = this.endX;
+            reachedEnd = true;
+        }
+        
+        // ⬅️ STATE MACHINE
+        switch(this.state) {
+            case 'walking':
+                this.speed = this.walkSpeed;
+                this.setAnimation('walk');
+                
+                // Ak dosiahol koniec, prejdi do čakania
+                if (reachedEnd) {
+                    this.state = 'waiting_to_run';
+                    this.stateTimer = this.waitTime;
+                    this.speed = 0; // Zastav sa
+                }
+                break;
+                
+            case 'waiting_to_run':
+                this.speed = 0; // Stojí
+                this.setAnimation('idle');
+                this.stateTimer--;
+                
+                // Po dočkaní sa rozbehni
+                if (this.stateTimer <= 0) {
+                    this.state = 'running';
+                    this.speed = this.runSpeed;
+                }
+                break;
+                
+            case 'running':
+                this.speed = this.runSpeed;
+                this.setAnimation('run');
+                
+                // Ak dosiahol koniec, prejdi do čakania
+                if (reachedEnd) {
+                    this.state = 'waiting_to_walk';
+                    this.stateTimer = this.waitTime;
+                    this.speed = 0; // Zastav sa
+                }
+                break;
+                
+            case 'waiting_to_walk':
+                this.speed = 0; // Stojí
+                this.setAnimation('idle');
+                this.stateTimer--;
+                
+                // Po dočkaní sa pomaly pohni
+                if (this.stateTimer <= 0) {
+                    this.state = 'walking';
+                    this.speed = this.walkSpeed;
+                }
+                break;
+        }
+    }
+}
+
+
+/**
+ * ============================================
+ * BAT SYSTEM - Lietajúci nepriatelia
+ * ============================================
+ */
+
+/**
+ * SIMPLE BAT - Jednoduchý netopier
+ * Lieta horizontálne medzi dvoma bodmi (konštantná výška)
+ */
+class SimpleBat extends Enemy {
+    constructor(x, y, config = {}) {
+        const batConfig = {
+            width: 46,
+            height: 30,
+            speed: 1,          // Pomalý pohyb
+            hp: 1,
+            damage: 1,
+            killable: true,
+            stunnable: false,
+            behaviorType: 'flying',  // ⬅️ Nový typ správania
+            ...config
+        };
+        
+        super(x, y, 'Bat', batConfig);
+        this.batType = 'simple';
+    }
+    
+    /**
+     * Prepísané správanie - horizontálny let
+     */
+    patrolBehavior() {
+        // Pohyb
+        this.x += this.speed * this.direction;
+        
+        // Zmena smeru
+        if (this.x <= this.startX) {
+            this.direction = 1;
+            this.x = this.startX;
+        } else if (this.x >= this.endX) {
+            this.direction = -1;
+            this.x = this.endX;
+        }
+        
+        // ⬅️ Vždy flying animácia
+        this.setAnimation('flying');
+    }
+}
+
+/**
+ * WAVE BAT - Vlnovitý netopier
+ * Lieta horizontálne + vlní sa hore-dole (sine wave)
+ */
+class WaveBat extends Enemy {
+    constructor(x, y, config = {}) {
+        const batConfig = {
+            width: 46,
+            height: 30,
+            speed: 1,
+            hp: 1,
+            damage: 1,
+            killable: true,
+            stunnable: false,
+            behaviorType: 'flying',
+            ...config
+        };
+        
+        super(x, y, 'Bat', batConfig);
+        this.batType = 'wave';
+        
+        // ⬅️ Pre vlnovitý pohyb
+        this.baseY = y;           // Základná Y pozícia (stred vlny)
+        this.waveAmplitude = 30;  // Amplitúda vlny (ako vysoko/nízko)
+        this.waveFrequency = 0.05; // Frekvencia vlny (ako rýchlo sa vlní)
+        this.waveOffset = 0;      // Aktuálny offset pre výpočet
+    }
+    
+    /**
+     * Prepísané správanie - horizontálny pohyb + vlnenie
+     */
+    patrolBehavior() {
+        // Horizontálny pohyb
+        this.x += this.speed * this.direction;
+        
+        // Zmena smeru
+        if (this.x <= this.startX) {
+            this.direction = 1;
+            this.x = this.startX;
+        } else if (this.x >= this.endX) {
+            this.direction = -1;
+            this.x = this.endX;
+        }
+        
+        // ⬅️ Vertikálne vlnenie (sine wave)
+        this.waveOffset += this.waveFrequency;
+        this.y = this.baseY + Math.sin(this.waveOffset) * this.waveAmplitude;
+        
+        // Vždy flying animácia
+        this.setAnimation('flying');
+    }
+}
+
+/**
+ * SLEEPING BAT - Spiaci netopier
+ * Visí na platforme → prebúdza sa → letí → vracia sa → zaspí
+ */
+class SleepingBat extends Enemy {
+    constructor(x, y, config = {}) {
+        const batConfig = {
+            width: 46,
+            height: 30,
+            speed: 1.5,        // Rýchlejší keď lieta
+            hp: 1,
+            damage: 1,
+            killable: true,
+            stunnable: false,
+            behaviorType: 'sleeping',  // ⬅️ Vlastný typ
+            ...config
+        };
+        
+        super(x, y, 'Bat', batConfig);
+        this.batType = 'sleeping';
+        
+        // ⬅️ State machine
+        this.state = 'sleeping';  // sleeping, waking, flying, returning, falling_asleep
+        this.stateTimer = 0;
+        
+        // Pozície
+        this.sleepX = x;          // Pozícia kde spí (zavesený)
+        this.sleepY = y;          // Y pozícia strechy
+        this.patrolStartX = config.patrolStartX || x - 50;  // Začiatok patroly
+        this.patrolEndX = config.patrolEndX || x + 50;      // Koniec patroly
+        
+        // Časovanie
+        this.sleepDuration = config.sleepDuration || 320;    // ~3 sekundy spí
+        this.flyDuration = config.flyDuration || 320;        // ~4 sekundy letí
+        
+        // Pre vlnenie počas letu (ako WaveBat)
+        this.waveAmplitude = 20;
+        this.waveFrequency = 0.05;
+        this.waveOffset = 0;
+        this.baseY = y + 50;  // Lietať nižšie pod stropom
+    }
+    
+    /**
+     * Prepísané update - state machine
+     */
+    update() {
+        // Kontrola dying stavu
+        if (!this.alive && !this.dying) return;
+        if (this.dying) return;
+        
+        if (this.stunned) {
+            this.stunnedTimer--;
+            if (this.stunnedTimer <= 0) {
+                this.stunned = false;
+                this.state = 'sleeping';
+                this.x = this.sleepX;
+                this.y = this.sleepY;
+            }
+            return;
+        }
+        
+        // ⬅️ STATE MACHINE
+        switch(this.state) {
+            case 'sleeping':
+                // Spí zavesený na platforme
+                this.speed = 0;
+                this.x = this.sleepX;
+                this.y = this.sleepY;
+                this.setAnimation('idle');
+                
+                this.stateTimer++;
+                if (this.stateTimer >= this.sleepDuration) {
+                    // Prebúdza sa
+                    this.state = 'waking';
+                    this.stateTimer = 0;
+                }
+                break;
+                
+            case 'waking':
+                // Prebúdzanie - ceiling_out animácia
+                this.speed = 0;
+                this.setAnimation('ceiling_out');
+                
+                // Počkaj na dokončenie animácie (7 frame-ov * 6 speed = ~42 update cyklov)
+                this.stateTimer++;
+                if (this.stateTimer >= 50) {
+                    // Začni lietať
+                    this.state = 'flying';
+                    this.stateTimer = 0;
+                    this.direction = 1;  // Začni letieť doprava
+                    this.startX = this.patrolStartX;
+                    this.endX = this.patrolEndX;
+                    this.x = this.sleepX;
+                    this.waveOffset = 0;
+                }
+                break;
+                
+            case 'flying':
+                // Lietanie - wave pattern
+                this.speed = 1.5;
+                this.setAnimation('flying');
+                
+                // Horizontálny pohyb
+                this.x += this.speed * this.direction;
+                
+                // Zmena smeru na krajoch
+                if (this.x <= this.startX) {
+                    this.direction = 1;
+                    this.x = this.startX;
+                } else if (this.x >= this.endX) {
+                    this.direction = -1;
+                    this.x = this.endX;
+                }
+                
+                // Vertikálne vlnenie
+                this.waveOffset += this.waveFrequency;
+                this.y = this.baseY + Math.sin(this.waveOffset) * this.waveAmplitude;
+                
+                // Časovač letu
+                this.stateTimer++;
+                if (this.stateTimer >= this.flyDuration) {
+                    // Vráť sa späť
+                    this.state = 'returning';
+                    this.stateTimer = 0;
+                }
+                break;
+                
+            case 'returning':
+                // Návrat na spací miesto
+                this.speed = 2;  // Rýchlejší návrat
+                this.setAnimation('flying');
+                
+                // Pohyb smerom k sleep pozícii
+                const dx = this.sleepX - this.x;
+                const dy = this.sleepY - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance > 5) {
+                    // Pohybuj sa k cieľu
+                    this.x += (dx / distance) * this.speed;
+                    this.y += (dy / distance) * this.speed;
+                    
+                    // Nastav smer podľa pohybu
+                    this.direction = dx > 0 ? 1 : -1;
+                } else {
+                    // Dosiahol spací bod
+                    this.x = this.sleepX;
+                    this.y = this.sleepY;
+                    this.state = 'falling_asleep';
+                    this.stateTimer = 0;
+                }
+                break;
+                
+            case 'falling_asleep':
+                // Zasypanie - ceiling_in animácia
+                this.speed = 0;
+                this.x = this.sleepX;
+                this.y = this.sleepY;
+                this.setAnimation('ceiling_in');
+                
+                // Počkaj na dokončenie animácie
+                this.stateTimer++;
+                if (this.stateTimer >= 50) {
+                    // Zaspi
+                    this.state = 'sleeping';
+                    this.stateTimer = 0;
+                }
+                break;
+        }
+    }
+}
+
+/**
+ * ============================================
+ * GHOST SYSTEM - Duchovia (nezabiteľní)
+ * ============================================
+ */
+
+/**
+ * PATROL GHOST - Klasický duch
+ * Lietá medzi bodmi, prechádza stenami, nezabiteľný
+ */
+class PatrolGhost extends Enemy {
+    constructor(x, y, config = {}) {
+        const ghostConfig = {
+            width: 44,
+            height: 30,
+            speed: config.speed || 1,
+            hp: 999,           // ⬅️ Veľa HP (nezabiteľný)
+            damage: 1,
+            killable: false,   // ⬅️ Nedá sa zabiť!
+            stunnable: false,
+            behaviorType: 'ghost',  // ⬅️ Nový typ
+            ...config
+        };
+        
+        super(x, y, 'Ghost', ghostConfig);
+        this.ghostType = 'patrol';
+        
+        // ⬅️ Duch ignoruje gravitáciu a steny
+        this.ignoresWalls = true;
+    }
+    
+    /**
+     * Prepísané správanie - patrol bez kolízií
+     */
+    patrolBehavior() {
+        // Pohyb (prechádza stenami!)
+        this.x += this.speed * this.direction;
+        
+        // Zmena smeru
+        if (this.x <= this.startX) {
+            this.direction = 1;
+            this.x = this.startX;
+        } else if (this.x >= this.endX) {
+            this.direction = -1;
+            this.x = this.endX;
+        }
+        
+        // ⬅️ Vždy idle animácia (vlnenie ducha)
+        this.setAnimation('idle');
+    }
+}
+
+/**
+ * PHASING GHOST - Mizne a objavuje sa
+ * State machine: visible → disappearing → invisible → appearing → visible
+ */
+class PhasingGhost extends Enemy {
+    constructor(x, y, config = {}) {
+        const ghostConfig = {
+            width: 44,
+            height: 30,
+            speed: config.speed || 1,
+            hp: 999,
+            damage: 1,
+            killable: false,
+            stunnable: false,
+            behaviorType: 'ghost',
+            ...config
+        };
+        
+        super(x, y, 'Ghost', ghostConfig);
+        this.ghostType = 'phasing';
+        this.ignoresWalls = true;
+        
+        // ⬅️ State machine pre phasing
+        this.state = 'visible';  // visible, disappearing, invisible, appearing
+        this.stateTimer = 0;
+        
+        // Časovanie (v frame-och pri 60 FPS)
+        this.visibleDuration = config.visibleDuration || 180;      // ~3 sekundy viditeľný
+        this.invisibleDuration = config.invisibleDuration || 120;  // ~2 sekundy neviditeľný
+        
+        // Phasing vlastnosti
+        this.canHurt = true;  // Počas invisible nemôže ublížiť
+    }
+    
+    /**
+     * Prepísané update - state machine s phasing
+     */
+    update() {
+        // Duch nikdy neumiera, ale kontrolujeme dying stav pre istotu
+        if (this.dying) return;
+        
+        // ⬅️ STATE MACHINE
+        switch(this.state) {
+            case 'visible':
+                // Normálny pohyb, viditeľný, môže ublížiť
+                this.visible = true;
+                this.canHurt = true;
+                this.setAnimation('idle');
+                
+                // Pohyb
+                this.x += this.speed * this.direction;
+                if (this.x <= this.startX) {
+                    this.direction = 1;
+                    this.x = this.startX;
+                } else if (this.x >= this.endX) {
+                    this.direction = -1;
+                    this.x = this.endX;
+                }
+                
+                // Časovač
+                this.stateTimer++;
+                if (this.stateTimer >= this.visibleDuration) {
+                    this.state = 'disappearing';
+                    this.stateTimer = 0;
+                }
+                break;
+                
+            case 'disappearing':
+                // Animácia zmiznutia
+                this.canHurt = false;  // ⬅️ Už nemôže ublížiť
+                this.setAnimation('disappear');
+                
+                // Stále sa pohybuje
+                this.x += this.speed * this.direction;
+                if (this.x <= this.startX) {
+                    this.direction = 1;
+                    this.x = this.startX;
+                } else if (this.x >= this.endX) {
+                    this.direction = -1;
+                    this.x = this.endX;
+                }
+                
+                // Počkaj na dokončenie animácie (4 frame-y * 8 speed = ~32 update cyklov)
+                this.stateTimer++;
+                if (this.stateTimer >= 40) {
+                    this.state = 'invisible';
+                    this.stateTimer = 0;
+                    this.visible = false;  // ⬅️ Skry ducha
+                }
+                break;
+                
+            case 'invisible':
+                // Neviditeľný, pohybuje sa, nemôže ublížiť
+                this.visible = false;
+                this.canHurt = false;
+                
+                // Stále sa pohybuje (aj keď neviditeľný)
+                this.x += this.speed * this.direction;
+                if (this.x <= this.startX) {
+                    this.direction = 1;
+                    this.x = this.startX;
+                } else if (this.x >= this.endX) {
+                    this.direction = -1;
+                    this.x = this.endX;
+                }
+                
+                // Časovač
+                this.stateTimer++;
+                if (this.stateTimer >= this.invisibleDuration) {
+                    this.state = 'appearing';
+                    this.stateTimer = 0;
+                }
+                break;
+                
+            case 'appearing':
+                // Animácia zjavenia
+                this.visible = true;
+                this.canHurt = false;  // Ešte nemôže ublížiť
+                this.setAnimation('appear');
+                
+                // Stále sa pohybuje
+                this.x += this.speed * this.direction;
+                if (this.x <= this.startX) {
+                    this.direction = 1;
+                    this.x = this.startX;
+                } else if (this.x >= this.endX) {
+                    this.direction = -1;
+                    this.x = this.endX;
+                }
+                
+                // Počkaj na dokončenie animácie
+                this.stateTimer++;
+                if (this.stateTimer >= 40) {
+                    this.state = 'visible';
+                    this.stateTimer = 0;
+                    this.canHurt = true;  // ⬅️ Teraz môže ublížiť
+                }
+                break;
+        }
+    }
+}
+
+
+/**
+ * ============================================
+ * CHAMELEON - Chameleón s útokom jazykom
+ * ============================================
+ */
+
+/**
+ * CHAMELEON - Útočí jazykom na hráča
+ * Patruluje → detekuje hráča → zastaví → útok jazykom → cooldown
+ */
+class Chameleon extends Enemy {
+    constructor(x, y, config = {}) {
+        const chameleonConfig = {
+            width: 84,
+            height: 38,
+            speed: config.speed || 0.7,
+            hp: 1,
+            damage: 1,
+            killable: true,
+            stunnable: false,
+            behaviorType: 'chameleon',
+            ...config
+        };
+        
+        super(x, y, 'Chameleon', chameleonConfig);
+        
+        // ⬅️ NOVÝ STATE: patrol, turning, preparing, attacking, cooldown
+        this.state = 'patrol';
+        this.stateTimer = 0;
+        
+        // Útok jazykom
+        this.detectionRange = config.detectionRange || 150;
+        this.tongueRange = config.tongueRange || 100;
+        this.attackDuration = 50;
+        this.cooldownDuration = 90;
+        this.turningDuration = 40;  // ⬅️ NOVÉ: ~0.7 sekundy idle na otočke
+        
+        // ⬅️ NOVÉ: Vertikálna tolerancia pre detekciu (hráč musí byť približne na rovnakej výške)
+        this.verticalTolerance = config.verticalTolerance || 50;  // 50px hore/dole
+        
+        this.tongueHitbox = null;
+        this.tongueActive = false;
+        this.player = null;
+    }
+    
+    update() {
+        if (!this.alive && !this.dying) return;
+        if (this.dying) return;
+        
+        if (this.stunned) {
+            this.stunnedTimer--;
+            if (this.stunnedTimer <= 0) {
+                this.stunned = false;
+                this.state = 'patrol';
+            }
+            return;
+        }
+        
+        switch(this.state) {
+            case 'patrol':
+                this.tongueActive = false;
+                this.tongueHitbox = null;
+                
+                // Pohyb
+                this.x += this.speed * this.direction;
+                
+                // ⬅️ OPRAVENÉ: Pri dosiahnutí konca trasy prejdi do turning state
+                if (this.x <= this.startX) {
+                    this.x = this.startX;
+                    this.state = 'turning';
+                    this.stateTimer = 0;
+                    this.speed = 0;
+                    this.direction = 1;  // Priprav sa otočiť doprava
+                } else if (this.x >= this.endX) {
+                    this.x = this.endX;
+                    this.state = 'turning';
+                    this.stateTimer = 0;
+                    this.speed = 0;
+                    this.direction = -1;  // Priprav sa otočiť doľava
+                }
+                
+                // Animácia
+                if (Math.abs(this.speed) > 0.1) {
+                    this.setAnimation('run');
+                } else {
+                    this.setAnimation('idle');
+                }
+                
+                // ⬅️ OPRAVENÉ: Lepšia detekcia hráča
+                if (this.player && this.isPlayerInAttackRange()) {
+                    this.state = 'preparing';
+                    this.stateTimer = 0;
+                    this.speed = 0;
+                    
+                    // Otoč sa smerom k hráčovi
+                    if (this.player.x < this.x) {
+                        this.direction = -1;
+                    } else {
+                        this.direction = 1;
+                    }
+                }
+                break;
+                
+            case 'turning':  // ⬅️ NOVÝ STATE
+                // Idle animácia na otočke
+                this.speed = 0;
+                this.setAnimation('idle');
+                
+                this.stateTimer++;
+                if (this.stateTimer >= this.turningDuration) {
+                    // Otočka dokončená, pokračuj v patrole
+                    this.state = 'patrol';
+                    this.stateTimer = 0;
+                    this.speed = 0.7;  // Obnov rýchlosť
+                }
+                
+                // Aj počas otáčania môže útočiť ak je hráč blízko
+                if (this.player && this.isPlayerInAttackRange()) {
+                    this.state = 'preparing';
+                    this.stateTimer = 0;
+                    
+                    // Otoč sa k hráčovi
+                    if (this.player.x < this.x) {
+                        this.direction = -1;
+                    } else {
+                        this.direction = 1;
+                    }
+                }
+                break;
+                
+            case 'preparing':
+                this.speed = 0;
+                this.setAnimation('idle');
+                
+                this.stateTimer++;
+                if (this.stateTimer >= 20) {
+                    this.state = 'attacking';
+                    this.stateTimer = 0;
+                }
+                break;
+                
+            case 'attacking':
+                this.speed = 0;
+                this.setAnimation('attack');
+                
+                const attackProgress = this.stateTimer / this.attackDuration;
+                if (attackProgress >= 0.3 && attackProgress <= 0.8) {
+                    this.tongueActive = true;
+                    this.updateTongueHitbox();
+                } else {
+                    this.tongueActive = false;
+                    this.tongueHitbox = null;
+                }
+                
+                this.stateTimer++;
+                if (this.stateTimer >= this.attackDuration) {
+                    this.state = 'cooldown';
+                    this.stateTimer = 0;
+                    this.tongueActive = false;
+                    this.tongueHitbox = null;
+                }
+                break;
+                
+            case 'cooldown':
+                this.speed = 0;
+                this.setAnimation('idle');
+                this.tongueActive = false;
+                this.tongueHitbox = null;
+                
+                this.stateTimer++;
+                if (this.stateTimer >= this.cooldownDuration) {
+                    this.state = 'patrol';
+                    this.stateTimer = 0;
+                    this.speed = 0.7;
+                }
+                break;
+        }
+    }
+    
+    /**
+     * ⬅️ OPRAVENÉ: Lepšia detekcia - kontrola horizontálnej A vertikálnej pozície
+     */
+    isPlayerInAttackRange() {
+        if (!this.player) return false;
+        
+        // Horizontálna vzdialenosť
+        const horizontalDistance = Math.abs(this.player.x - this.x);
+        
+        // Vertikálna vzdialenosť (rozdiel Y súradníc)
+        const playerCenterY = this.player.y + this.player.height / 2;
+        const enemyCenterY = this.y + this.height / 2;
+        const verticalDistance = Math.abs(playerCenterY - enemyCenterY);
+        
+        // Kontrola smeru (hráč musí byť PRED Chameleonom)
+        const isInFront = (this.direction === 1 && this.player.x > this.x) ||
+                         (this.direction === -1 && this.player.x < this.x);
+        
+        // ⬅️ NOVÉ: Hráč musí byť:
+        // 1. V horizontálnom dosahu (detection range)
+        // 2. V vertikálnom dosahu (verticalTolerance) - približne na rovnakej výške
+        // 3. Pred Chameleonom (nie za ním)
+        return horizontalDistance <= this.detectionRange && 
+               verticalDistance <= this.verticalTolerance &&
+               isInFront;
+    }
+    
+    updateTongueHitbox() {
+        const tongueWidth = this.tongueRange;
+        const tongueHeight = 20;
+        
+        let tongueX;
+        if (this.direction === 1) {
+            tongueX = this.x + this.width;
+        } else {
+            tongueX = this.x - tongueWidth;
+        }
+        
+        const tongueY = this.y + (this.height / 2) - (tongueHeight / 2);
+        
+        this.tongueHitbox = {
+            x: tongueX,
+            y: tongueY,
+            width: tongueWidth,
+            height: tongueHeight
+        };
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+//============================================================
+//
+
+
 /**
  * COIN ANIMATION MANAGER
  * Správa animácií odmien - mince, diamanty
@@ -151,14 +1592,14 @@ class CoinAnimationManager {
             gold: {
                 folder: 'Gold Coin',
                 frames: 4,
-                speed: 20
+                speed: 16
             },
             
             // 🥈 Strieborné mince - posluchové cvičenia (TODO: overiť cestu)
             silver: {
                 folder: 'Silver Coin',
                 frames: 4,
-                speed: 20
+                speed: 16
             },
             
             // 💙 Modrý diamant - rečové cvičenia
@@ -569,7 +2010,7 @@ class Game {
         this.animationManager = new AnimationManager();
         this.coinAnimationManager = new CoinAnimationManager();
         this.checkpointAnimationManager = new CheckpointAnimationManager();
-
+        this.enemyAnimationManager = new EnemyAnimationManager(); 
 
         // Kamera
         this.camera = {
@@ -986,7 +2427,7 @@ class Game {
             );
         }
 
-        // Nepriatelia
+        //Nepriatelia
         this.ctx.strokeStyle = 'purple';
         for (let enemy of this.currentLevelData.enemies) {
             this.ctx.strokeRect(
@@ -1003,6 +2444,50 @@ class Game {
             this.ctx.lineTo(enemy.endX, enemy.y + enemy.height/2);
             this.ctx.stroke();
             this.ctx.setLineDash([]);
+            
+            // ⬅️ PRIDANÉ: Debug tongue hitbox (Chameleon)
+            if (enemy.behaviorType === 'chameleon' && enemy.tongueActive && enemy.tongueHitbox) {
+                this.ctx.strokeStyle = 'red';
+                this.ctx.lineWidth = 2;
+                this.ctx.strokeRect(
+                    enemy.tongueHitbox.x,
+                    enemy.tongueHitbox.y,
+                    enemy.tongueHitbox.width,
+                    enemy.tongueHitbox.height
+                );
+                this.ctx.lineWidth = 1;
+            }
+            
+            // ⬅️ PRIDANÉ: Debug detection range (Chameleon)
+            if (enemy.behaviorType === 'chameleon' && this.debug) {
+                this.ctx.strokeStyle = 'orange';
+                this.ctx.setLineDash([2, 2]);
+                this.ctx.beginPath();
+                
+                // Detekčná zóna - polkruh pred chameleonom
+                if (enemy.direction === 1) {
+                    // Doprava
+                    this.ctx.arc(
+                        enemy.x + enemy.width,
+                        enemy.y + enemy.height/2,
+                        enemy.detectionRange,
+                        -Math.PI/2,
+                        Math.PI/2
+                    );
+                } else {
+                    // Doľava
+                    this.ctx.arc(
+                        enemy.x,
+                        enemy.y + enemy.height/2,
+                        enemy.detectionRange,
+                        Math.PI/2,
+                        Math.PI*1.5
+                    );
+                }
+                
+                this.ctx.stroke();
+                this.ctx.setLineDash([]);
+            }
         }
 
         // Mince
@@ -1116,12 +2601,114 @@ class Game {
         this.currentLevelData.collectedSpecialItems.push(type);
     }
 
+    /**
+     * Kontrola kolízií s nepriateľmi
+     */
     handleEnemyCollisions() {
         if (this.isInvulnerable) return;
 
         for (let enemy of this.currentLevelData.enemies) {
+            if (!enemy.alive || !enemy.visible) continue;
+            
+            // ⬅️ NOVÉ: Kontrola tongue attack (Chameleon)
+            if (enemy.behaviorType === 'chameleon' && enemy.tongueActive && enemy.tongueHitbox) {
+                // Kontrola kolízie jazyka s hráčom
+                if (this.checkCollision(this.player, enemy.tongueHitbox)) {
+                    console.log('👅 Chameleon ťa trafil jazykom!');
+                    this.hitByEnemy();
+                    // Deaktivuj jazyk aby neudieral opakovane
+                    enemy.tongueActive = false;
+                    enemy.tongueHitbox = null;
+                    continue;  // Preskočiť normálnu kolíziu
+                }
+            }
+            
+            // PhasingGhost kontrola
+            if (enemy.ghostType === 'phasing' && !enemy.canHurt) {
+                continue;
+            }
+            
             if (this.checkCollision(this.player, enemy)) {
-                this.hitByEnemy();
+                
+                // Ghost je nezabiteľný
+                if (enemy.behaviorType === 'ghost') {
+                    this.hitByEnemy();
+                    continue;
+                }
+                
+                // ⬅️ NOVÉ: Chameleon - dá sa zabiť len skokom zhora (ako Pig)
+                if (enemy.behaviorType === 'chameleon') {
+                    const playerBottom = this.player.y + this.player.height;
+                    const enemyTop = enemy.y;
+                    const jumpTolerance = 10;
+                    
+                    const isJumpingOnEnemy = this.player.velocityY > 0 &&
+                                            playerBottom <= enemyTop + jumpTolerance;
+                    
+                    if (isJumpingOnEnemy) {
+                        enemy.hit();
+                        this.player.velocityY = -5;
+                        console.log(`💀 Zabil si ${enemy.type}!`);
+                    } else {
+                        // Dotyk zboku/zdola = damage
+                        this.hitByEnemy();
+                    }
+                    continue;
+                }
+                
+                // Lietajúci nepriateľ (Bat) - zhora aj zdola
+                if (enemy.behaviorType === 'flying' || enemy.behaviorType === 'sleeping') {
+                    const playerBottom = this.player.y + this.player.height;
+                    const playerTop = this.player.y;
+                    const enemyTop = enemy.y;
+                    const enemyBottom = enemy.y + enemy.height;
+                    const jumpTolerance = 10;
+                    
+                    const isJumpingOnTop = this.player.velocityY > 0 &&
+                                        playerBottom <= enemyTop + jumpTolerance;
+                    
+                    const isJumpingFromBelow = this.player.velocityY < 0 &&
+                                            playerTop >= enemyBottom - jumpTolerance;
+                    
+                    if (isJumpingOnTop || isJumpingFromBelow) {
+                        if (enemy.killable || enemy.stunnable) {
+                            enemy.hit();
+                            
+                            if (isJumpingOnTop) {
+                                this.player.velocityY = -5;
+                            } else {
+                                this.player.velocityY = 5;
+                            }
+                            
+                            console.log(`💀 Zabil si ${enemy.type}!`);
+                        } else {
+                            this.hitByEnemy();
+                        }
+                    } else {
+                        this.hitByEnemy();
+                    }
+                    
+                } else {
+                    // Pozemný nepriateľ (Pig) - len zhora
+                    const playerBottom = this.player.y + this.player.height;
+                    const enemyTop = enemy.y;
+                    const jumpTolerance = 10;
+                    
+                    const isJumpingOnEnemy = this.player.velocityY > 0 &&
+                                            playerBottom <= enemyTop + jumpTolerance;
+                    
+                    if (isJumpingOnEnemy) {
+                        if (enemy.killable || enemy.stunnable) {
+                            enemy.hit();
+                            this.player.velocityY = -5;
+                            console.log(`💀 Zabil si ${enemy.type}!`);
+                        } else {
+                            this.hitByEnemy();
+                        }
+                    } else {
+                        this.hitByEnemy();
+                    }
+                }
             }
         }
     }
@@ -1338,18 +2925,19 @@ class Game {
     }
 
     updateEnemies() {
-        for (let enemy of this.currentLevelData.enemies) {
-            // Pohyb nepriateľa
-            enemy.x += enemy.speed * enemy.direction;
-
-            // Zmena smeru pri dosiahnutí hraníc
-            if (enemy.x <= enemy.startX) {
-                enemy.direction = 1;
-            } else if (enemy.x >= enemy.endX) {
-                enemy.direction = -1;
-            }
+    for (let enemy of this.currentLevelData.enemies) {
+        // ⬅️ PRIDANÉ: Nastav player referenciu pre Chameleon (potrebuje pre detekciu)
+        if (enemy.behaviorType === 'chameleon') {
+            enemy.player = this.player;
         }
+        
+        // Aktualizuj správanie nepriateľa (pohyb, AI)
+        enemy.update();
+        
+        // Aktualizuj animáciu nepriateľa
+        this.enemyAnimationManager.updateAnimation(enemy);
     }
+}
 
     startDeathAnimation(type) {
         this.deathAnimation.active = true;
@@ -1836,10 +3424,11 @@ for (let platform of this.currentLevelData.platforms) {
             }
         }
 
-        // Vykreslenie nepriateľov
-        this.ctx.fillStyle = 'red';
+        // Vykreslenie nepriateľov (animované sprite-y)
         for (let enemy of this.currentLevelData.enemies) {
-            this.ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+            if (enemy.visible) {  // ⬅️ Vykreslí všetkých viditeľných, vrátane dying
+                this.enemyAnimationManager.draw(this.ctx, enemy);
+            }
         }
 
         // Vykreslenie stien
