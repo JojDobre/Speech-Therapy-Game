@@ -25,7 +25,7 @@ const WORLDS_CONFIG = [
         icon: 'images/worlds/world_r.png',
         difficulty: 4,
         unlockRequirement: null, 
-        totalLevels: 20,
+        totalLevels: 16,
         gameTypes: ['banik', 'pexeso', 'mario'], // typy hier dostupné v tomto svete
         isUnlocked: true // prvý svet je vždy odomknutý
     },
@@ -38,7 +38,7 @@ const WORLDS_CONFIG = [
         icon: 'images/worlds/world_l.png',
         difficulty: 3,
         unlockRequirement: null,
-        totalLevels: 18,
+        totalLevels: 16,
         gameTypes: ['banik', 'pexeso'],
         isUnlocked: true
     },
@@ -47,13 +47,26 @@ const WORLDS_CONFIG = [
         name: 'S',
         title: 'Svet písmena S',
         description: 'Precvičuj sykavky s písmenom S',
-        color: '#45B7D1', // modrá
+        color: '#45B7D1', 
         icon: 'images/worlds/world_s.png',
         difficulty: 2,
         unlockRequirement: null,
         totalLevels: 16,
         gameTypes: ['banik', 'pexeso', 'mario'],
         isUnlocked: true
+    },
+    {
+        id: 'world_ch',
+        name: 'Č',
+        title: 'Svet písmena Č',
+        description: 'Čvachtaj s písmenom Č',
+        color: '#74B9FF', 
+        icon: 'images/worlds/world_ch.png',
+        difficulty: 4,
+        unlockRequirement: null,
+        totalLevels: 8,
+        gameTypes: ['banik', 'pexeso'],
+        isUnlocked: false
     },
     {
         id: 'world_z',
@@ -116,22 +129,6 @@ const WORLDS_CONFIG = [
             minStars: 28
         },
         totalLevels: 18,
-        gameTypes: ['banik', 'pexeso'],
-        isUnlocked: false
-    },
-    {
-        id: 'world_ch',
-        name: 'Č',
-        title: 'Svet písmena Č',
-        description: 'Čvachtaj s písmenom Č',
-        color: '#74B9FF', // svetlomodrá
-        icon: 'images/worlds/world_ch.png',
-        difficulty: 4,
-        unlockRequirement: {
-            worldId: 'world_zh',
-            minStars: 27
-        },
-        totalLevels: 17,
         gameTypes: ['banik', 'pexeso'],
         isUnlocked: false
     },

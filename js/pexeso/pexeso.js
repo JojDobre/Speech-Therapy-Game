@@ -142,7 +142,7 @@ function initLevelGame(worldId, levelId) {
     if (currentLevel.gameConfig && currentLevel.gameConfig.pairs) {
         totalPairs = currentLevel.gameConfig.pairs;
     } else {
-        totalPairs = 10; // Defaultná hodnota
+        totalPairs = 8; // Defaultná hodnota
     }
     
     // Inicializácia hry
@@ -177,7 +177,7 @@ function initCustomGame(params) {
         name: 'Custom hra',
         words: customWords.length > 0 ? customWords : ['rak', 'ryba', 'ruka', 'rad'], // fallback
         gameConfig: {
-            pairs: params.pairs || Math.min(customWords.length, 10)
+            pairs: params.pairs || Math.min(customWords.length, 8)
         },
         timeLimit: params.timeLimit
     };
@@ -209,14 +209,14 @@ function initDemoGame() {
         name: 'Demo hra',
         words: ['rak', 'ryba', 'ruka', 'rad', 'rok', 'rád', 'rám', 'rum', 'run', 'red'],
         gameConfig: {
-            pairs: 10
+            pairs: 8
         },
         timeLimit: null
     };
     
     isMultiplayerMode = false;
     players = [{ name: 'Hráč', score: 0 }];
-    totalPairs = 10;
+    totalPairs = 8;
     
     initGame();
 }
