@@ -14,6 +14,7 @@
  * - unlockRequirement: podmienka na odomknutie levelu
  * - timeLimit: časový limit v sekundách (null = bez limitu)
  * - minStarsToPass: minimálny počet hviezd potrebný na prejdenie levelu
+ * - pozicia na y min 6 maxx 15. x min 0 max 15
  */
 
 const LEVELS_CONFIG = {
@@ -189,7 +190,7 @@ const LEVELS_CONFIG = {
             },
             positions: {
                 diamonds: [
-                    { x: 6, y: 4 },  // diamant na pozícii 3,8
+                    { x: 6, y: 8 },  // diamant na pozícii 3,8
                     { x: 9, y: 7 },  // diamant na pozícii 12,7
                     { x: 2, y: 10 },
                     { x: 1, y: 14 }
@@ -228,7 +229,7 @@ const LEVELS_CONFIG = {
             },
             positions: {
                 diamonds: [
-                    { x: 1, y: 5 },  // diamant na pozícii 3,8
+                    { x: 1, y: 6 },  // diamant na pozícii 3,8
                     { x: 4, y: 7 },  // diamant na pozícii 12,7
                     { x: 6, y: 10 },
                     { x: 2, y: 14 }
@@ -267,7 +268,7 @@ const LEVELS_CONFIG = {
             },
             positions: {
                 diamonds: [
-                    { x: 1, y: 5 },  // diamant na pozícii 3,8
+                    { x: 1, y: 6 },  // diamant na pozícii 3,8
                     { x: 4, y: 7 },  // diamant na pozícii 12,7
                     { x: 6, y: 10 },
                     { x: 2, y: 14 }
@@ -313,7 +314,7 @@ const LEVELS_CONFIG = {
                     { x: 10, y: 9 },   // gold na pozícii 2,9
                     { x: 7, y: 11 },   // gold na pozícii 7,8
                     { x: 8, y: 12 },
-                    { x: 1, y: 5 }
+                    { x: 1, y: 7 }
                 ],
                 crystals: [
                     { x: 9, y: 11 },    // kryštál na pozícii 9,7
@@ -352,7 +353,7 @@ const LEVELS_CONFIG = {
                 golds: [
                     { x: 7, y: 11 },   // gold na pozícii 7,8
                     { x: 12, y: 12 },
-                    { x: 1, y: 5 }
+                    { x: 1, y: 7 }
                 ],
                 crystals: [
                     { x: 9, y: 11 },    // kryštál na pozícii 9,7
@@ -385,16 +386,16 @@ const LEVELS_CONFIG = {
                 diamonds: [
                     { x: 1, y: 6 },  // diamant na pozícii 3,8
                     { x: 10, y: 14 },
-                    { x: 6, y: 5 },
+                    { x: 6, y: 8 },
                     { x: 2, y: 10 }
                 ],
                 golds: [
                     { x: 10, y: 9 },   // gold na pozícii 2,9
                     { x: 7, y: 11 },   // gold na pozícii 7,8
                     { x: 12, y: 12 },
-                    { x: 1, y: 5 },
+                    { x: 1, y: 9 },
                     { x: 3, y: 8 },
-                    { x: 7, y: 4 }
+                    { x: 5, y: 11 }
                 ],
                 crystals: [
                     { x: 14, y: 6 } 
@@ -432,7 +433,7 @@ const LEVELS_CONFIG = {
                     { x: 10, y: 9 },   // gold na pozícii 2,9
                     { x: 7, y: 11 },   // gold na pozícii 7,8
                     { x: 1, y: 10 },
-                    { x: 1, y: 5 }
+                    { x: 1, y: 8 }
                 ],
                 crystals: [
                     { x: 9, y: 11 },    // kryštál na pozícii 9,7
@@ -471,7 +472,7 @@ const LEVELS_CONFIG = {
                     { x: 10, y: 9 },   // gold na pozícii 2,9
                     { x: 7, y: 11 },   // gold na pozícii 7,8
                     { x: 12, y: 12 },
-                    { x: 1, y: 5 }
+                    { x: 1, y: 14 }
                 ],
                 crystals: [
                     { x: 9, y: 11 }    // kryštál na pozícii 9,7
@@ -505,7 +506,7 @@ const LEVELS_CONFIG = {
                     { x: 4, y: 12 },  // diamant na pozícii 3,8
                     { x: 9, y: 10 },
                     { x: 10, y: 14 },
-                    { x: 5, y: 2 },
+                    { x: 5, y: 8 },
                     { x: 2, y: 10 }
                 ],
                 golds: [
@@ -549,7 +550,7 @@ const LEVELS_CONFIG = {
                     { x: 10, y: 9 },   // gold na pozícii 2,9
                     { x: 7, y: 11 },   // gold na pozícii 7,8
                     { x: 12, y: 12 },
-                    { x: 1, y: 5 }
+                    { x: 1, y: 13 }
                 ],
                 crystals: [
                     { x: 9, y: 11 }    
@@ -587,10 +588,10 @@ const LEVELS_CONFIG = {
                     { x: 8, y: 10 },   // gold na pozícii 2,9
                     { x: 7, y: 11 },   // gold na pozícii 7,8
                     { x: 4, y: 6 },
-                    { x: 2, y: 5 }
+                    { x: 2, y: 7 }
                 ],
                 crystals: [
-                    { x: 2, y: 4 }
+                    { x: 2, y: 8 }
                 ],
                 player: { x: 1, y: 1 }
             },
@@ -813,7 +814,7 @@ const LEVELS_CONFIG = {
             },
             positions: {
                 diamonds: [
-                    { x: 3, y: 2 },
+                    { x: 3, y: 8 },
                     { x: 6, y: 6 },
                     { x: 10, y: 4 },
                     { x: 13, y: 8 }

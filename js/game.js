@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     console.log('Hra načítaná.');
+    initSpeechRecognition();
 });
 
 function hideLoadingScreen() {
@@ -45,8 +46,6 @@ function hideLoadingScreen() {
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const blockSize = 50; // Veľkosť jednej blokovej kocky
-
-getLocalStream();
 
 const playerSize = blockSize;           // Veľkosť hráča
 const diamondSize = blockSize;          // Veľkosť diamantu
@@ -98,6 +97,17 @@ let gameTimer = {
     isRunning: false,          // Označuje či timer beží
     isPaused: false            // Označuje či je timer pozastavený
 };
+
+//////////////////////////////////////////////  
+// Globálne premenné pre Speech Recognition //
+//////////////////////////////////////////////
+let speechRecognition = null;           // Globálna inštancia - vytvorí sa len raz
+let isListening = false;                // Flag či práve počúvame
+let currentExpectedWord = '';           // Aktuálne očakávané slovo
+
+let isExerciseActive = false;           // Flag či práve prebieha cvičenie
+
+
 
 ///////////////////////
 // Obrázky postavy   //
@@ -751,42 +761,47 @@ function handleActionClick(e) {
 //         POHYB - KLAVESNICA (PC)           //
 ///////////////////////////////////////////////
 window.addEventListener('keydown', (e) => {
-  const newPlayerX = playerX;
-  const newPlayerY = playerY;
-  
-  switch (e.key) {
-      case 'w':
-      case 'ArrowUp':
-          if (playerY - blockSize >= 0) { // Kontrola pohybu nahor
-              playerY -= blockSize;
-              playerRotation = 0; // Rotácia smeru hore
-              playerDirection = 'front';
-          }
-          break;
-      case 'a':
-      case 'ArrowLeft':
-          if (playerX - blockSize >= 0) {
-              playerX -= blockSize;
-              playerRotation = 270;
-              playerDirection = 'vlavo';
-          }
-          break;
-      case 's':
-      case 'ArrowDown':
-          if (playerY + blockSize < 800) {
-              playerY += blockSize;
-              playerRotation = 180;
-              playerDirection = 'front';
-          }
-          break;
-      case 'd':
-      case 'ArrowRight':
-          if (playerX + blockSize < 800) { 
-              playerX += blockSize;
-              playerRotation = 90; 
-              playerDirection = 'vpravo';
-          }
-          break;
+    if (isExerciseActive) {
+        console.log('⚠️ Pohyb zablokovaný - cvičenie prebieha');
+        return; // Ignoruj všetky klávesy
+    }
+
+    const newPlayerX = playerX;
+    const newPlayerY = playerY;
+    
+    switch (e.key) {
+        case 'w':
+        case 'ArrowUp':
+            if (playerY - blockSize >= 0) { // Kontrola pohybu nahor
+                playerY -= blockSize;
+                playerRotation = 0; // Rotácia smeru hore
+                playerDirection = 'front';
+            }
+            break;
+        case 'a':
+        case 'ArrowLeft':
+            if (playerX - blockSize >= 0) {
+                playerX -= blockSize;
+                playerRotation = 270;
+                playerDirection = 'vlavo';
+            }
+            break;
+        case 's':
+        case 'ArrowDown':
+            if (playerY + blockSize < 800) {
+                playerY += blockSize;
+                playerRotation = 180;
+                playerDirection = 'front';
+            }
+            break;
+        case 'd':
+        case 'ArrowRight':
+            if (playerX + blockSize < 800) { 
+                playerX += blockSize;
+                playerRotation = 90; 
+                playerDirection = 'vpravo';
+            }
+            break;
   }
   
   //////////////////////////////////////////////
@@ -859,6 +874,11 @@ document.addEventListener('keydown', (e) => {
 //      Funkcia na ničenie itemov            // 
 ///////////////////////////////////////////////
 function destroyBlock() {
+    if (isExerciseActive) {
+        console.log('⚠️ Kopanie zablokované - cvičenie prebieha');
+        return; // Ignoruj akciu kopania
+    }
+
     playerBlockX = Math.floor(playerX / blockSize);
     playerBlockY = Math.floor(playerY / blockSize);
     targetBlockX = playerBlockX;
@@ -878,6 +898,7 @@ function destroyBlock() {
             targetBlockX--;
             break;
     }
+
     clay.forEach((clayBlock, clayIndex) => {
         const blockX = clayBlock.x / blockSize;
         const blockY = clayBlock.y / blockSize;
@@ -886,6 +907,7 @@ function destroyBlock() {
             clay.splice(clayIndex, 1);
         }
     });
+
     diamonds.forEach((diamond, diamondIndex) => {
       blockX = diamond.x / blockSize;
       blockY = diamond.y / blockSize;
@@ -896,6 +918,7 @@ function destroyBlock() {
         }
       }
     });
+
     golds.forEach((gold, goldIndex) => {
       const blockX = gold.x / blockSize;
       const blockY = gold.y / blockSize;
@@ -913,6 +936,7 @@ function destroyBlock() {
         }
       }
     });
+
     kov.forEach((kov, kovIndex) => {
       const blockX = kov.x / blockSize;
       const blockY = kov.y / blockSize;
@@ -928,6 +952,11 @@ function destroyBlock() {
 //          Animácia kopania                 // 
 ///////////////////////////////////////////////
 function animateDigging() {
+    if (isExerciseActive) {
+        console.log('⚠️ Pohyb zablokovaný - cvičenie prebieha');
+        return; // Ignoruj všetky klávesy
+    }
+
     kope = true;
     drawPlayer();
     effectkopanie.play();
@@ -1865,6 +1894,12 @@ let listeningSound2 = null;
 // cvičenia - podobne ako openCvicenie  //
 //////////////////////////////////////////
 function openListeningExercise() {
+    console.log('Otváranie posluchového cvičenia...');
+    
+    // Nastav flag - posluchové cvičenie je aktívne
+    isExerciseActive = true;
+    console.log('🔒 Herné akcie zablokované - posluchové cvičenie aktívne');
+    
     console.log('=== DEBUG openListeningExercise ===');
     console.log('currentLevelConfig:', currentLevelConfig);
     
@@ -1904,6 +1939,7 @@ function openListeningExercise() {
     
     // Zobrazenie prvého cvičenia
     displayListeningExercise();
+    
 }
 
 //////////////////////////////////////////
@@ -2244,6 +2280,9 @@ function handleListeningAnswer(playerAnswerSame) {
 // Podobne ako closeCvicenie()         //
 //////////////////////////////////////////
 function closeListeningExercise(success = false) {
+    isExerciseActive = false;
+    console.log('🔓 Herné akcie odblokované - posluchové cvičenie ukončené');
+    
     // Zastavenie všetkých zvukov
     if (listeningSound1) {
         listeningSound1.stop();
@@ -2339,6 +2378,478 @@ let wordList = []; // Pole slov na vyslovenie
 let pocetcviceni = 2;
 let kontrolacvicenia = 0;
 let slovicka = 0;
+
+
+
+
+
+//////////////////////////////////////////
+// Inicializácia Speech Recognition      //
+// Zavolá sa len raz pri načítaní stránky//
+//////////////////////////////////////////
+function initSpeechRecognition() {
+    console.log('🎤 Inicializácia speech recognition...');
+    
+    // Kontrola či prehliadač podporuje Speech Recognition
+    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+        console.error('❌ Speech recognition nie je podporované v tomto prehliadači');
+        
+        // Zobraz chybovú hlášku pre používateľa
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        if (isMobile) {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            if (isIOS) {
+                showErrorMessage('Používaj Safari prehliadač na iPhone/iPad pre rozpoznávanie reči.');
+            } else {
+                showErrorMessage('Používaj Chrome prehliadač na Android pre rozpoznávanie reči.');
+            }
+        } else {
+            showErrorMessage('Tvoj prehliadač nepodporuje rozpoznávanie reči. Použi Chrome, Edge alebo Safari.');
+        }
+        
+        return false;
+    }
+    
+    // Použijem štandardný alebo prefixovaný variant
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    // Vytvorím globálnu inštanciu - LEN RAZ
+    speechRecognition = new SpeechRecognition();
+    
+    // Nastavím parametre rozpoznávania
+    speechRecognition.lang = 'sk-SK';                  // Slovenský jazyk
+    speechRecognition.continuous = false;              // Rozpozná len jedno slovo
+    speechRecognition.interimResults = false;          // Len finálne výsledky
+    speechRecognition.maxAlternatives = 1;             // Len jedna alternatíva
+    
+    // Nastavím callback funkcie - LEN RAZ
+    setupSpeechCallbacks();
+    
+    console.log('✅ Speech recognition úspešne inicializované');
+    return true;
+}
+
+//////////////////////////////////////////
+// Nastavenie callback funkcií          //
+// Volá sa len raz z initSpeechRecognition//
+//////////////////////////////////////////
+function setupSpeechCallbacks() {
+    // Callback keď sa rozpoznávanie spustí
+    speechRecognition.onstart = () => {
+        console.log('🎤 Rozpoznávanie spustené');
+        isListening = true;
+        updateMicrophoneButton(true);
+    };
+    
+    // Callback keď sa rozpoznávanie ukončí
+    speechRecognition.onend = () => {
+        console.log('🎤 Rozpoznávanie ukončené');
+        isListening = false;
+        updateMicrophoneButton(false);
+    };
+    
+    // Callback keď príde výsledok
+    speechRecognition.onresult = (event) => {
+        handleSpeechResult(event);
+    };
+    
+    // Callback pri chybe
+    speechRecognition.onerror = (event) => {
+        handleSpeechError(event);
+    };
+}
+
+//////////////////////////////////////////
+// Bezpečné spustenie rozpoznávania     //
+// Zavolá sa pri kliknutí na mikrofón   //
+//////////////////////////////////////////
+function startSpeechRecognition(expectedWord) {
+    console.log('🎙️ Pokus o spustenie rozpoznávania pre slovo:', expectedWord);
+    
+    // CHECK 1: Je recognition inicializované?
+    if (!speechRecognition) {
+        console.warn('⚠️ Speech recognition nie je inicializované, inicializujem...');
+        const initialized = initSpeechRecognition();
+        if (!initialized) {
+            console.error('❌ Nepodarilo sa inicializovať speech recognition');
+            return;
+        }
+    }
+    
+    // CHECK 2: Už beží rozpoznávanie?
+    if (isListening) {
+        console.warn('⚠️ Rozpoznávanie už beží, ignorujem pokus o opätovné spustenie');
+        return;
+    }
+    
+    // Uložím očakávané slovo
+    currentExpectedWord = expectedWord;
+    
+    // CHECK 3: Try-catch pre bezpečné spustenie
+    try {
+        console.log('▶️ Spúšťam rozpoznávanie...');
+        speechRecognition.start();
+        // isListening sa nastaví automaticky v onstart callback
+    } catch (error) {
+        console.error('❌ Chyba pri spustení rozpoznávania:', error);
+        
+        // Špecifické handling pre rôzne typy chýb
+        if (error.message && error.message.includes('already started')) {
+            console.warn('⚠️ Recognition už beží, pokúsim sa ho reštartovať');
+            
+            // Pokúsim sa ho zastaviť a reštartovať
+            isListening = false;
+            speechRecognition.stop();
+            
+            // Počkám chvíľu a skúsim znova
+            setTimeout(() => {
+                console.log('🔄 Reštartujem rozpoznávanie...');
+                startSpeechRecognition(expectedWord);
+            }, 200);
+        } else {
+            // Iná chyba - zobraz hlášku používateľovi
+            showErrorMessage('Nepodarilo sa spustiť rozpoznávanie. Skús to znova.');
+            isListening = false;
+            updateMicrophoneButton(false);
+        }
+    }
+}
+
+//////////////////////////////////////////
+// Spracovanie výsledku rozpoznávania   //
+// Volá sa automaticky z callback       //
+//////////////////////////////////////////
+function handleSpeechResult(event) {
+    // Získam rozpoznaný text
+    const transcript = event.results[0][0].transcript;
+    
+    console.log('🗣️ Rozpoznaný text:', transcript);
+    console.log('🎯 Očakávané slovo:', currentExpectedWord);
+    
+    // Vyčistím text (malé písmená, bez interpunkcie)
+    const cleanedTranscript = transcript.trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+    const currentWord = currentExpectedWord.toLowerCase();
+    
+    console.log('🔍 Porovnanie:', cleanedTranscript, 'vs', currentWord);
+    
+    // Kontrola či sa zhodujú
+    if (cleanedTranscript === currentWord) {
+        // ✅ SPRÁVNE VYSLOVENÉ
+        console.log('✅ Správne vyslovené slovo "' + currentExpectedWord + '"');
+        
+        // Zobraz správny výsledok
+        document.getElementById("vysledok").innerHTML = `
+            <center>
+                <img src="images/spravne.png" alt="Správne">
+                <div class="success-message">Výborne!</div>
+            </center>
+        `;
+        document.getElementById("vysledok").classList.add('show');
+        
+        // Prehraj zvuk
+        if (typeof effectSpravne !== 'undefined') {
+            effectSpravne.play();
+        }
+        
+        // Aktualizuj počítadlá
+        correctAnswers++;
+        updateAnswerCounters();
+        currentWordIndex++;
+        
+        // Zaznamenaj výsledok
+        const attempts = slovicka + 1;
+        if (typeof recordSpeechExerciseResult === 'function') {
+            recordSpeechExerciseResult(attempts, true);
+        }
+        slovicka = 0;
+        console.log(`✅ Kolo ${currentWordIndex}/${wordList.length} dokončené s ${attempts} pokusmi`);
+        
+        // Po 2 sekundách zobraz ďalšie slovo alebo ukonči
+        setTimeout(() => {
+            document.getElementById("vysledok").innerHTML = '';
+            document.getElementById("vysledok").classList.remove('show');
+            
+            if (currentWordIndex < wordList.length) {
+                displayWord(); // Zobraz ďalšie slovo
+            } else {
+                kontrolacvicenia = 1;
+                closeCvicenie(); // Ukonči cvičenie
+            }
+        }, 2000);
+        
+    } else {
+        // ❌ NESPRÁVNE VYSLOVENÉ
+        console.log('❌ Nesprávne vyslovené. Slovo "' + currentExpectedWord + '" nebolo správne rozpoznané');
+        
+        slovicka++;
+        incorrectAnswers++;
+        updateAnswerCounters();
+        console.log('Počet pokusov:', slovicka);
+        
+        // Vypočítaj zostávajúce pokusy
+        const remainingAttempts = 3 - slovicka;
+        
+        // Zobraz chybovú správu
+        if (remainingAttempts > 0) {
+            document.getElementById("vysledok").innerHTML = `
+                <center>
+                    <img src="images/nespravne.png" alt="Nesprávne">
+                    <div class="attempt-message">
+                        <span style="color: #ff6b6b; font-size: 28px;">SKÚSTE ZNOVA</span><br>
+                        <span style="color: white; font-size: 20px;">Zostávajú ${remainingAttempts} pokusy</span>
+                    </div>
+                </center>
+            `;
+        } else {
+            document.getElementById("vysledok").innerHTML = `
+                <center>
+                    <img src="images/nespravne.png" alt="Nesprávne">
+                    <div class="attempt-message">
+                        <span style="color: #ff6b6b; font-size: 28px;">VYČERPANÉ POKUSY</span><br>
+                        <span style="color: white; font-size: 18px;">Pokračujeme ďalej</span>
+                    </div>
+                </center>
+            `;
+        }
+        
+        document.getElementById("vysledok").classList.add('show');
+        
+        // Prehraj zvuk
+        if (typeof effectZle !== 'undefined') {
+            effectZle.play();
+        }
+        
+        // Kontrola maximalneho poctu pokusov
+        if (slovicka >= 3) {
+            console.log('❌ Vyčerpané pokusy pre slovo:', currentExpectedWord);
+            
+            // Zaznamenaj neúspešné kolo
+            if (typeof recordSpeechExerciseResult === 'function') {
+                recordSpeechExerciseResult(3, false);
+            }
+            
+            slovicka = 0;
+            currentWordIndex++;
+            
+            // Po 2 sekundách prejdi na ďalšie slovo alebo ukonči
+            setTimeout(() => {
+                document.getElementById("vysledok").innerHTML = '';
+                document.getElementById("vysledok").classList.remove('show');
+                
+                if (currentWordIndex < wordList.length) {
+                    displayWord(); // Zobraz ďalšie slovo
+                } else {
+                    kontrolacvicenia = 2;
+                    closeCvicenie(); // Ukonči cvičenie
+                }
+            }, 2000);
+        } else {
+            // Ešte sú pokusy - skry hlášku po chvíli
+            setTimeout(() => {
+                document.getElementById("vysledok").innerHTML = '';
+                document.getElementById("vysledok").classList.remove('show');
+            }, 2000);
+        }
+    }
+}
+
+//////////////////////////////////////////
+// Spracovanie chýb rozpoznávania       //
+// Volá sa automaticky z callback       //
+//////////////////////////////////////////
+function handleSpeechError(event) {
+    console.error('❌ Chyba rozpoznávania:', event.error);
+    
+    // Reset stavu
+    isListening = false;
+    updateMicrophoneButton(false);
+    
+    // Detailné error handling podľa typu chyby
+    let errorTitle = '';
+    let errorMessage = '';
+    let canRetry = true;
+    
+    switch(event.error) {
+        case 'no-speech':
+            errorTitle = 'Nepočul som ťa';
+            errorMessage = 'Skús to znova a hovor hlasnejšie blízko mikrofónu.';
+            canRetry = true;
+            break;
+            
+        case 'audio-capture':
+            errorTitle = 'Problém s mikrofónom';
+            errorMessage = 'Skontroluj, či je mikrofón správne pripojený a funguje.';
+            canRetry = true;
+            break;
+            
+        case 'not-allowed':
+            errorTitle = 'Prístup zamietnutý';
+            errorMessage = 'Potrebujem povolenie na používanie mikrofónu. Klikni na ikonu zámku v adresovom riadku a povol mikrofón.';
+            canRetry = false;
+            showPermissionsHelp(); // Zobraz návod
+            break;
+            
+        case 'network':
+            errorTitle = 'Problém s internetom';
+            errorMessage = 'Skontroluj svoje internetové pripojenie a skús to znova.';
+            canRetry = true;
+            break;
+            
+        case 'aborted':
+            errorTitle = 'Rozpoznávanie zrušené';
+            errorMessage = '';
+            canRetry = true;
+            break;
+            
+        case 'service-not-allowed':
+            errorTitle = 'Služba nie je dostupná';
+            errorMessage = 'Rozpoznávanie reči nie je povolené pre túto stránku. Skontroluj nastavenia prehliadača.';
+            canRetry = false;
+            break;
+            
+        default:
+            errorTitle = 'Neznáma chyba';
+            errorMessage = 'Niečo sa pokazilo. Skús to znova.';
+            canRetry = true;
+    }
+    
+    // Zobraz chybovú hlášku
+    if (errorMessage) {
+        showErrorMessage(errorTitle + ': ' + errorMessage);
+    }
+    
+    // Ak je to dočasná chyba, používateľ môže skúsiť znova kliknutím na mikrofón
+    // Ak je to permissions problém, musí najprv povoliť mikrofón
+}
+
+//////////////////////////////////////////
+// Aktualizácia tlačidla mikrofónu      //
+// Volá sa z callbacks                  //
+//////////////////////////////////////////
+function updateMicrophoneButton(listening) {
+    const button = document.getElementById('rozpoznanie');
+    const tlacidloDiv = document.querySelector('.tlacidlo');
+    
+    if (!button || !tlacidloDiv) {
+        console.warn('⚠️ Tlačidlo mikrofónu nenájdené v DOM');
+        return;
+    }
+    
+    if (listening) {
+        // Stav: Počúvanie
+        button.disabled = true;
+        tlacidloDiv.classList.add('recording');
+        button.innerHTML = '<a>POČÚVAM...</a>';
+        console.log('🎙️ UI: Počúvam...');
+    } else {
+        // Stav: Pripravený
+        button.disabled = false;
+        tlacidloDiv.classList.remove('recording');
+        button.innerHTML = '<a>HOVORIŤ</a>';
+        console.log('🎙️ UI: Pripravený');
+    }
+}
+
+//////////////////////////////////////////
+// Zobrazenie chybovej hlášky           //
+// Helper funkcia pre user feedback     //
+//////////////////////////////////////////
+function showErrorMessage(message) {
+    console.log('💬 Zobrazujem hlášku:', message);
+    
+    // Zobraz hlášku v existujúcom vysledok div
+    const vysledokDiv = document.getElementById("vysledok");
+    if (vysledokDiv) {
+        vysledokDiv.innerHTML = `
+            <center>
+                <div class="error-message">
+                    <span style="color: #ff6b6b; font-size: 24px;">⚠️</span><br>
+                    <span style="color: white; font-size: 18px;">${message}</span>
+                </div>
+            </center>
+        `;
+        vysledokDiv.classList.add('show');
+        
+        // Skry po 5 sekundách
+        setTimeout(() => {
+            vysledokDiv.innerHTML = '';
+            vysledokDiv.classList.remove('show');
+        }, 5000);
+    } else {
+        // Fallback na alert ak vysledok div neexistuje
+        alert(message);
+    }
+}
+
+//////////////////////////////////////////
+// Zobrazenie návodu na povolenie       //
+// mikrofónu                            //
+//////////////////////////////////////////
+function showPermissionsHelp() {
+    // Detekcia prehliadača
+    const isChrome = /chrome/i.test(navigator.userAgent);
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    const isEdge = /edg/i.test(navigator.userAgent);
+    
+    let helpText = '';
+    
+    if (isChrome) {
+        helpText = 'V Chrome: Klikni na ikonu zámku vedľa URL a povol mikrofón.';
+    } else if (isEdge) {
+        helpText = 'V Edge: Klikni na ikonu zámku vedľa URL a povol mikrofón.';
+    } else if (isSafari) {
+        helpText = 'V Safari: Choď do Safari → Nastavenia pre túto webstránku → Mikrofón → Povoliť';
+    } else {
+        helpText = 'V nastaveniach prehliadača povol mikrofón pre túto stránku.';
+    }
+    
+    console.log('📖 Návod na povolenie:', helpText);
+    
+    // Zobraz rozšírenú hlášku s návodom
+    showErrorMessage('PRÍSTUP K MIKROFÓNU ZAMIETNUTÝ\n\n' + helpText);
+}
+
+//////////////////////////////////////////
+// Detekcia mobile zariadení            //
+// Helper funkcie                       //
+//////////////////////////////////////////
+function isMobileDevice() {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent);
+}
+
+function isAndroid() {
+    return /Android/.test(navigator.userAgent);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //////////////////////////////////////////
 // Funkcia na otvorenie cvičenia        //
 // Používa slová z levelConfig          //
@@ -2415,27 +2926,16 @@ function openCvicenie() {
 //       Spustenie Cvicenia             //
 //////////////////////////////////////////
 function startExercise() {
+    isExerciseActive = true;
+    console.log('🔒 Herné akcie zablokované - cvičenie aktívne');
+    
     document.getElementById("cvicenie").style.display = "block";
     document.getElementById("blur-background").style.display = "block";
     document.body.classList.add("cvicenie-open");
     document.body.style.overflow = "hidden"; 
     displayWord();
 }
-//////////////////////////////////////////
-//       Ziskanie mikrofonu             //
-//////////////////////////////////////////
-function getLocalStream() {
-    navigator.mediaDevices
-        .getUserMedia({ video: false, audio: true })
-        .then((stream) => {
-            window.localStream = stream;
-            window.localAudio.srcObject = stream;
-            window.localAudio.autoplay = true;
-        })
-        .catch((err) => {
-            console.error(`you got an error: ${err}`);
-        });
-}
+
 //////////////////////////////////////////
 // Funkcia na zobrazenie aktuálneho     //
 // slova na vyslovenie                  //
@@ -2450,135 +2950,14 @@ function displayWord() {
 // Samotna funckia na rozpoznanie       //
 //////////////////////////////////////////
 function rozpoznanieS() {
-    // Získaj tlačidlo a nastav disabled state
-    const button = document.getElementById('rozpoznanie');
-    const tlacidloDiv = document.querySelector('.tlacidlo');
-
-    // Zabráň viacnásobnému kliknutiu
-    if (button.disabled) {
-        console.log('Nahrávanie už prebieha...');
-        return;
-    }
+    console.log('🎤 rozpoznanieS() zavolaná');
     
-    // disabled state pre button aj div
-    button.disabled = true;
-    tlacidloDiv.classList.add('recording');
-    button.innerHTML = '<a>NAHRÁVAM...</a>';
+    // Získaj aktuálne očakávané slovo
+    const expectedWord = wordList[currentWordIndex];
+    console.log('📝 Aktuálne slovo:', expectedWord);
     
-    const recognition = new webkitSpeechRecognition();
-    recognition.lang = 'sk-SK';
-    recognition.continuous = false;                         // rozoznávanie jedného slova
-    
-    // Spustenie nahrávania
-    recognition.start();
-    console.log('Nahrávanie spustené.');
-    let transcript = '';                                    // Premenná na uchovávanie rozpoznaného textu
-
-    const waitForEnd = new Promise((resolve) => {           //promisa, ktorá počká na ukončenie nahrávania
-        recognition.onend = () => {                         // Funkcia, ktorá sa vyvolá po ukončení nahrávania
-            // Reset tlačidla po ukončení nahrávania
-            const button = document.getElementById('rozpoznanie');
-            const tlacidloDiv = document.querySelector('.tlacidlo');
-            button.disabled = false;
-            tlacidloDiv.classList.remove('recording');
-            button.innerHTML = '<a>HOVORIŤ</a>';
-                
-            console.log('Nahrávanie ukončené.');
-            console.log('Rozpoznaný text:', transcript);
-
-            const currentWord = wordList[currentWordIndex];
-            const cleanedTranscript = transcript.trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,""); // Odstránenie interpunkčných znamienok a prevod na malé písmená
-            console.log('Rozpoznaný text:', cleanedTranscript);
-            
-            if (cleanedTranscript === currentWord.toLowerCase()) {
-                console.log('Bolo správne vyslovené slovo "' + currentWord + '".');
-                document.getElementById("vysledok").innerHTML = `<center> <img src="images/spravne.png" alt="Správne"> <div class="success-message">Výborne!</div></center>`;
-                document.getElementById("vysledok").classList.add('show');
-                effectSpravne.play();
-                correctAnswers++;
-                updateAnswerCounters();
-                currentWordIndex++;
-                
-                // === ZAZNAMENANIE VÝSLEDKU TOHTO KOLA ===
-                // slovicka = počet chýb (0-2), skutočný pokus = slovicka + 1 (1-3)
-                const attempts = slovicka + 1;
-                if (typeof recordSpeechExerciseResult === 'function') {
-                    recordSpeechExerciseResult(attempts, true);
-                }
-                slovicka = 0; // Reset pokusov pre ďalšie slovo
-                console.log(`✅ Kolo ${currentWordIndex}/${wordList.length} dokončené s ${attempts} pokusmi`);
-
-                setTimeout(() => {
-                    document.getElementById("vysledok").innerHTML = ''; 
-                    document.getElementById("vysledok").classList.remove('show');
-                    if (currentWordIndex < wordList.length) {
-                        displayWord(); // Zobraziť ďalšie slovo
-                    } else {
-                        kontrolacvicenia = 1;
-                        closeCvicenie(); // Ukončiť cvičenie
-                    }
-                }, 2000);
-            } else {
-                console.log('Slovo "' + currentWord + '" nebolo správne vyslovené.');
-                slovicka++;
-                incorrectAnswers++;
-                updateAnswerCounters();
-                console.log('Skús ho vysloviť znova, slovicka: ' +slovicka);
-                
-                // Vypočítaj zostávajúce pokusy
-                const remainingAttempts = 3 - slovicka;
-                
-                // Zobraz chybovú správu so zostávajúcimi pokusmi
-                const attemptMessage = remainingAttempts > 0 
-                    ? `<div class="attempt-message">Zostávajúce pokusy: ${remainingAttempts}</div>`
-                    : `<div class="attempt-message final-attempt">Posledný pokus vyčerpaný</div>`;
-                
-                const vysledokElement = document.getElementById("vysledok");
-                vysledokElement.innerHTML = `
-                    <center>
-                    <img src="images/nespravne.png" alt="Nesprávne">
-                    ${attemptMessage}
-                    </center>
-                `;
-                vysledokElement.classList.add('show');             
-                
-                effectZle.play();
-            }
-
-            setTimeout(() => {
-                document.getElementById("vysledok").innerHTML = '';         // Vymazanie obrázka po 2 sekundách
-                document.getElementById("vysledok").classList.remove('show');
-                if (slovicka === 3) {
-                    // === ZAZNAMENANIE NEÚSPEŠNÉHO KOLA ===
-                    if (typeof recordSpeechExerciseResult === 'function') {
-                        recordSpeechExerciseResult(0, false);
-                    }
-                    slovicka = 0; // Reset
-                    console.log(`❌ Kolo ${currentWordIndex + 1}/${wordList.length} neúspešné`);
-                    
-                    kontrolacvicenia = 2;
-                    closeCvicenie();                                        // Ukončiť cvičenie
-                }
-                resolve();                                                  //resolve na splnenie promisy
-            }, 2000);
-        };
-    });
-
-    recognition.onresult = function(event) {
-        transcript += event.results[0][0].transcript.trim();                // Rozpoznaný text
-    };
-
-    recognition.onerror = function(event) {                                 //upozornenie na chybu
-        console.error('Chyba pri rozpoznávaní reči:', event.error);
-    };
-
-    setTimeout(() => {                                                      // Zastavenie nahrávania po 5 sekundách
-        recognition.stop();
-    }, 5000);
-
-    waitForEnd.then(() => {                                                 // Počkáme na ukončenie nahrávania pomocou promisy
-        console.log('Vyhodnotenie hotové.');
-    });
+    // Zavolaj bezpečnú funkciu na spustenie rozpoznávania
+    startSpeechRecognition(expectedWord);
 }
 //////////////////////////////////////////
 //   Funkcia na zatvorenie cvičenia     //
@@ -2620,6 +2999,10 @@ function closeCvicenie() {
     if (progressContainer) {
         progressContainer.remove();
     }
+
+    isExerciseActive = false;
+    console.log('🔓 Herné akcie odblokované - cvičenie ukončené');
+    
 }
 
 //////////////////////////////////////////

@@ -15,11 +15,22 @@
             <div id="debugInfo"></div>
         </div>
 
-        <div class="mobile-controls">
-            <button id="leftBtn">←</button>
-            <button id="rightBtn">→</button>
-            <button id="jumpBtn">↑</button>
+        <!-- VIRTUAL JOYSTICK PRE MOBILY -->
+        <!-- Akčné tlačidlo (JUMP) - vľavo -->
+        <div class="action-controls">
+            <button class="action-button" id="jumpButton" aria-label="Skok">
+                ↑
+            </button>
         </div>
+
+        <!-- Virtual Joystick - vpravo -->
+        <div class="joystick-controls">
+            <div class="virtual-joystick" id="virtualJoystick">
+                <div class="joystick-base"></div>
+                <div class="joystick-knob" id="joystickKnob"></div>
+            </div>
+        </div>
+
     </div>
 
     <!-- POSLUCHOVÉ CVIČENIE MODAL - pred closing </body> tag -->
@@ -72,6 +83,7 @@
 
     <div id="blur-background" style="display: none;"></div>
 
+    <script src="js/superjozino/joystick.js"></script>
     <script src="js/superjozino/game.js"></script>
     <script src="js/superjozino/levels.js"></script>
 </body>

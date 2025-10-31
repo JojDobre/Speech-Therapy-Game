@@ -50,6 +50,7 @@ class AnimationManager {
         
         // Načítanie všetkých sprite-ov
         this.loadAllSprites();
+        
     }
     
     /**
@@ -1981,8 +1982,7 @@ class Game {
         this.setupDebugControls();
         this.lastTime = 0;
         this.fps = 0;
-
-
+    
         // Inicializácia hráča
         // Inicializácia hráča
         this.player = {
@@ -2091,6 +2091,9 @@ class Game {
         // Ovládanie
         this.keys = {};
         this.setupControls();
+
+        // Exponuj game objekt pre joystick
+        window.game = this;
 
         // Spustenie hernej slučky
         this.gameLoop();
@@ -2879,17 +2882,6 @@ class Game {
             this.keys[e.code] = false;
         });
 
-        // Mobilné ovládanie
-        const leftBtn = document.getElementById('leftBtn');
-        const rightBtn = document.getElementById('rightBtn');
-        const jumpBtn = document.getElementById('jumpBtn');
-
-        leftBtn.addEventListener('touchstart', () => this.keys['ArrowLeft'] = true);
-        leftBtn.addEventListener('touchend', () => this.keys['ArrowLeft'] = false);
-        rightBtn.addEventListener('touchstart', () => this.keys['ArrowRight'] = true);
-        rightBtn.addEventListener('touchend', () => this.keys['ArrowRight'] = false);
-        jumpBtn.addEventListener('touchstart', () => this.keys['Space'] = true);
-        jumpBtn.addEventListener('touchend', () => this.keys['Space'] = false);
     }
 
     updateCamera() {
