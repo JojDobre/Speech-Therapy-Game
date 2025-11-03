@@ -63,7 +63,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé R-čka',
             gameType: 'banik',
             difficulty: 1,
-            words: ['rak', 'ryba', 'ruka', 'rád', 'rok'],
+            words: ['rak', 'ryba', 'ruka', 'rád', 'drak'],
             gameConfig: {
                 diamonds: 3,
                 golds: 3,
@@ -102,7 +102,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé R-čka',
             gameType: 'banik',
             difficulty: 1,
-            words: ['rak', 'ryba', 'ruka', 'rosa', 'rád', 'rok'],
+            words: ['rak', 'ryba', 'ruka', 'rosa', 'rád', 'drak'],
             gameConfig: {
                 diamonds: 3,
                 golds: 5,
@@ -142,7 +142,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé R-čka',
             gameType: 'banik',
             difficulty: 1,
-            words: ['rak', 'ryba', 'ruka', 'rosa', 'rád', 'rok', 'roh'],
+            words: ['rak', 'ryba', 'ruka', 'rosa', 'rád', 'drak', 'traktor'],
             gameConfig: {
                 diamonds: 4,
                 golds: 3,
@@ -181,7 +181,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé R-čka',
             gameType: 'banik',
             difficulty: 1,
-            words: ['ruka', 'rosa', 'rád', 'rok', 'roh', 'ráno'],
+            words: ['ruka', 'rosa', 'rád', 'rok', 'drak', 'ráno'],
             gameConfig: {
                 diamonds: 4,
                 golds: 2,
@@ -220,7 +220,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé R-čka',
             gameType: 'banik',
             difficulty: 1,
-            words: ['rok', 'rak', 'ruka', 'roh', 'ryba', 'rádio', 'ráno'],
+            words: ['rok', 'rak', 'ruka', 'traktor', 'ryba', 'rádio', 'ráno'],
             gameConfig: {
                 diamonds: 4,
                 golds: 2,
@@ -303,6 +303,8 @@ const LEVELS_CONFIG = {
                 diamonds: 2,
                 golds: 4,
                 crystals: 2,
+                speechExercises: 2,
+                listeningExercises: 3, 
                 mapSize: { width: 16, height: 10 }
             },
             positions: {
@@ -320,7 +322,7 @@ const LEVELS_CONFIG = {
                     { x: 9, y: 11 },    // kryštál na pozícii 9,7
                     { x: 14, y: 8 } 
                 ],
-                player: { x: 1, y: 1 }
+                player: { x: 1, y: 5 }
             },
             unlockRequirement: {
                 levelId: 'r_007',

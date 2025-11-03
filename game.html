@@ -26,16 +26,34 @@
 
     <!-- LOADING -->
     <div id="loading-screen" class="loading-screen">
-      <div class="loading-content">
-          <div class="loading-logo">
-              <div class="loading-text-jozino">JOŽINO</div>
-              <div class="loading-text-banik">BANÍK</div>
-          </div>
-          <div class="loading-spinner"></div>
-          <div class="loading-message">Načítavam...</div>
-      </div>
+        <div class="loading-content">
+            <!-- Logo -->
+            <div class="loading-logo">
+                <div class="loading-text-jozino">JOŽINO</div>
+                <div class="loading-text-banik">BANÍK</div>
+            </div>
+            
+            <!-- Spinner -->
+            <div class="loading-spinner"></div>
+            
+            <!-- NOVÉ: Progress Bar -->
+            <div class="loading-progress-container">
+                <div class="loading-progress-bar">
+                    <div class="loading-progress-fill" id="loading-progress-fill"></div>
+                </div>
+                
+                <div class="loading-progress-text">
+                    <span id="loading-progress-percentage">0%</span>
+                    <span id="loading-progress-details">Pripravujem hru...</span>
+                </div>
+            </div>
+            
+            <!-- Loading Message -->
+            <div class="loading-message" id="loading-message">Načítavam zdroje...</div>
+        </div>
     </div>
 
+    
     <div class="menu-hra">
       <button onclick="openDialog1()" class="kruhove-tlacidlo" id="menuButton"></button>
     </div>

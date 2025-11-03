@@ -2470,3 +2470,73 @@ body {
 
 
 
+/* =============================================== */
+/* PROGRESS BAR PRE PRELOADING                    */
+/* =============================================== */
+
+/* Progress Container */
+.loading-progress-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 1.5rem auto 0;
+}
+
+/* Progress Bar */
+.loading-progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: rgba(236, 207, 23, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Progress Fill */
+.loading-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ECCF17 0%, #FFE55C 50%, #ECCF17 100%);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 10px rgba(236, 207, 23, 0.5);
+}
+
+/* Progress Text */
+.loading-progress-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "Luckiest Guy", sans-serif;
+    color: #ECCF17;
+    font-size: 14px;
+}
+
+#loading-progress-percentage {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#loading-progress-details {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* Responzívnosť pre mobily */
+@media (max-width: 480px) {
+    .loading-progress-container {
+        max-width: 300px;
+    }
+    
+    .loading-progress-text {
+        font-size: 12px;
+    }
+    
+    #loading-progress-percentage {
+        font-size: 14px;
+    }
+    
+    #loading-progress-details {
+        font-size: 10px;
+    }
+}

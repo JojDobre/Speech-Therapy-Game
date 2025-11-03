@@ -6,20 +6,265 @@
 
 
 
+// ==========================================
+// GLOBÁLNE PREMENNÉ PRE PRELOADING
+// ==========================================
+let preloadedImages = {};        // Cache pre prednačítané obrázky
+let totalResources = 0;          // Celkový počet zdrojov
+let loadedResources = 0;         // Počet načítaných zdrojov
+let isPreloadingComplete = false; // Flag či je preloading hotový
+
+
 //////////////////////////////////////////////
 // ============ LOADING SCREEN ============ //
 // Čakanie na načítanie DOM obsahu          //
 // Skrytie loading screen s animáciou       //
 //////////////////////////////////////////////
 document.addEventListener('DOMContentLoaded', function() {
-    window.addEventListener('load', function() {
-        setTimeout(hideLoadingScreen, 1000); // Čaká 1 sekundu potom skryje
-    });
+    console.log('🎮 DOM načítaný, spúšťam preloading...');
     
-    console.log('Hra načítaná.');
+    // Inicializuj Speech Recognition
     initSpeechRecognition();
+    
+    // Spusti prednačítanie zdrojov
+    startPreloading();
 });
 
+
+
+/**
+ * Hlavná funkcia preloadingu
+ */
+async function startPreloading() {
+    try {
+        // 1. Získaj konfiguráciu levelu z URL
+        const levelConfig = getLevelConfigFromURL();
+        
+        // 2. Zisti všetky obrázky na načítanie
+        const imagesToLoad = collectAllImages(levelConfig);
+        
+        totalResources = imagesToLoad.length;
+        console.log(`📦 Načítavam ${totalResources} obrázkov...`);
+        
+        // 3. Načítaj všetky obrázky paralelne
+        const promises = imagesToLoad.map(imagePath => preloadImage(imagePath));
+        await Promise.all(promises);
+        
+        console.log('✅ Všetky obrázky načítané!');
+        isPreloadingComplete = true;
+        
+        // 4. Skry loading screen a spusti hru
+        setTimeout(() => {
+            hideLoadingScreen();
+            
+            // Inicializuj hru s level configom
+            if (levelConfig) {
+                initializeGameWithLevel(levelConfig);
+            }
+        }, 500);
+        
+    } catch (error) {
+        console.error('❌ Chyba pri preloadingu:', error);
+        // Aj pri chybe spusti hru
+        hideLoadingScreen();
+    }
+}
+
+/**
+ * Získanie konfigurácie levelu z URL parametrov
+ */
+function getLevelConfigFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const worldId = urlParams.get('worldId') || urlParams.get('world');
+    const levelId = urlParams.get('levelId') || urlParams.get('level');
+
+    const isTraining = urlParams.get('training') === 'true';
+    const trainingConfig = urlParams.get('config');
+    
+    console.log('URL parametre:', { worldId, levelId });
+    
+    // Ak máme levelId, načítaj konfiguráciu
+    if (levelId && typeof window.getLevelConfig === 'function') {
+        const config = window.getLevelConfig(levelId);
+        console.log('📋 Načítaná level konfigurácia:', config);
+        return config;
+    }
+    
+    // Fallback konfigurácia
+    console.warn('⚠️ Používam fallback konfiguráciu');
+    return {
+        id: 'fallback',
+        worldId: worldId || 'world_r',
+        words: ['rak', 'ryba', 'ruka', 'ruža'],
+        gameConfig: { diamonds: 3, golds: 3, crystals: 1 }
+    };
+}
+
+/**
+ * Zber všetkých obrázkov ktoré treba načítať
+ */
+function collectAllImages(levelConfig) {
+    const images = [];
+    
+    // ==========================================
+    // 1. OBRÁZKY SLOV (najdôležitejšie!)
+    // ==========================================
+    if (levelConfig && levelConfig.words) {
+        levelConfig.words.forEach(word => {
+            images.push(`images/slova/${word}.png`);
+        });
+        console.log(`   ✅ Pridaných ${levelConfig.words.length} obrázkov slov`);
+    }
+    
+    // ==========================================
+    // 2. SPRITE OBRÁZKY HRÁČA
+    // ==========================================
+    images.push(
+        'images/hrac.png',
+        'images/hrac-otoceny-vlavo.png',
+        'images/hrac-otoceny-vpravo.png',
+        'images/hrac-kope-vpravo.png',
+        'images/hrac-kope-vlavo.png'
+    );
+    
+    // ==========================================
+    // 3. ITEMY (diamanty, zlato, kryštály)
+    // ==========================================
+    images.push(
+        'images/diamond.png',
+        'images/gold.png',
+        'images/kov.png',
+        'images/stone.png'
+    );
+    
+    // ==========================================
+    // 4. UI ELEMENTY
+    // ==========================================
+    images.push(
+        'images/spravne.png',
+        'images/nespravne.png',
+        'images/star_active.png',
+        'images/star_inactive.png',
+        'images/banik.ico'
+    );
+    
+    // ==========================================
+    // 5. POZADIE SVETA (ak existuje)
+    // ==========================================
+    if (levelConfig && levelConfig.worldId) {
+        const worldBackgrounds = {
+            'world_r': 'images/worlds/world_r.png',
+            'world_l': 'images/worlds/world_l.png',
+            'world_s': 'images/worlds/world_s.png',
+            'world_ch': 'images/worlds/world_ch.png',
+            'world_z': 'images/worlds/world_z.jpg',
+            'world_c': 'images/worlds/world_c.png',
+            'world_sh': 'images/worlds/world_sh.png',
+            'world_zh': 'images/worlds/world_zh.png',
+            'world_d': 'images/worlds/world_d.png',
+            'world_t': 'images/worlds/world_t.png',
+            'world_n': 'images/worlds/world_n.png',
+            'world_k': 'images/worlds/world_k.png',
+            'world_g': 'images/worlds/world_g.png'
+        };
+        
+        const worldBg = worldBackgrounds[levelConfig.worldId];
+        if (worldBg) {
+            images.push(worldBg);
+        }
+    }
+    
+    // Základné pozadie
+    images.push('images/pozadie.jpg');
+    
+    // Menu obrázky
+    images.push(
+        'images/menubutton.png',
+        'images/cursor.png',
+        'images/active_cursor4.png'
+    );
+    
+    console.log(`📦 Celkovo zozbieraných ${images.length} obrázkov`);
+    return images;
+}
+
+/**
+ * Načítanie jedného obrázka
+ */
+function preloadImage(imagePath) {
+    return new Promise((resolve) => {
+        // Ak už je načítaný, vráť ho
+        if (preloadedImages[imagePath]) {
+            updateProgress();
+            resolve(preloadedImages[imagePath]);
+            return;
+        }
+        
+        const img = new Image();
+        
+        // Pri úspešnom načítaní
+        img.onload = () => {
+            preloadedImages[imagePath] = img;  // Ulož do cache
+            updateProgress();
+            console.log(`✅ ${imagePath}`);
+            resolve(img);
+        };
+        
+        // Pri chybe (nechaj hru pokračovať)
+        img.onerror = () => {
+            console.warn(`⚠️ Chyba pri načítaní: ${imagePath}`);
+            updateProgress();
+            resolve(null);
+        };
+        
+        // Spusti načítanie
+        img.src = imagePath;
+    });
+}
+
+/**
+ * Aktualizácia progress baru
+ */
+function updateProgress() {
+    loadedResources++;
+    
+    // Vypočítaj percento
+    const percentage = Math.round((loadedResources / totalResources) * 100);
+    
+    // Aktualizuj progress bar
+    const progressFill = document.getElementById('loading-progress-fill');
+    if (progressFill) {
+        progressFill.style.width = `${percentage}%`;
+    }
+    
+    // Aktualizuj text percentá
+    const progressPercentage = document.getElementById('loading-progress-percentage');
+    if (progressPercentage) {
+        progressPercentage.textContent = `${percentage}%`;
+    }
+    
+    // Aktualizuj počet načítaných
+    const progressDetails = document.getElementById('loading-progress-details');
+    if (progressDetails) {
+        progressDetails.textContent = `${loadedResources}/${totalResources} zdrojov`;
+    }
+    
+    // Aktualizuj hlavnú správu
+    const loadingMessage = document.getElementById('loading-message');
+    if (loadingMessage) {
+        if (percentage < 100) {
+            loadingMessage.textContent = 'Načítavam obrázky...';
+        } else {
+            loadingMessage.textContent = 'Hotovo! Spúšťam hru...';
+        }
+    }
+    
+    console.log(`📊 Progress: ${percentage}% (${loadedResources}/${totalResources})`);
+}
+
+/**
+ * Skrytie loading screenu s animáciou
+ */
 function hideLoadingScreen() {
     const loadingScreen = document.getElementById('loading-screen');
     if (loadingScreen) {
@@ -28,7 +273,25 @@ function hideLoadingScreen() {
             loadingScreen.style.display = 'none';
         }, 500);
     }
+    console.log('👋 Loading screen skrytý, hra pripravená!');
 }
+
+/**
+ * Pomocná funkcia na získanie prednačítaného obrázka
+ * Môžeš ju použiť neskôr v kóde ak chceš
+ */
+function getPreloadedImage(imagePath) {
+    return preloadedImages[imagePath] || null;
+}
+
+// Export pre ostatné časti kódu
+if (typeof window !== 'undefined') {
+    window.preloadedImages = preloadedImages;
+    window.getPreloadedImage = getPreloadedImage;
+}
+
+
+
 
 
 
@@ -2825,31 +3088,6 @@ function isAndroid() {
     return /Android/.test(navigator.userAgent);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //////////////////////////////////////////
 // Funkcia na otvorenie cvičenia        //
 // Používa slová z levelConfig          //
@@ -3397,373 +3635,373 @@ gameLoop();
 
 
 
-    /////////////////////////////////////////////
-    // ========== UŽITOČNÉ FUNKCIE ========== //
-    /////////////////////////////////////////////
+/////////////////////////////////////////////
+// ========== UŽITOČNÉ FUNKCIE ========== //
+/////////////////////////////////////////////
 
-    /**
-     * Rýchle dokončenie levelu s perfektným výkonom
-     * Použitie: Pre testovanie a debug
-     */
-    function quickCompleteLevel() {
-        console.log('Rýchle dokončenie levelu...');
-        
-        // Inicializuj sledovanie výkonu
-        initializePerformanceTracking();
-        
-        // Simuluj perfektný výkon pre všetky rečové cvičenia
-        // Každý diamant má X kôl (slov) podľa konfigurácie
-        const speechRoundsPerDiamond = currentLevelConfig?.gameConfig?.speechExercises || 2;
-        for (let diamond = 0; diamond < PocetGenDiamant; diamond++) {
-            for (let round = 0; round < speechRoundsPerDiamond; round++) {
-                recordSpeechExerciseResult(1, true); // 1 pokus = 3 body
-            }
+/**
+ * Rýchle dokončenie levelu s perfektným výkonom
+ * Použitie: Pre testovanie a debug
+ */
+function quickCompleteLevel() {
+    console.log('Rýchle dokončenie levelu...');
+    
+    // Inicializuj sledovanie výkonu
+    initializePerformanceTracking();
+    
+    // Simuluj perfektný výkon pre všetky rečové cvičenia
+    // Každý diamant má X kôl (slov) podľa konfigurácie
+    const speechRoundsPerDiamond = currentLevelConfig?.gameConfig?.speechExercises || 2;
+    for (let diamond = 0; diamond < PocetGenDiamant; diamond++) {
+        for (let round = 0; round < speechRoundsPerDiamond; round++) {
+            recordSpeechExerciseResult(1, true); // 1 pokus = 3 body
         }
-        
-        // Simuluj perfektný výkon pre všetky posluchové cvičenia
-        // Každý kryštál má X kôl (párov) podľa konfigurácie
-        const listeningRoundsPerCrystal = currentLevelConfig?.gameConfig?.listeningExercises || 2;
-        for (let crystal = 0; crystal < PocetGenKov; crystal++) {
-            for (let round = 0; round < listeningRoundsPerCrystal; round++) {
-                recordListeningExerciseResult(1, true); // 1 pokus = 3 body
-            }
+    }
+    
+    // Simuluj perfektný výkon pre všetky posluchové cvičenia
+    // Každý kryštál má X kôl (párov) podľa konfigurácie
+    const listeningRoundsPerCrystal = currentLevelConfig?.gameConfig?.listeningExercises || 2;
+    for (let crystal = 0; crystal < PocetGenKov; crystal++) {
+        for (let round = 0; round < listeningRoundsPerCrystal; round++) {
+            recordListeningExerciseResult(1, true); // 1 pokus = 3 body
         }
-        
-        // Zozbieraj všetky goldy
-        for (let i = 0; i < PocetGenGolds; i++) {
-            recordGoldCollected();
-        }
-        
-        // Nastav počty ako zozbierané
-        diamondsCollected = PocetGenDiamant;
-        goldsCollected = PocetGenGolds;
-        kovCollected = PocetGenKov;
-        gamePerformance.levelCompleted = true;
-        
-        // Aktualizuj UI
-        updateDiamondsCollected(diamondsCollected);
-        updategoldsCollected(goldsCollected);
-        updateKovCollected(kovCollected);
-        
-        // Dokončenie levelu
-        completeLevel();
-        
-        console.log('Level dokončený s perfektným výkonom!');
     }
-
-    /**
-     * Získanie detailných štatistík výkonu
-     * @returns {Object} Objekt so štatistikami
-     */
-    function getPerformanceStats() {
-        const stats = {
-            // Rečové cvičenia
-            speech: {
-                totalRounds: gamePerformance.speechExercises.roundResults.length,
-                completedRounds: gamePerformance.speechExercises.completedRounds,
-                totalPoints: gamePerformance.speechExercises.totalPoints,
-                maxPossiblePoints: gamePerformance.speechExercises.roundResults.length * 3,
-                roundDetails: gamePerformance.speechExercises.roundResults,
-                averageAttempts: gamePerformance.speechExercises.roundResults.length > 0
-                    ? (gamePerformance.speechExercises.roundResults.reduce((sum, r) => sum + r.attempts, 0) / 
-                       gamePerformance.speechExercises.roundResults.length).toFixed(2)
-                    : 0
-            },
-            
-            // Posluchové cvičenia
-            listening: {
-                totalRounds: gamePerformance.listeningExercises.roundResults.length,
-                completedRounds: gamePerformance.listeningExercises.completedRounds,
-                totalPoints: gamePerformance.listeningExercises.totalPoints,
-                maxPossiblePoints: gamePerformance.listeningExercises.roundResults.length * 3,
-                roundDetails: gamePerformance.listeningExercises.roundResults,
-                averageAttempts: gamePerformance.listeningExercises.roundResults.length > 0
-                    ? (gamePerformance.listeningExercises.roundResults.reduce((sum, r) => sum + r.attempts, 0) / 
-                       gamePerformance.listeningExercises.roundResults.length).toFixed(2)
-                    : 0
-            },
-            
-            // Celkové štatistiky
-            overall: {
-                totalPoints: gamePerformance.totalPoints,
-                maxPossiblePoints: gamePerformance.maxPossiblePoints,
-                percentage: gamePerformance.maxPossiblePoints > 0 
-                    ? Math.round((gamePerformance.totalPoints / gamePerformance.maxPossiblePoints) * 100)
-                    : 0,
-                stars: gamePerformance.finalStars,
-                levelCompleted: gamePerformance.levelCompleted
-            },
-            
-            // Goldy
-            golds: {
-                collected: gamePerformance.golds.collected,
-                total: gamePerformance.golds.total
-            },
-            
-            // Čas
-            time: {
-                seconds: gameTimer.currentTime,
-                formatted: formatTime(gameTimer.currentTime)
-            }
-        };
-        
-        return stats;
+    
+    // Zozbieraj všetky goldy
+    for (let i = 0; i < PocetGenGolds; i++) {
+        recordGoldCollected();
     }
+    
+    // Nastav počty ako zozbierané
+    diamondsCollected = PocetGenDiamant;
+    goldsCollected = PocetGenGolds;
+    kovCollected = PocetGenKov;
+    gamePerformance.levelCompleted = true;
+    
+    // Aktualizuj UI
+    updateDiamondsCollected(diamondsCollected);
+    updategoldsCollected(goldsCollected);
+    updateKovCollected(kovCollected);
+    
+    // Dokončenie levelu
+    completeLevel();
+    
+    console.log('Level dokončený s perfektným výkonom!');
+}
 
-    /**
-     * Vypočítanie počtu hviezd na základe percentuálneho výkonu
-     * @param {number} percentage - Percentuálny výkon (0-100)
-     * @returns {number} Počet hviezd (0-3)
-     */
-    function getStarRating(percentage) {
-        if (percentage >= 70) return 3;  // 70%+ = 3 hviezdy
-        if (percentage >= 40) return 2;  // 40-69% = 2 hviezdy
-        if (percentage >= 20) return 1;  // 20-39% = 1 hviezda
-        return 0;                         // <20% = 0 hviezd
-    }
-
-    /**
-     * Zobrazenie súhrnu výkonu v konzole
-     */
-    function showPerformanceSummary() {
-        console.log('');
-        console.log('═══════════════════════════════════════');
-        console.log('           SÚHRN VÝKONU');
-        console.log('═══════════════════════════════════════');
-        
-        const stats = getPerformanceStats();
-        
+/**
+ * Získanie detailných štatistík výkonu
+ * @returns {Object} Objekt so štatistikami
+ */
+function getPerformanceStats() {
+    const stats = {
         // Rečové cvičenia
-        console.log('');
-        console.log('  REČOVÉ CVIČENIA:');
-        console.log(`   Absolvované kolá: ${stats.speech.completedRounds}/${stats.speech.totalRounds}`);
-        console.log(`   Body: ${stats.speech.totalPoints}/${stats.speech.maxPossiblePoints}`);
-        console.log(`   Priemerný počet pokusov: ${stats.speech.averageAttempts}`);
-        
-        // Detaily kôl
-        if (stats.speech.roundDetails.length > 0) {
-            console.log('   Detaily kôl:');
-            stats.speech.roundDetails.forEach((round, index) => {
-                const icon = round.success ? '✅' : '❌';
-                console.log(`     ${icon} Kolo ${index + 1}: ${round.attempts} pokusov = ${round.points} bodov`);
-            });
-        }
+        speech: {
+            totalRounds: gamePerformance.speechExercises.roundResults.length,
+            completedRounds: gamePerformance.speechExercises.completedRounds,
+            totalPoints: gamePerformance.speechExercises.totalPoints,
+            maxPossiblePoints: gamePerformance.speechExercises.roundResults.length * 3,
+            roundDetails: gamePerformance.speechExercises.roundResults,
+            averageAttempts: gamePerformance.speechExercises.roundResults.length > 0
+                ? (gamePerformance.speechExercises.roundResults.reduce((sum, r) => sum + r.attempts, 0) / 
+                    gamePerformance.speechExercises.roundResults.length).toFixed(2)
+                : 0
+        },
         
         // Posluchové cvičenia
-        console.log('');
-        console.log(' POSLUCHOVÉ CVIČENIA:');
-        console.log(`   Absolvované kolá: ${stats.listening.completedRounds}/${stats.listening.totalRounds}`);
-        console.log(`   Body: ${stats.listening.totalPoints}/${stats.listening.maxPossiblePoints}`);
-        console.log(`   Priemerný počet pokusov: ${stats.listening.averageAttempts}`);
+        listening: {
+            totalRounds: gamePerformance.listeningExercises.roundResults.length,
+            completedRounds: gamePerformance.listeningExercises.completedRounds,
+            totalPoints: gamePerformance.listeningExercises.totalPoints,
+            maxPossiblePoints: gamePerformance.listeningExercises.roundResults.length * 3,
+            roundDetails: gamePerformance.listeningExercises.roundResults,
+            averageAttempts: gamePerformance.listeningExercises.roundResults.length > 0
+                ? (gamePerformance.listeningExercises.roundResults.reduce((sum, r) => sum + r.attempts, 0) / 
+                    gamePerformance.listeningExercises.roundResults.length).toFixed(2)
+                : 0
+        },
         
-        // Detaily kôl
-        if (stats.listening.roundDetails.length > 0) {
-            console.log('   Detaily kôl:');
-            stats.listening.roundDetails.forEach((round, index) => {
-                const icon = round.success ? '✅' : '❌';
-                console.log(`     ${icon} Kolo ${index + 1}: ${round.attempts} pokusov = ${round.points} bodov`);
-            });
-        }
+        // Celkové štatistiky
+        overall: {
+            totalPoints: gamePerformance.totalPoints,
+            maxPossiblePoints: gamePerformance.maxPossiblePoints,
+            percentage: gamePerformance.maxPossiblePoints > 0 
+                ? Math.round((gamePerformance.totalPoints / gamePerformance.maxPossiblePoints) * 100)
+                : 0,
+            stars: gamePerformance.finalStars,
+            levelCompleted: gamePerformance.levelCompleted
+        },
         
         // Goldy
-        console.log('');
-        console.log(' GOLDY:');
-        console.log(`   Zozbierané: ${stats.golds.collected}/${stats.golds.total}`);
+        golds: {
+            collected: gamePerformance.golds.collected,
+            total: gamePerformance.golds.total
+        },
         
-        // Celkový výsledok
-        console.log('');
-        console.log(' CELKOVÝ VÝSLEDOK:');
-        console.log(`   Body: ${stats.overall.totalPoints}/${stats.overall.maxPossiblePoints}`);
-        console.log(`   Úspešnosť: ${stats.overall.percentage}%`);
-        console.log(`   Hviezdy: ${'⭐'.repeat(stats.overall.stars)} (${stats.overall.stars}/3)`);
-        console.log(`   Čas: ${stats.time.formatted}`);
-        console.log(`   Level dokončený: ${stats.overall.levelCompleted ? 'Áno' : 'Nie'}`);
-        
-        console.log('═══════════════════════════════════════');
-        console.log('');
-        
-        return stats;
-    }
-
-    /**
-     * Reset levelu - kompletné resetovanie stavu hry
-     */
-    function resetLevel() {
-        console.log(' Resetujem level...');
-        
-        // Reset zbieraných itemov
-        diamondsCollected = 0;
-        goldsCollected = 0;
-        kovCollected = 0;
-        correctAnswers = 0;
-        incorrectAnswers = 0;
-        
-        // Reset výkonu
-        initializePerformanceTracking();
-        
-        // Reset timera
-        if (gameTimer.intervalId) {
-            clearInterval(gameTimer.intervalId);
+        // Čas
+        time: {
+            seconds: gameTimer.currentTime,
+            formatted: formatTime(gameTimer.currentTime)
         }
-        gameTimer = {
-            startTime: null,
-            currentTime: 0,
-            intervalId: null,
-            timeLimit: currentLevelConfig?.timeLimit || null,
-            isRunning: false,
-            isPaused: false
-        };
-        
-        // Aktualizuj UI
-        updateDiamondsCollected(0);
-        updategoldsCollected(0);
-        updateKovCollected(0);
-        updateAnswerCounters();
-        
-        // Resetuj timer display
-        const timerElement = document.getElementById('game-timer');
-        if (timerElement) {
-            timerElement.textContent = gameTimer.timeLimit ? formatTime(gameTimer.timeLimit) : '00:00';
+    };
+    
+    return stats;
+}
+
+/**
+ * Vypočítanie počtu hviezd na základe percentuálneho výkonu
+ * @param {number} percentage - Percentuálny výkon (0-100)
+ * @returns {number} Počet hviezd (0-3)
+ */
+function getStarRating(percentage) {
+    if (percentage >= 70) return 3;  // 70%+ = 3 hviezdy
+    if (percentage >= 40) return 2;  // 40-69% = 2 hviezdy
+    if (percentage >= 20) return 1;  // 20-39% = 1 hviezda
+    return 0;                         // <20% = 0 hviezd
+}
+
+/**
+ * Zobrazenie súhrnu výkonu v konzole
+ */
+function showPerformanceSummary() {
+    console.log('');
+    console.log('═══════════════════════════════════════');
+    console.log('           SÚHRN VÝKONU');
+    console.log('═══════════════════════════════════════');
+    
+    const stats = getPerformanceStats();
+    
+    // Rečové cvičenia
+    console.log('');
+    console.log('  REČOVÉ CVIČENIA:');
+    console.log(`   Absolvované kolá: ${stats.speech.completedRounds}/${stats.speech.totalRounds}`);
+    console.log(`   Body: ${stats.speech.totalPoints}/${stats.speech.maxPossiblePoints}`);
+    console.log(`   Priemerný počet pokusov: ${stats.speech.averageAttempts}`);
+    
+    // Detaily kôl
+    if (stats.speech.roundDetails.length > 0) {
+        console.log('   Detaily kôl:');
+        stats.speech.roundDetails.forEach((round, index) => {
+            const icon = round.success ? '✅' : '❌';
+            console.log(`     ${icon} Kolo ${index + 1}: ${round.attempts} pokusov = ${round.points} bodov`);
+        });
+    }
+    
+    // Posluchové cvičenia
+    console.log('');
+    console.log(' POSLUCHOVÉ CVIČENIA:');
+    console.log(`   Absolvované kolá: ${stats.listening.completedRounds}/${stats.listening.totalRounds}`);
+    console.log(`   Body: ${stats.listening.totalPoints}/${stats.listening.maxPossiblePoints}`);
+    console.log(`   Priemerný počet pokusov: ${stats.listening.averageAttempts}`);
+    
+    // Detaily kôl
+    if (stats.listening.roundDetails.length > 0) {
+        console.log('   Detaily kôl:');
+        stats.listening.roundDetails.forEach((round, index) => {
+            const icon = round.success ? '✅' : '❌';
+            console.log(`     ${icon} Kolo ${index + 1}: ${round.attempts} pokusov = ${round.points} bodov`);
+        });
+    }
+    
+    // Goldy
+    console.log('');
+    console.log(' GOLDY:');
+    console.log(`   Zozbierané: ${stats.golds.collected}/${stats.golds.total}`);
+    
+    // Celkový výsledok
+    console.log('');
+    console.log(' CELKOVÝ VÝSLEDOK:');
+    console.log(`   Body: ${stats.overall.totalPoints}/${stats.overall.maxPossiblePoints}`);
+    console.log(`   Úspešnosť: ${stats.overall.percentage}%`);
+    console.log(`   Hviezdy: ${'⭐'.repeat(stats.overall.stars)} (${stats.overall.stars}/3)`);
+    console.log(`   Čas: ${stats.time.formatted}`);
+    console.log(`   Level dokončený: ${stats.overall.levelCompleted ? 'Áno' : 'Nie'}`);
+    
+    console.log('═══════════════════════════════════════');
+    console.log('');
+    
+    return stats;
+}
+
+/**
+ * Reset levelu - kompletné resetovanie stavu hry
+ */
+function resetLevel() {
+    console.log(' Resetujem level...');
+    
+    // Reset zbieraných itemov
+    diamondsCollected = 0;
+    goldsCollected = 0;
+    kovCollected = 0;
+    correctAnswers = 0;
+    incorrectAnswers = 0;
+    
+    // Reset výkonu
+    initializePerformanceTracking();
+    
+    // Reset timera
+    if (gameTimer.intervalId) {
+        clearInterval(gameTimer.intervalId);
+    }
+    gameTimer = {
+        startTime: null,
+        currentTime: 0,
+        intervalId: null,
+        timeLimit: currentLevelConfig?.timeLimit || null,
+        isRunning: false,
+        isPaused: false
+    };
+    
+    // Aktualizuj UI
+    updateDiamondsCollected(0);
+    updategoldsCollected(0);
+    updateKovCollected(0);
+    updateAnswerCounters();
+    
+    // Resetuj timer display
+    const timerElement = document.getElementById('game-timer');
+    if (timerElement) {
+        timerElement.textContent = gameTimer.timeLimit ? formatTime(gameTimer.timeLimit) : '00:00';
+    }
+    
+    console.log(' Level resetovaný');
+}
+
+/**
+ * Získanie aktuálneho stavu hry
+ * @returns {Object} Stav hry
+ */
+function getGameState() {
+    return {
+        items: {
+            diamonds: { collected: diamondsCollected, total: PocetGenDiamant },
+            golds: { collected: goldsCollected, total: PocetGenGolds },
+            crystals: { collected: kovCollected, total: PocetGenKov }
+        },
+        timer: {
+            running: gameTimer.isRunning,
+            currentTime: gameTimer.currentTime,
+            timeLimit: gameTimer.timeLimit,
+            formatted: formatTime(gameTimer.currentTime)
+        },
+        performance: getPerformanceStats(),
+        level: {
+            config: currentLevelConfig,
+            isCustom: isCustomLevel,
+            completed: gamePerformance.levelCompleted
+        }
+    };
+}
+
+// Pridanie funkcií do window pre ľahší prístup v konzole
+window.quickCompleteLevel = quickCompleteLevel;
+window.getPerformanceStats = getPerformanceStats;
+window.showPerformanceSummary = showPerformanceSummary;
+window.getStarRating = getStarRating;
+window.resetLevel = resetLevel;
+window.getGameState = getGameState;
+
+console.log('✅ Užitočné funkcie načítané:');
+console.log('   - quickCompleteLevel() - Rýchle dokončenie levelu');
+console.log('   - getPerformanceStats() - Získanie štatistík');
+console.log('   - showPerformanceSummary() - Zobrazenie súhrnu');
+console.log('   - getStarRating(percentage) - Výpočet hviezd');
+console.log('   - resetLevel() - Reset levelu');
+console.log('   - getGameState() - Aktuálny stav hry');
+
+/////////////////////////////////////////////
+// ===== DOKONČENIE LEVELU A POKROK ===== //
+/////////////////////////////////////////////
+
+/**
+ * Hlavná funkcia na dokončenie levelu
+ * Volá všetky potrebné kroky vrátane uloženia a navigácie
+ */
+function completeLevel() {
+    console.log(' Dokončujem level...');
+    
+    // 1. Zastav timer
+    stopTimer();
+    
+    // 2. Vypočítaj hodnotenie
+    const rating = calculateFinalRating();
+    console.log(' Hodnotenie levelu:', rating);
+    
+    // 3. Ulož výsledky do progress managera a získaj info o odomknutom obsahu
+    const saveResult = saveResultsToProgress(rating);
+    console.log(' Výsledok uloženia:', saveResult);
+    
+    // 4. Aktualizuj navigáciu pre win dialóg
+    updateDialogNavigation();
+    
+    // 5. Zobraz win dialóg s výsledkami
+    setTimeout(() => {
+        // Prehrať zvuk výhry
+        if (typeof effectVyhra !== 'undefined') {
+            effectVyhra.play();
         }
         
-        console.log(' Level resetovaný');
-    }
-
-    /**
-     * Získanie aktuálneho stavu hry
-     * @returns {Object} Stav hry
-     */
-    function getGameState() {
-        return {
-            items: {
-                diamonds: { collected: diamondsCollected, total: PocetGenDiamant },
-                golds: { collected: goldsCollected, total: PocetGenGolds },
-                crystals: { collected: kovCollected, total: PocetGenKov }
-            },
-            timer: {
-                running: gameTimer.isRunning,
-                currentTime: gameTimer.currentTime,
-                timeLimit: gameTimer.timeLimit,
-                formatted: formatTime(gameTimer.currentTime)
-            },
-            performance: getPerformanceStats(),
-            level: {
-                config: currentLevelConfig,
-                isCustom: isCustomLevel,
-                completed: gamePerformance.levelCompleted
-            }
-        };
-    }
-
-    // Pridanie funkcií do window pre ľahší prístup v konzole
-    window.quickCompleteLevel = quickCompleteLevel;
-    window.getPerformanceStats = getPerformanceStats;
-    window.showPerformanceSummary = showPerformanceSummary;
-    window.getStarRating = getStarRating;
-    window.resetLevel = resetLevel;
-    window.getGameState = getGameState;
-
-    console.log('✅ Užitočné funkcie načítané:');
-    console.log('   - quickCompleteLevel() - Rýchle dokončenie levelu');
-    console.log('   - getPerformanceStats() - Získanie štatistík');
-    console.log('   - showPerformanceSummary() - Zobrazenie súhrnu');
-    console.log('   - getStarRating(percentage) - Výpočet hviezd');
-    console.log('   - resetLevel() - Reset levelu');
-    console.log('   - getGameState() - Aktuálny stav hry');
-
-    /////////////////////////////////////////////
-    // ===== DOKONČENIE LEVELU A POKROK ===== //
-    /////////////////////////////////////////////
-
-    /**
-     * Hlavná funkcia na dokončenie levelu
-     * Volá všetky potrebné kroky vrátane uloženia a navigácie
-     */
-    function completeLevel() {
-        console.log(' Dokončujem level...');
+        // Zobraziť dialóg
+        document.getElementById("endgame").style.display = "block";
+        document.getElementById("blur-background").style.display = "block";
+        document.body.style.overflow = "hidden";
         
-        // 1. Zastav timer
-        stopTimer();
+        // Pridať výsledky do dialógu s informáciou o pokroku
+        displayResultsInWinDialog(rating, saveResult);
         
-        // 2. Vypočítaj hodnotenie
-        const rating = calculateFinalRating();
-        console.log(' Hodnotenie levelu:', rating);
+        console.log(' Win dialóg zobrazený s výsledkami!');
         
-        // 3. Ulož výsledky do progress managera a získaj info o odomknutom obsahu
-        const saveResult = saveResultsToProgress(rating);
-        console.log(' Výsledok uloženia:', saveResult);
-        
-        // 4. Aktualizuj navigáciu pre win dialóg
-        updateDialogNavigation();
-        
-        // 5. Zobraz win dialóg s výsledkami
-        setTimeout(() => {
-            // Prehrať zvuk výhry
-            if (typeof effectVyhra !== 'undefined') {
-                effectVyhra.play();
-            }
-            
-            // Zobraziť dialóg
-            document.getElementById("endgame").style.display = "block";
-            document.getElementById("blur-background").style.display = "block";
-            document.body.style.overflow = "hidden";
-            
-            // Pridať výsledky do dialógu s informáciou o pokroku
-            displayResultsInWinDialog(rating, saveResult);
-            
-            console.log(' Win dialóg zobrazený s výsledkami!');
-            
-            // 6. Zobraz notifikácie o odomknutom obsahu
-            if (saveResult.saved) {
-                setTimeout(() => {
-                    showUnlockNotificationsInGame(saveResult);
-                }, 1000);
-            }
-            
-        }, 500);
-    }
-
-    /**
-     * Kontrola a zobrazenie odomknutého obsahu
-     */
-    function checkUnlockedContent() {
-        if (!window.progressManager) {
-            console.log('ProgressManager nie je dostupný pre kontrolu odomknutia');
-            return;
+        // 6. Zobraz notifikácie o odomknutom obsahu
+        if (saveResult.saved) {
+            setTimeout(() => {
+                showUnlockNotificationsInGame(saveResult);
+            }, 1000);
         }
         
-        setTimeout(() => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const worldId = urlParams.get('worldId') || urlParams.get('world');
-            const levelId = urlParams.get('levelId') || urlParams.get('level');
-            
-            if (!worldId || !levelId) return;
-            
-            // Skontroluj či sa odomkol ďalší level
-            if (typeof getLevelConfig === 'function') {
-                const currentLevel = getLevelConfig(levelId);
-                if (currentLevel) {
-                    const nextLevelNumber = currentLevel.levelNumber + 1;
-                    const nextLevelId = `${worldId}_${nextLevelNumber}`;
-                    const nextLevel = getLevelConfig(nextLevelId);
-                    
-                    if (nextLevel) {
-                        const nextProgress = window.progressManager.getLevelProgress(worldId, nextLevelId);
-                        if (nextProgress && nextProgress.isUnlocked) {
-                            console.log(` Odomknutý ďalší level: ${nextLevel.name}`);
-                            
-                            // Môžeš pridať notifikáciu do UI
-                            showUnlockNotification('level', nextLevel);
-                        }
+    }, 500);
+}
+
+/**
+ * Kontrola a zobrazenie odomknutého obsahu
+ */
+function checkUnlockedContent() {
+    if (!window.progressManager) {
+        console.log('ProgressManager nie je dostupný pre kontrolu odomknutia');
+        return;
+    }
+    
+    setTimeout(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const worldId = urlParams.get('worldId') || urlParams.get('world');
+        const levelId = urlParams.get('levelId') || urlParams.get('level');
+        
+        if (!worldId || !levelId) return;
+        
+        // Skontroluj či sa odomkol ďalší level
+        if (typeof getLevelConfig === 'function') {
+            const currentLevel = getLevelConfig(levelId);
+            if (currentLevel) {
+                const nextLevelNumber = currentLevel.levelNumber + 1;
+                const nextLevelId = `${worldId}_${nextLevelNumber}`;
+                const nextLevel = getLevelConfig(nextLevelId);
+                
+                if (nextLevel) {
+                    const nextProgress = window.progressManager.getLevelProgress(worldId, nextLevelId);
+                    if (nextProgress && nextProgress.isUnlocked) {
+                        console.log(` Odomknutý ďalší level: ${nextLevel.name}`);
+                        
+                        // Môžeš pridať notifikáciu do UI
+                        showUnlockNotification('level', nextLevel);
                     }
                 }
             }
-            
-            // Skontroluj či sa odomkol nový svet
-            const worldProgress = window.progressManager.getProgress().worlds[worldId];
-            if (worldProgress && worldProgress.completedLevels > 0) {
-                console.log(` Pokrok sveta ${worldId}: ${worldProgress.completedLevels} levelov, ${worldProgress.stars} hviezd`);
-            }
-            
-        }, 1000);
-    }
+        }
+        
+        // Skontroluj či sa odomkol nový svet
+        const worldProgress = window.progressManager.getProgress().worlds[worldId];
+        if (worldProgress && worldProgress.completedLevels > 0) {
+            console.log(` Pokrok sveta ${worldId}: ${worldProgress.completedLevels} levelov, ${worldProgress.stars} hviezd`);
+        }
+        
+    }, 1000);
+}

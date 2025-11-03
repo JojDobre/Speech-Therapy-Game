@@ -175,7 +175,7 @@ function initCustomGame(params) {
     currentLevel = {
         id: 'custom',
         name: 'Custom hra',
-        words: customWords.length > 0 ? customWords : ['rak', 'ryba', 'ruka', 'rad'], // fallback
+        words: customWords.length > 0 ? customWords : ['rak', 'ryba', 'ruka', 'ráno'], // fallback
         gameConfig: {
             pairs: params.pairs || Math.min(customWords.length, 8)
         },
@@ -207,7 +207,7 @@ function initDemoGame() {
     currentLevel = {
         id: 'demo',
         name: 'Demo hra',
-        words: ['rak', 'ryba', 'ruka', 'rad', 'rok', 'rád', 'rám', 'rum', 'run', 'red'],
+        words: ['rak', 'ryba', 'ruka', 'rakva', 'rádio', 'krava', 'drak', 'zebra', 'tiger', 'traktor'],
         gameConfig: {
             pairs: 8
         },
