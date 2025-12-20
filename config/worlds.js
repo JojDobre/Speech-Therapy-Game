@@ -66,7 +66,7 @@ const WORLDS_CONFIG = [
         unlockRequirement: null,
         totalLevels: 8,
         gameTypes: ['banik', 'pexeso'],
-        isUnlocked: false
+        isUnlocked: true
     },
     {
         id: 'world_z',
@@ -82,7 +82,7 @@ const WORLDS_CONFIG = [
         },
         totalLevels: 15,
         gameTypes: ['banik', 'pexeso'],
-        isUnlocked: false
+        isUnlocked: true
     },
     {
         id: 'world_c',
@@ -98,7 +98,7 @@ const WORLDS_CONFIG = [
         },
         totalLevels: 17,
         gameTypes: ['banik', 'pexeso'],
-        isUnlocked: false
+        isUnlocked: true
     },
     {
         id: 'world_sh',
@@ -114,7 +114,7 @@ const WORLDS_CONFIG = [
         },
         totalLevels: 19,
         gameTypes: ['banik', 'pexeso', 'mario'],
-        isUnlocked: false
+        isUnlocked: true
     },
     {
         id: 'world_zh',
@@ -130,7 +130,7 @@ const WORLDS_CONFIG = [
         },
         totalLevels: 18,
         gameTypes: ['banik', 'pexeso'],
-        isUnlocked: false
+        isUnlocked: true
     },
     {
         id: 'world_d',
@@ -146,7 +146,7 @@ const WORLDS_CONFIG = [
         },
         totalLevels: 16,
         gameTypes: ['banik', 'pexeso'],
-        isUnlocked: false
+        isUnlocked: true
     },
     {
         id: 'world_t',
@@ -162,7 +162,7 @@ const WORLDS_CONFIG = [
         },
         totalLevels: 15,
         gameTypes: ['banik', 'pexeso'],
-        isUnlocked: false
+        isUnlocked: true
     },
     {
         id: 'world_n',
@@ -178,7 +178,7 @@ const WORLDS_CONFIG = [
         },
         totalLevels: 15,
         gameTypes: ['banik', 'pexeso'],
-        isUnlocked: false
+        isUnlocked: true
     },
     {
         id: 'world_k',
@@ -194,7 +194,7 @@ const WORLDS_CONFIG = [
         },
         totalLevels: 16,
         gameTypes: ['banik', 'pexeso', 'mario'],
-        isUnlocked: false
+        isUnlocked: true
     },
     {
         id: 'world_g',
@@ -210,7 +210,7 @@ const WORLDS_CONFIG = [
         },
         totalLevels: 17,
         gameTypes: ['banik', 'pexeso', 'mario'],
-        isUnlocked: false
+        isUnlocked: true
     }
 ];
 

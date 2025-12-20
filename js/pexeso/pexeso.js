@@ -16,6 +16,388 @@
  * Dátum: 2025
  */
 
+
+// ==========================================
+// GLOBÁLNE PREMENNÉ PRE PRELOADING
+// ==========================================
+let preloadedImages = {};        // Cache pre prednačítané obrázky (objekt kde kľúč je cesta k obrázku)
+let totalResources = 0;          // Celkový počet zdrojov na načítanie
+let loadedResources = 0;         // Počet už načítaných zdrojov
+let isPreloadingComplete = false; // Flag či je preloading úplne hotový
+
+/**
+ * ================================================
+ * HLAVNÁ FUNKCIA PRE SPUSTENIE PRELOADINGU
+ * ================================================
+ * Táto funkcia sa spúšťa pri načítaní stránky (DOMContentLoaded).
+ * Postupne:
+ * 1. Získa konfiguráciu levelu z URL
+ * 2. Zbiera všetky obrázky na načítanie
+ * 3. Načíta všetky obrázky paralelne
+ * 4. Aktualizuje progress bar
+ * 5. Skryje loading screen a spustí hru
+ */
+async function startPreloading() {
+    try {
+        console.log('🎮 Spúšťam preloading pre pexeso...');
+        
+        // 1. Získaj konfiguráciu levelu z URL parametrov
+        const levelConfig = getLevelConfigFromURL();
+        console.log('📋 Level config:', levelConfig);
+        
+        // 2. Zisti všetky obrázky ktoré treba načítať
+        const imagesToLoad = collectAllPexesoImages(levelConfig);
+        
+        totalResources = imagesToLoad.length;
+        console.log(`📦 Celkovo načítavam ${totalResources} obrázkov...`);
+        
+        // 3. Načítaj všetky obrázky paralelne (pomocou Promise.all)
+        const promises = imagesToLoad.map(imagePath => preloadImage(imagePath));
+        await Promise.all(promises);
+        
+        console.log('✅ Všetky obrázky úspešne načítané!');
+        isPreloadingComplete = true;
+        
+        // 4. Skry loading screen a spusti hru po 500ms
+        setTimeout(() => {
+            hideLoadingScreen();
+            
+            // Inicializuj hru s načítanou konfiguráciou
+            if (levelConfig) {
+                initializePexesoWithLevel(levelConfig);
+            }
+        }, 500);
+        
+    } catch (error) {
+        console.error('❌ Chyba pri preloadingu:', error);
+        // Aj pri chybe spusti hru (aby hra fungovala aj s chybami)
+        hideLoadingScreen();
+    }
+}
+
+/**
+ * ================================================
+ * ZÍSKANIE KONFIGURÁCIE LEVELU Z URL
+ * ================================================
+ * Funkcia číta URL parametre a načíta konfiguráciu levelu.
+ * 
+ * URL parametre:
+ * - worldId: ID sveta (napr. 'world_r')
+ * - levelId: ID levelu (napr. 'level_r_1')
+ * - custom: či je to custom hra (true/false)
+ * 
+ * @returns {Object} Konfigurácia levelu alebo fallback konfigurácia
+ */
+function getLevelConfigFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const worldId = urlParams.get('worldId') || urlParams.get('world');
+    const levelId = urlParams.get('levelId') || urlParams.get('level');
+    const isCustom = urlParams.get('custom') === 'true';
+    
+    console.log('🔍 URL parametre:', { worldId, levelId, isCustom });
+    
+    // Ak máme levelId, pokús sa načítať konfiguráciu z levels.js
+    if (levelId && typeof window.getLevelConfig === 'function') {
+        const config = window.getLevelConfig(levelId);
+        if (config) {
+            console.log('📋 Načítaná level konfigurácia:', config);
+            return config;
+        }
+    }
+    
+    // Ak je to custom hra, vráť custom konfiguráciu
+    if (isCustom) {
+        console.log('🎨 Custom hra detekovaná');
+        return getCustomGameConfig(urlParams);
+    }
+    
+    // Fallback konfigurácia (ak nič iné nefunguje)
+    console.warn('⚠️ Používam fallback konfiguráciu');
+    return {
+        id: 'fallback',
+        worldId: worldId || 'world_r',
+        words: ['rak', 'ryba', 'ruka', 'ruža', 'raja', 'rožky'],
+        gameConfig: { 
+            pairs: 6,           // Počet párov kariet
+            timeLimit: null     // Bez časového limitu
+        }
+    };
+}
+
+/**
+ * ================================================
+ * ZBER VŠETKÝCH OBRÁZKOV PRE PEXESO
+ * ================================================
+ * Funkcia zbiera všetky obrázky ktoré sa používajú v pexeso hre:
+ * 1. Obrázky slov (karty)
+ * 2. Rub karty (baník)
+ * 3. UI elementy (menu, hviezdy, ikony)
+ * 4. Pozadia svetov
+ * 5. Základné pozadie
+ * 
+ * @param {Object} levelConfig - Konfigurácia levelu
+ * @returns {Array} Pole ciest k obrázkom
+ */
+function collectAllPexesoImages(levelConfig) {
+    const images = [];
+    
+    console.log('📦 Zberam obrázky pre pexeso...');
+    
+    // ==========================================
+    // 1. OBRÁZKY SLOV (KARTY) - najdôležitejšie!
+    // ==========================================
+    if (levelConfig && levelConfig.words && Array.isArray(levelConfig.words)) {
+        levelConfig.words.forEach(word => {
+            const imagePath = `images/slova/${word}.png`;
+            images.push(imagePath);
+        });
+        console.log(`   ✅ Pridaných ${levelConfig.words.length} obrázkov slov (kariet)`);
+    } else {
+        console.warn('   ⚠️ Žiadne slová v levelConfig!');
+    }
+    
+    // ==========================================
+    // 2. RUB KARTY (BANÍK LOGO)
+    // ==========================================
+    images.push('images/banik.png');
+    console.log('   ✅ Pridaný rub karty (banik.png)');
+    
+    // ==========================================
+    // 3. UI ELEMENTY
+    // ==========================================
+    images.push(
+        'images/menubutton.png',        // Menu tlačidlo
+        'images/star_active.png',       // Aktívna hviezda
+        'images/star_inactive.png',     // Neaktívna hviezda
+        'images/banik.ico'              // Ikona
+    );
+    console.log('   ✅ Pridané UI elementy (menu button, hviezdy, ikona)');
+    
+    // ==========================================
+    // 4. POZADIE SVETA (ak existuje)
+    // ==========================================
+    if (levelConfig && levelConfig.worldId) {
+        // Mapa worldId -> cesta k obrázku pozadia
+        const worldBackgrounds = {
+            'world_r': 'images/worlds/world_r.png',
+            'world_l': 'images/worlds/world_l.png',
+            'world_s': 'images/worlds/world_s.png',
+            'world_z': 'images/worlds/world_z.jpg',
+            'world_c': 'images/worlds/world_c.png',
+            'world_š': 'images/worlds/world_sh.png',
+            'world_ž': 'images/worlds/world_zh.png',
+            'world_č': 'images/worlds/world_ch.png',
+            'world_d': 'images/worlds/world_d.png',
+            'world_t': 'images/worlds/world_t.png',
+            'world_n': 'images/worlds/world_n.png',
+            'world_k': 'images/worlds/world_k.png',
+            'world_g': 'images/worlds/world_g.png'
+        };
+        
+        const worldBg = worldBackgrounds[levelConfig.worldId];
+        if (worldBg) {
+            images.push(worldBg);
+            console.log(`   ✅ Pridané pozadie sveta: ${levelConfig.worldId}`);
+        }
+    }
+    
+    // ==========================================
+    // 5. ZÁKLADNÉ POZADIE
+    // ==========================================
+    images.push('images/pozadie.jpg');
+    console.log('   ✅ Pridané základné pozadie');
+    
+    // ==========================================
+    // 6. CURSOR OBRÁZKY
+    // ==========================================
+    images.push(
+        'images/cursor.png',
+        'images/active_cursor4.png'
+    );
+    console.log('   ✅ Pridané cursor obrázky');
+    
+    console.log(`📦 Celkovo zozbieraných ${images.length} obrázkov`);
+    return images;
+}
+
+/**
+ * ================================================
+ * NAČÍTANIE JEDNÉHO OBRÁZKA
+ * ================================================
+ * Funkcia načíta jeden obrázok pomocou Promise.
+ * Ak je obrázok už načítaný (v cache), vráti ho.
+ * 
+ * @param {string} imagePath - Cesta k obrázku
+ * @returns {Promise} Promise ktorý sa resolves keď je obrázok načítaný
+ */
+function preloadImage(imagePath) {
+    return new Promise((resolve) => {
+        // Ak už je obrázok načítaný, vráť ho z cache
+        if (preloadedImages[imagePath]) {
+            updateProgress();  // Aktualizuj progress bar
+            resolve(preloadedImages[imagePath]);
+            return;
+        }
+        
+        // Vytvor nový Image objekt
+        const img = new Image();
+        
+        // Pri úspešnom načítaní
+        img.onload = () => {
+            preloadedImages[imagePath] = img;  // Ulož do cache
+            updateProgress();                   // Aktualizuj progress bar
+            console.log(`✅ Načítané: ${imagePath}`);
+            resolve(img);
+        };
+        
+        // Pri chybe načítania (obrázok neexistuje)
+        img.onerror = () => {
+            console.warn(`⚠️ Chyba pri načítaní: ${imagePath}`);
+            updateProgress();  // Aktualizuj progress bar aj pri chybe
+            resolve(null);     // Pokračuj ďalej (nechaj hru pokračovať)
+        };
+        
+        // Spusti načítanie obrázka
+        img.src = imagePath;
+    });
+}
+
+/**
+ * ================================================
+ * AKTUALIZÁCIA PROGRESS BARU
+ * ================================================
+ * Funkcia aktualizuje progress bar podľa počtu načítaných zdrojov.
+ * Zobrazuje:
+ * - Percentuálny ukazovateľ (0-100%)
+ * - Počet načítaných zdrojov (napr. "15/20 zdrojov")
+ * - Textovú správu ("Načítavam obrázky..." / "Hotovo!")
+ */
+function updateProgress() {
+    loadedResources++;  // Zvýš počet načítaných zdrojov
+    
+    // Vypočítaj percentuálny pokrok (zaokrúhlený na celé číslo)
+    const percentage = Math.round((loadedResources / totalResources) * 100);
+    
+    // ==========================================
+    // Aktualizuj šírku progress baru (žltý pásik)
+    // ==========================================
+    const progressFill = document.getElementById('loading-progress-fill');
+    if (progressFill) {
+        progressFill.style.width = `${percentage}%`;
+    }
+    
+    // ==========================================
+    // Aktualizuj text s percentami (napr. "75%")
+    // ==========================================
+    const progressPercentage = document.getElementById('loading-progress-percentage');
+    if (progressPercentage) {
+        progressPercentage.textContent = `${percentage}%`;
+    }
+    
+    // ==========================================
+    // Aktualizuj text s počtom zdrojov (napr. "15/20 zdrojov")
+    // ==========================================
+    const progressDetails = document.getElementById('loading-progress-details');
+    if (progressDetails) {
+        progressDetails.textContent = `${loadedResources}/${totalResources} zdrojov`;
+    }
+    
+    // ==========================================
+    // Aktualizuj hlavnú loading správu
+    // ==========================================
+    const loadingMessage = document.getElementById('loading-message');
+    if (loadingMessage) {
+        if (percentage < 100) {
+            loadingMessage.textContent = 'Načítavam obrázky...';
+        } else {
+            loadingMessage.textContent = 'Hotovo! Spúšťam hru...';
+        }
+    }
+    
+    // Log do konzoly pre debugging
+    console.log(`📊 Progress: ${percentage}% (${loadedResources}/${totalResources})`);
+}
+
+/**
+ * ================================================
+ * SKRYTIE LOADING SCREENU S ANIMÁCIOU
+ * ================================================
+ * Funkcia skryje loading screen s fade-out animáciou.
+ * Najprv nastaví opacity na 0 (fade out), potom skryje element.
+ */
+function hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+        // Fade out animácia (opacity -> 0)
+        loadingScreen.style.opacity = '0';
+        
+        // Po 500ms úplne skry element (display: none)
+        setTimeout(() => {
+            loadingScreen.style.display = 'none';
+        }, 500);
+    }
+    console.log('👋 Loading screen skrytý, hra pripravená!');
+}
+
+/**
+ * ================================================
+ * POMOCNÉ FUNKCIE PRE OSTATNÉ ČASTI KÓDU
+ * ================================================
+ */
+
+/**
+ * Získanie prednačítaného obrázka z cache
+ * @param {string} imagePath - Cesta k obrázku
+ * @returns {Image|null} Načítaný obrázok alebo null
+ */
+function getPreloadedImage(imagePath) {
+    return preloadedImages[imagePath] || null;
+}
+
+/**
+ * Custom game konfigurácia (pre multiplayer alebo custom hry)
+ * @param {URLSearchParams} urlParams - URL parametre
+ * @returns {Object} Custom konfigurácia
+ */
+function getCustomGameConfig(urlParams) {
+    // Tu môžeš pridať logiku pre custom hry
+    // Napríklad načítanie slov z URL parametrov
+    const wordsParam = urlParams.get('words');
+    const words = wordsParam ? wordsParam.split(',') : ['rak', 'ryba', 'ruka', 'ruža'];
+    
+    return {
+        id: 'custom',
+        worldId: 'custom',
+        words: words,
+        gameConfig: {
+            pairs: Math.min(words.length, parseInt(urlParams.get('pairs')) || 6),
+            timeLimit: parseInt(urlParams.get('timeLimit')) || null
+        }
+    };
+}
+
+// ==========================================
+// EXPORT PRE OSTATNÉ ČASTI KÓDU
+// ==========================================
+// Sprístupní funkcie globálne aby sa dali použiť v iných častiach kódu
+if (typeof window !== 'undefined') {
+    window.preloadedImages = preloadedImages;
+    window.getPreloadedImage = getPreloadedImage;
+    window.isPreloadingComplete = isPreloadingComplete;
+}
+
+// ==========================================
+// EVENT LISTENER - SPUSTENIE PRI NAČÍTANÍ STRÁNKY
+// ==========================================
+// DÔLEŽITÉ: Tento kód sa musí spustiť PRED ostatným kódom v pexeso.js!
+// Preto ho dávame hneď na začiatok súboru.
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🎮 DOM načítaný, spúšťam preloading pre pexeso...');
+    
+    // Spusti preloading
+    startPreloading();
+});
+
 // ==========================================
 // GLOBÁLNE PREMENNÉ A KONFIGURÁCIA
 // ==========================================
@@ -76,20 +458,6 @@ document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
 });
 
-/**
- * Skrytie loading screenu s animáciou
- */
-function hideLoadingScreen() {
-    const loadingScreen = document.getElementById('loading-screen');
-    if (loadingScreen) {
-        setTimeout(() => {
-            loadingScreen.style.opacity = '0';
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-            }, 500);
-        }, 1000);
-    }
-}
 
 /**
  * Získanie parametrov z URL

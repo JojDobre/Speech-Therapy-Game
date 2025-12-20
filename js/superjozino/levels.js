@@ -92,7 +92,6 @@ const LEVELS = {
                     patrolEndX: 2100,        // Kde skončí lietať
                     sleepDuration: 320,      // ~5 sekundy spí
                     flyDuration: 1000,        // ~3 sekundy letí
-                    speed: 1
                 }),
                 
                 // ========== SEKCIA 2 ==========
@@ -100,7 +99,6 @@ const LEVELS = {
                 new RedPig(1200, 720, { 
                     startX: 1100, 
                     endX: 1400,
-                    speed: 1.8  // Môžeš nastaviť inú rýchlosť (default 1.7)
                 }),
                 
                 // ========== SEKCIA 3 ==========
@@ -121,7 +119,6 @@ const LEVELS = {
                 new RedPig(3200, 320, { 
                     startX: 3200, 
                     endX: 3350,
-                    speed: 1.5
                 }),
                 
                 // ========== SEKCIA 5 ==========
@@ -131,7 +128,7 @@ const LEVELS = {
                     endX: 3900
                 }),
                 
-                // ========== SEKCIA 6 ==========
+                // ========== SEKCIA 6 =====s=====
                 // 🔴 Červené prasa (rýchle)
                 new RedPig(4400, 720, { 
                     startX: 4400, 

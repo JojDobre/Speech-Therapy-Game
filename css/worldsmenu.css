@@ -288,13 +288,13 @@ body {
 .world-č {
     background-image: url(../images/worlds/world_ch.png);
 }
-.world-d {
+.world-ď {
     background-image: url(../images/worlds/world_d.png);
 }
-.world-t {
+.world-ť {
     background-image: url(../images/worlds/world_t.png);
 }
-.world-n {
+.world-ň {
     background-image: url(../images/worlds/world_n.png);
 }
 .world-k {
@@ -517,13 +517,13 @@ body {
 .game-panel.world-č-bg {
     background-image: url(../images/worlds/world_ch.png);
 }
-.game-panel.world-d-bg {
+.game-panel.world-ď-bg {
     background-image: url(../images/worlds/world_d.png);
 }
-.game-panel.world-t-bg {
+.game-panel.world-ť-bg {
     background-image: url(../images/worlds/world_t.png);
 }
-.game-panel.world-n-bg {
+.game-panel.world-ň-bg {
     background-image: url(../images/worlds/world_n.png);
 }
 .game-panel.world-k-bg {

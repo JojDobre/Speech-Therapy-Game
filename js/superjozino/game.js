@@ -106,12 +106,14 @@ class AnimationManager {
     
     /**
      * Update animácie (volať v game loop-e)
+     * @param {number} deltaTime - Čas od posledného frame-u (normalizovaný na 60 FPS)
      */
-    update() {
+    update(deltaTime = 1) {
         const anim = this.animations[this.currentAnimation];
         if (!anim) return;
         
-        this.frameCounter++;
+        // Počítadlo frame-ov s deltaTime
+        this.frameCounter += deltaTime;
         
         // Keď uplynie dosť frame-ov, prejdi na ďalší sprite
         if (this.frameCounter >= anim.speed) {
@@ -185,28 +187,28 @@ class EnemyAnimationManager {
                         frames: 9, 
                         frameWidth: 36, 
                         frameHeight: 30,
-                        speed: 12,  // Pomalšia idle animácia
+                        speed: 5,  // Pomalšia idle animácia
                         loop: true 
                     },
                     walk: { 
                         frames: 16, 
                         frameWidth: 36, 
                         frameHeight: 30,
-                        speed: 8,   // Stredná rýchlosť animácie
+                        speed: 4,   // Stredná rýchlosť animácie
                         loop: true 
                     },
                     run: { 
                         frames: 12, 
                         frameWidth: 36, 
                         frameHeight: 30,
-                        speed: 6,   // Rýchlejšia animácia
+                        speed: 3,   // Rýchlejšia animácia
                         loop: true 
                     },
                     hit: { 
                         frames: 5, 
                         frameWidth: 36, 
                         frameHeight: 30,
-                        speed: 4,   // Rýchla hit animácia
+                        speed: 2,   // Rýchla hit animácia
                         loop: false // Prehráva sa len raz
                     }
                 }
@@ -218,35 +220,35 @@ class EnemyAnimationManager {
                         frames: 12,
                         frameWidth: 46,
                         frameHeight: 30,
-                        speed: 10,  // Pomalá idle animácia (spí)
+                        speed: 5,  // Pomalá idle animácia (spí)
                         loop: true
                     },
                     flying: {
                         frames: 7,
                         frameWidth: 46,
                         frameHeight: 30,
-                        speed: 8,   // Stredná rýchlosť mávnutia krídel
+                        speed: 4,   // Stredná rýchlosť mávnutia krídel
                         loop: true
                     },
                     ceiling_in: {  // Zasypanie (návrat na strop)
                         frames: 7,
                         frameWidth: 46,
                         frameHeight: 30,
-                        speed: 10,
+                        speed: 5,
                         loop: false  // Prehráva sa len raz
                     },
                     ceiling_out: {  // Prebúdzanie (opustenie stropu)
                         frames: 7,
                         frameWidth: 46,
                         frameHeight: 30,
-                        speed: 10,
+                        speed: 5,
                         loop: false  // Prehráva sa len raz
                     },
                     hit: {
                         frames: 5,
                         frameWidth: 46,
                         frameHeight: 30,
-                        speed: 4,
+                        speed: 2,
                         loop: false
                     }
                 }
@@ -258,28 +260,28 @@ class EnemyAnimationManager {
                         frames: 10,
                         frameWidth: 44,
                         frameHeight: 30,
-                        speed: 8,   // Stredná rýchlosť animácie (vlnenie ducha)
+                        speed: 4,   // Stredná rýchlosť animácie (vlnenie ducha)
                         loop: true
                     },
                     appear: {
                         frames: 4,
                         frameWidth: 44,
                         frameHeight: 30,
-                        speed: 8,   // Rýchlosť zjavenia
+                        speed: 4,   // Rýchlosť zjavenia
                         loop: false  // Prehráva sa len raz
                     },
                     disappear: {
                         frames: 4,
                         frameWidth: 44,
                         frameHeight: 30,
-                        speed: 8,   // Rýchlosť zmiznutia
+                        speed: 4,   // Rýchlosť zmiznutia
                         loop: false  // Prehráva sa len raz
                     },
                     hit: {
                         frames: 5,  // Použijeme idle animáciu aj pre hit (ghost sa nedá zabiť)
                         frameWidth: 44,
                         frameHeight: 30,
-                        speed: 4,
+                        speed: 2,
                         loop: false
                     }
                 }
@@ -291,28 +293,28 @@ class EnemyAnimationManager {
                         frames: 13,
                         frameWidth: 84,
                         frameHeight: 38,
-                        speed: 10,  // Pomalá idle animácia
+                        speed: 5,  // Pomalá idle animácia
                         loop: true
                     },
                     run: {
                         frames: 8,
                         frameWidth: 84,
                         frameHeight: 38,
-                        speed: 8,   // Bežná rýchlosť
+                        speed: 4,   // Bežná rýchlosť
                         loop: true
                     },
                     attack: {
                         frames: 10,
                         frameWidth: 84,
                         frameHeight: 38,
-                        speed: 5,   // Rýchla attack animácia
+                        speed: 3,   // Rýchla attack animácia
                         loop: false  // Prehráva sa len raz
                     },
                     hit: {
                         frames: 5,
                         frameWidth: 84,
                         frameHeight: 38,
-                        speed: 4,
+                        speed: 2,
                         loop: false
                     }
                 }
@@ -428,16 +430,17 @@ class EnemyAnimationManager {
     /**
      * Aktualizácia animácie nepriateľa
      * @param {Enemy} enemy - Objekt nepriateľa
+     * @param {number} deltaTime - Čas od posledného frame-u
      */
-    updateAnimation(enemy) {
+    updateAnimation(enemy, deltaTime = 1) {
         const config = this.enemyConfig[enemy.type];
         if (!config) return;
         
         const animConfig = config.animations[enemy.currentAnimation];
         if (!animConfig) return;
         
-        // Počítadlo frame-ov pre rýchlosť animácie
-        enemy.animationCounter++;
+        // Počítadlo frame-ov pre rýchlosť animácie - s deltaTime
+        enemy.animationCounter += deltaTime;
         
         if (enemy.animationCounter >= animConfig.speed) {
             enemy.animationCounter = 0;
@@ -519,8 +522,9 @@ class Enemy {
     
     /**
      * Aktualizácia nepriateľa
+     * @param {number} deltaTime - Čas od posledného frame-u
      */
-    update() {
+    update(deltaTime) {
         // Ak umiera, nezastavuj update
         if (!this.alive && !this.dying) return;
         
@@ -531,7 +535,8 @@ class Enemy {
 
         // Ak je omráčený, počítaj čas
         if (this.stunned) {
-            this.stunnedTimer--;
+            // Odpočítaj čas omráčenia (deltaTime už je normalizované)
+            this.stunnedTimer -= deltaTime;
             if (this.stunnedTimer <= 0) {
                 this.stunned = false;
                 this.setAnimation('walk');
@@ -539,26 +544,16 @@ class Enemy {
             return;
         }
         
-        // Ak je omráčený, počítaj čas
-        if (this.stunned) {
-            this.stunnedTimer--;
-            if (this.stunnedTimer <= 0) {
-                this.stunned = false;
-                this.setAnimation('walk');
-            }
-            return;
-        }
-        
-        // ⬅️ Pohyb podľa typu správania
+        // Pohyb podľa typu správania
         if (this.behaviorType === 'patrol') {
-            this.patrolBehavior();
+            this.patrolBehavior(deltaTime);
         } else if (this.behaviorType === 'flying') {
-            this.patrolBehavior();
+            this.patrolBehavior(deltaTime);
         } else if (this.behaviorType === 'sleeping') {
             // SleepingBat má vlastnú update()
         } else if (this.behaviorType === 'ghost') {
-            this.patrolBehavior();
-        } else if (this.behaviorType === 'chameleon') {  // ⬅️ PRIDANÉ
+            this.patrolBehavior(deltaTime);
+        } else if (this.behaviorType === 'chameleon') {
             // Chameleon má vlastnú update() metódu
             // (nepotrebujeme tu nič robiť)
         }
@@ -566,10 +561,11 @@ class Enemy {
     
     /**
      * Správanie: Patrola medzi dvoma bodmi
+     * @param {number} deltaTime - Čas od posledného frame-u
      */
-    patrolBehavior() {
-        // Pohyb
-        this.x += this.speed * this.direction;
+    patrolBehavior(deltaTime) {
+        // Pohyb - rýchlosť × smer × deltaTime
+        this.x += this.speed * this.direction * deltaTime;  // ✅ S deltaTime
         
         // Zmena smeru pri dosiahnutí hraníc
         if (this.x <= this.startX) {
@@ -580,8 +576,7 @@ class Enemy {
             this.x = this.endX;
         }
         
-        // Animácia podľa rýchlosti (striedanie walk/run)
-        // Ak sa pohybuje rýchlo, použij run, inak walk
+        // Animácia podľa rýchlosti
         if (Math.abs(this.speed) > 1.3) {
             this.setAnimation('run');
         } else {
@@ -644,7 +639,7 @@ class AngryPig extends Enemy {
         const pigConfig = {
             width: 40,        // Stredná veľkosť
             height: 30,
-            speed: config.speed || 1,  // Stredná rýchlosť
+            speed: config.speed || 4,  // Stredná rýchlosť
             hp: 1,            // Zabije sa jedným skokom
             damage: 1,        // Zoberie 1 život hráčovi
             killable: true,   // Dá sa zabiť
@@ -669,7 +664,7 @@ class GreenPig extends Enemy {
         const pigConfig = {
             width: 40,
             height: 30,
-            speed: 1,         // ⬅️ Vždy 1 (walk animácia)
+            speed: 2,         // ⬅️ Vždy 1 (walk animácia)
             hp: 1,
             damage: 1,
             killable: true,
@@ -684,10 +679,11 @@ class GreenPig extends Enemy {
     
     /**
      * Prepísané správanie - vždy iba walk
+     * @param {number} deltaTime - Čas od posledného frame-u
      */
-    patrolBehavior() {
-        // Pohyb
-        this.x += this.speed * this.direction;
+    patrolBehavior(deltaTime) {
+        // Pohyb - s deltaTime
+        this.x += this.speed * this.direction * deltaTime;
         
         // Zmena smeru
         if (this.x <= this.startX) {
@@ -698,7 +694,7 @@ class GreenPig extends Enemy {
             this.x = this.endX;
         }
         
-        // ⬅️ Vždy iba walk animácia
+        // Vždy iba walk animácia
         this.setAnimation('walk');
     }
 }
@@ -727,10 +723,11 @@ class RedPig extends Enemy {
     
     /**
      * Prepísané správanie - vždy iba run
+     * @param {number} deltaTime - Čas od posledného frame-u
      */
-    patrolBehavior() {
-        // Pohyb
-        this.x += this.speed * this.direction;
+    patrolBehavior(deltaTime) {
+        // Pohyb - s deltaTime
+        this.x += this.speed * this.direction * deltaTime;
         
         // Zmena smeru
         if (this.x <= this.startX) {
@@ -741,7 +738,7 @@ class RedPig extends Enemy {
             this.x = this.endX;
         }
         
-        // ⬅️ Vždy iba run animácia
+        // Vždy iba run animácia
         this.setAnimation('run');
     }
 }
@@ -774,13 +771,14 @@ class ComboPig extends Enemy {
         
         // Rýchlosti pre rôzne stavy
         this.walkSpeed = 1;
-        this.runSpeed = 1.8;
+        this.runSpeed = 4;
     }
     
     /**
      * Prepísané update - vlastný state machine
+     * @param {number} deltaTime - Čas od posledného frame-u
      */
-    update() {
+    update(deltaTime) {
         // Ak umiera, nezastavuj update
         if (!this.alive && !this.dying) return;
         
@@ -788,8 +786,9 @@ class ComboPig extends Enemy {
         if (this.dying) {
             return;
         }
+        
         if (this.stunned) {
-            this.stunnedTimer--;
+            this.stunnedTimer -= deltaTime;
             if (this.stunnedTimer <= 0) {
                 this.stunned = false;
                 this.state = 'walking';
@@ -798,8 +797,8 @@ class ComboPig extends Enemy {
             return;
         }
         
-        // Pohyb
-        this.x += this.speed * this.direction;
+        // Pohyb - s deltaTime
+        this.x += this.speed * this.direction * deltaTime;
         
         // Zmena smeru na krajoch
         let reachedEnd = false;
@@ -813,7 +812,7 @@ class ComboPig extends Enemy {
             reachedEnd = true;
         }
         
-        // ⬅️ STATE MACHINE
+        // STATE MACHINE
         switch(this.state) {
             case 'walking':
                 this.speed = this.walkSpeed;
@@ -830,7 +829,7 @@ class ComboPig extends Enemy {
             case 'waiting_to_run':
                 this.speed = 0; // Stojí
                 this.setAnimation('idle');
-                this.stateTimer--;
+                this.stateTimer -= deltaTime; // Odpočítaj s deltaTime
                 
                 // Po dočkaní sa rozbehni
                 if (this.stateTimer <= 0) {
@@ -854,7 +853,7 @@ class ComboPig extends Enemy {
             case 'waiting_to_walk':
                 this.speed = 0; // Stojí
                 this.setAnimation('idle');
-                this.stateTimer--;
+                this.stateTimer -= deltaTime; // Odpočítaj s deltaTime
                 
                 // Po dočkaní sa pomaly pohni
                 if (this.stateTimer <= 0) {
@@ -925,7 +924,7 @@ class WaveBat extends Enemy {
         const batConfig = {
             width: 46,
             height: 30,
-            speed: 1,
+            speed: 2,
             hp: 1,
             damage: 1,
             killable: true,
@@ -946,10 +945,11 @@ class WaveBat extends Enemy {
     
     /**
      * Prepísané správanie - horizontálny pohyb + vlnenie
+     * @param {number} deltaTime - Čas od posledného frame-u
      */
-    patrolBehavior() {
-        // Horizontálny pohyb
-        this.x += this.speed * this.direction;
+    patrolBehavior(deltaTime) {
+        // Horizontálny pohyb - s deltaTime
+        this.x += this.speed * this.direction * deltaTime;
         
         // Zmena smeru
         if (this.x <= this.startX) {
@@ -960,8 +960,8 @@ class WaveBat extends Enemy {
             this.x = this.endX;
         }
         
-        // ⬅️ Vertikálne vlnenie (sine wave)
-        this.waveOffset += this.waveFrequency;
+        // Vertikálne vlnenie (sine wave) - s deltaTime
+        this.waveOffset += this.waveFrequency * deltaTime;
         this.y = this.baseY + Math.sin(this.waveOffset) * this.waveAmplitude;
         
         // Vždy flying animácia
@@ -978,7 +978,7 @@ class SleepingBat extends Enemy {
         const batConfig = {
             width: 46,
             height: 30,
-            speed: 1.5,        // Rýchlejší keď lieta
+            speed: 3,        // Rýchlejší keď lieta
             hp: 1,
             damage: 1,
             killable: true,
@@ -1013,14 +1013,15 @@ class SleepingBat extends Enemy {
     
     /**
      * Prepísané update - state machine
+     * @param {number} deltaTime - Čas od posledného frame-u
      */
-    update() {
+    update(deltaTime) {
         // Kontrola dying stavu
         if (!this.alive && !this.dying) return;
         if (this.dying) return;
         
         if (this.stunned) {
-            this.stunnedTimer--;
+            this.stunnedTimer -= deltaTime;
             if (this.stunnedTimer <= 0) {
                 this.stunned = false;
                 this.state = 'sleeping';
@@ -1030,7 +1031,7 @@ class SleepingBat extends Enemy {
             return;
         }
         
-        // ⬅️ STATE MACHINE
+        // STATE MACHINE
         switch(this.state) {
             case 'sleeping':
                 // Spí zavesený na platforme
@@ -1039,7 +1040,7 @@ class SleepingBat extends Enemy {
                 this.y = this.sleepY;
                 this.setAnimation('idle');
                 
-                this.stateTimer++;
+                this.stateTimer += deltaTime; // Odpočítaj s deltaTime
                 if (this.stateTimer >= this.sleepDuration) {
                     // Prebúdza sa
                     this.state = 'waking';
@@ -1052,8 +1053,8 @@ class SleepingBat extends Enemy {
                 this.speed = 0;
                 this.setAnimation('ceiling_out');
                 
-                // Počkaj na dokončenie animácie (7 frame-ov * 6 speed = ~42 update cyklov)
-                this.stateTimer++;
+                // Počkaj na dokončenie animácie
+                this.stateTimer += deltaTime; // S deltaTime
                 if (this.stateTimer >= 50) {
                     // Začni lietať
                     this.state = 'flying';
@@ -1071,8 +1072,8 @@ class SleepingBat extends Enemy {
                 this.speed = 1.5;
                 this.setAnimation('flying');
                 
-                // Horizontálny pohyb
-                this.x += this.speed * this.direction;
+                // Horizontálny pohyb - s deltaTime
+                this.x += this.speed * this.direction * deltaTime;
                 
                 // Zmena smeru na krajoch
                 if (this.x <= this.startX) {
@@ -1083,12 +1084,12 @@ class SleepingBat extends Enemy {
                     this.x = this.endX;
                 }
                 
-                // Vertikálne vlnenie
-                this.waveOffset += this.waveFrequency;
+                // Vertikálne vlnenie - s deltaTime
+                this.waveOffset += this.waveFrequency * deltaTime;
                 this.y = this.baseY + Math.sin(this.waveOffset) * this.waveAmplitude;
                 
-                // Časovač letu
-                this.stateTimer++;
+                // Časovač letu - s deltaTime
+                this.stateTimer += deltaTime;
                 if (this.stateTimer >= this.flyDuration) {
                     // Vráť sa späť
                     this.state = 'returning';
@@ -1107,9 +1108,9 @@ class SleepingBat extends Enemy {
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 
                 if (distance > 5) {
-                    // Pohybuj sa k cieľu
-                    this.x += (dx / distance) * this.speed;
-                    this.y += (dy / distance) * this.speed;
+                    // Pohybuj sa k cieľu - s deltaTime
+                    this.x += (dx / distance) * this.speed * deltaTime;
+                    this.y += (dy / distance) * this.speed * deltaTime;
                     
                     // Nastav smer podľa pohybu
                     this.direction = dx > 0 ? 1 : -1;
@@ -1129,8 +1130,8 @@ class SleepingBat extends Enemy {
                 this.y = this.sleepY;
                 this.setAnimation('ceiling_in');
                 
-                // Počkaj na dokončenie animácie
-                this.stateTimer++;
+                // Počkaj na dokončenie animácie - s deltaTime
+                this.stateTimer += deltaTime;
                 if (this.stateTimer >= 50) {
                     // Zaspi
                     this.state = 'sleeping';
@@ -1156,7 +1157,7 @@ class PatrolGhost extends Enemy {
         const ghostConfig = {
             width: 44,
             height: 30,
-            speed: config.speed || 1,
+            speed: config.speed || 2,
             hp: 999,           // ⬅️ Veľa HP (nezabiteľný)
             damage: 1,
             killable: false,   // ⬅️ Nedá sa zabiť!
@@ -1202,7 +1203,7 @@ class PhasingGhost extends Enemy {
         const ghostConfig = {
             width: 44,
             height: 30,
-            speed: config.speed || 1,
+            speed: config.speed || 2,
             hp: 999,
             damage: 1,
             killable: false,
@@ -1229,12 +1230,13 @@ class PhasingGhost extends Enemy {
     
     /**
      * Prepísané update - state machine s phasing
+     * @param {number} deltaTime - Čas od posledného frame-u
      */
-    update() {
+    update(deltaTime) {
         // Duch nikdy neumiera, ale kontrolujeme dying stav pre istotu
         if (this.dying) return;
         
-        // ⬅️ STATE MACHINE
+        // STATE MACHINE
         switch(this.state) {
             case 'visible':
                 // Normálny pohyb, viditeľný, môže ublížiť
@@ -1242,8 +1244,8 @@ class PhasingGhost extends Enemy {
                 this.canHurt = true;
                 this.setAnimation('idle');
                 
-                // Pohyb
-                this.x += this.speed * this.direction;
+                // Pohyb - s deltaTime
+                this.x += this.speed * this.direction * deltaTime;
                 if (this.x <= this.startX) {
                     this.direction = 1;
                     this.x = this.startX;
@@ -1252,8 +1254,8 @@ class PhasingGhost extends Enemy {
                     this.x = this.endX;
                 }
                 
-                // Časovač
-                this.stateTimer++;
+                // Časovač - s deltaTime
+                this.stateTimer += deltaTime;
                 if (this.stateTimer >= this.visibleDuration) {
                     this.state = 'disappearing';
                     this.stateTimer = 0;
@@ -1262,11 +1264,11 @@ class PhasingGhost extends Enemy {
                 
             case 'disappearing':
                 // Animácia zmiznutia
-                this.canHurt = false;  // ⬅️ Už nemôže ublížiť
+                this.canHurt = false;  // Už nemôže ublížiť
                 this.setAnimation('disappear');
                 
-                // Stále sa pohybuje
-                this.x += this.speed * this.direction;
+                // Stále sa pohybuje - s deltaTime
+                this.x += this.speed * this.direction * deltaTime;
                 if (this.x <= this.startX) {
                     this.direction = 1;
                     this.x = this.startX;
@@ -1275,12 +1277,12 @@ class PhasingGhost extends Enemy {
                     this.x = this.endX;
                 }
                 
-                // Počkaj na dokončenie animácie (4 frame-y * 8 speed = ~32 update cyklov)
-                this.stateTimer++;
+                // Počkaj na dokončenie animácie - s deltaTime
+                this.stateTimer += deltaTime;
                 if (this.stateTimer >= 40) {
                     this.state = 'invisible';
                     this.stateTimer = 0;
-                    this.visible = false;  // ⬅️ Skry ducha
+                    this.visible = false;  // Skry ducha
                 }
                 break;
                 
@@ -1289,8 +1291,8 @@ class PhasingGhost extends Enemy {
                 this.visible = false;
                 this.canHurt = false;
                 
-                // Stále sa pohybuje (aj keď neviditeľný)
-                this.x += this.speed * this.direction;
+                // Stále sa pohybuje (aj keď neviditeľný) - s deltaTime
+                this.x += this.speed * this.direction * deltaTime;
                 if (this.x <= this.startX) {
                     this.direction = 1;
                     this.x = this.startX;
@@ -1299,8 +1301,8 @@ class PhasingGhost extends Enemy {
                     this.x = this.endX;
                 }
                 
-                // Časovač
-                this.stateTimer++;
+                // Časovač - s deltaTime
+                this.stateTimer += deltaTime;
                 if (this.stateTimer >= this.invisibleDuration) {
                     this.state = 'appearing';
                     this.stateTimer = 0;
@@ -1313,8 +1315,8 @@ class PhasingGhost extends Enemy {
                 this.canHurt = false;  // Ešte nemôže ublížiť
                 this.setAnimation('appear');
                 
-                // Stále sa pohybuje
-                this.x += this.speed * this.direction;
+                // Stále sa pohybuje - s deltaTime
+                this.x += this.speed * this.direction * deltaTime;
                 if (this.x <= this.startX) {
                     this.direction = 1;
                     this.x = this.startX;
@@ -1323,12 +1325,12 @@ class PhasingGhost extends Enemy {
                     this.x = this.endX;
                 }
                 
-                // Počkaj na dokončenie animácie
-                this.stateTimer++;
+                // Počkaj na dokončenie animácie - s deltaTime
+                this.stateTimer += deltaTime;
                 if (this.stateTimer >= 40) {
                     this.state = 'visible';
                     this.stateTimer = 0;
-                    this.canHurt = true;  // ⬅️ Teraz môže ublížiť
+                    this.canHurt = true;  // Teraz môže ublížiť
                 }
                 break;
         }
@@ -1381,12 +1383,16 @@ class Chameleon extends Enemy {
         this.player = null;
     }
     
-    update() {
+    /**
+     * Aktualizácia Chameleona
+     * @param {number} deltaTime - Čas od posledného frame-u
+     */
+    update(deltaTime) {
         if (!this.alive && !this.dying) return;
         if (this.dying) return;
         
         if (this.stunned) {
-            this.stunnedTimer--;
+            this.stunnedTimer -= deltaTime;
             if (this.stunnedTimer <= 0) {
                 this.stunned = false;
                 this.state = 'patrol';
@@ -1399,10 +1405,10 @@ class Chameleon extends Enemy {
                 this.tongueActive = false;
                 this.tongueHitbox = null;
                 
-                // Pohyb
-                this.x += this.speed * this.direction;
+                // Pohyb - s deltaTime
+                this.x += this.speed * this.direction * deltaTime;
                 
-                // ⬅️ OPRAVENÉ: Pri dosiahnutí konca trasy prejdi do turning state
+                // Pri dosiahnutí konca trasy prejdi do turning state
                 if (this.x <= this.startX) {
                     this.x = this.startX;
                     this.state = 'turning';
@@ -1424,7 +1430,7 @@ class Chameleon extends Enemy {
                     this.setAnimation('idle');
                 }
                 
-                // ⬅️ OPRAVENÉ: Lepšia detekcia hráča
+                // Lepšia detekcia hráča
                 if (this.player && this.isPlayerInAttackRange()) {
                     this.state = 'preparing';
                     this.stateTimer = 0;
@@ -1439,12 +1445,12 @@ class Chameleon extends Enemy {
                 }
                 break;
                 
-            case 'turning':  // ⬅️ NOVÝ STATE
+            case 'turning':
                 // Idle animácia na otočke
                 this.speed = 0;
                 this.setAnimation('idle');
                 
-                this.stateTimer++;
+                this.stateTimer += deltaTime; // S deltaTime
                 if (this.stateTimer >= this.turningDuration) {
                     // Otočka dokončená, pokračuj v patrole
                     this.state = 'patrol';
@@ -1470,7 +1476,7 @@ class Chameleon extends Enemy {
                 this.speed = 0;
                 this.setAnimation('idle');
                 
-                this.stateTimer++;
+                this.stateTimer += deltaTime; // S deltaTime
                 if (this.stateTimer >= 20) {
                     this.state = 'attacking';
                     this.stateTimer = 0;
@@ -1490,7 +1496,7 @@ class Chameleon extends Enemy {
                     this.tongueHitbox = null;
                 }
                 
-                this.stateTimer++;
+                this.stateTimer += deltaTime; // S deltaTime
                 if (this.stateTimer >= this.attackDuration) {
                     this.state = 'cooldown';
                     this.stateTimer = 0;
@@ -1505,7 +1511,7 @@ class Chameleon extends Enemy {
                 this.tongueActive = false;
                 this.tongueHitbox = null;
                 
-                this.stateTimer++;
+                this.stateTimer += deltaTime; // S deltaTime
                 if (this.stateTimer >= this.cooldownDuration) {
                     this.state = 'patrol';
                     this.stateTimer = 0;
@@ -1593,35 +1599,35 @@ class CoinAnimationManager {
             gold: {
                 folder: 'Gold Coin',
                 frames: 4,
-                speed: 16
+                speed: 8
             },
             
             // 🥈 Strieborné mince - posluchové cvičenia (TODO: overiť cestu)
             silver: {
                 folder: 'Silver Coin',
                 frames: 4,
-                speed: 16
+                speed: 8
             },
             
             // 💙 Modrý diamant - rečové cvičenia
             blueDiamond: {
                 folder: 'Blue Diamond',
                 frames: 4,
-                speed: 12
+                speed: 6
             },
             
             // 💚 Zelený diamant - bonusový predmet (power-up)
             greenDiamond: {
                 folder: 'Green Diamond',
                 frames: 4,
-                speed: 20
+                speed: 10
             },
             
             // ❤️ Červený diamant - bonusový predmet (extra život)
             redDiamond: {
                 folder: 'Red Diamond',
                 frames: 4,
-                speed: 20
+                speed: 10
             }
         };
         
@@ -1669,12 +1675,14 @@ class CoinAnimationManager {
     
     /**
      * Update animácie (volať v game loop-e)
+     * @param {number} deltaTime - Čas od posledného frame-u
      */
-    update() {
-        this.frameCounter++;
+    update(deltaTime = 1) {
+        // Počítadlo frame-ov s deltaTime
+        this.frameCounter += deltaTime;
         
         // Všetky mince používajú rovnakú rýchlosť animácie
-        if (this.frameCounter >= 20) { // speed z coinTypes
+        if (this.frameCounter >= 10) { // speed z coinTypes
             this.frameCounter = 0;
             this.globalFrame++;
             
@@ -1761,14 +1769,14 @@ class CheckpointAnimationManager {
                 spriteSheet: 'flag',
                 frames: 26,
                 frameWidth: 64,
-                speed: 3,  // Rýchla animácia aktivácie
+                speed: 2,  // Rýchla animácia aktivácie
                 loop: false  // Prehráva sa len raz
             },
             idle: {
                 spriteSheet: 'idleflag',
                 frames: 10,
                 frameWidth: 64,
-                speed: 8,  // Pomalšia idle animácia
+                speed:4,  // Pomalšia idle animácia
                 loop: true
             }
         };
@@ -1808,8 +1816,9 @@ class CheckpointAnimationManager {
     /**
      * Update animácie checkpointu
      * @param {Object} checkpoint - Checkpoint objekt
+     * @param {number} deltaTime - Čas od posledného frame-u
      */
-    updateCheckpoint(checkpoint) {
+    updateCheckpoint(checkpoint, deltaTime = 1) {
         // Inicializuj animačné vlastnosti ak neexistujú
         if (!checkpoint.animState) {
             // Prvý checkpoint (isStart) a finish začínajú ako idle
@@ -1825,7 +1834,8 @@ class CheckpointAnimationManager {
         const anim = this.animations[checkpoint.animState];
         if (!anim || anim.frames <= 1) return;
         
-        checkpoint.animCounter++;
+        // Počítadlo s deltaTime
+        checkpoint.animCounter += deltaTime;
         
         // Posun na ďalší frame
         if (checkpoint.animCounter >= anim.speed) {
@@ -1960,9 +1970,9 @@ class Game {
         this.height = 800;
         
         // Herné vlastnosti
-        this.gravity = 0.1;
-        this.friction = 0.7;
-        this.maxFallSpeed = 8; 
+        this.gravity = 0.45;
+        this.friction = 0.75;
+        this.maxFallSpeed = 15; 
         this.currentLevel = 1;
         this.gameState = 'playing'; // 'playing', 'paused', 'completed'
         this.lives = 3;
@@ -2003,8 +2013,8 @@ class Game {
             
             velocityX: 0,
             velocityY: 0,
-            speed: 3,
-            jumpForce: -7,
+            speed: 6,
+            jumpForce: -14,
             isJumping: false
         };
         this.animationManager = new AnimationManager();
@@ -2916,20 +2926,24 @@ class Game {
         }
     }
 
-    updateEnemies() {
-    for (let enemy of this.currentLevelData.enemies) {
-        // ⬅️ PRIDANÉ: Nastav player referenciu pre Chameleon (potrebuje pre detekciu)
-        if (enemy.behaviorType === 'chameleon') {
-            enemy.player = this.player;
+    /**
+     * Aktualizácia všetkých nepriateľov v leveli
+     * @param {number} deltaTime - Čas od posledného frame-u (normalizovaný na 60 FPS)
+     */
+    updateEnemies(deltaTime) {
+        for (let enemy of this.currentLevelData.enemies) {
+            // Nastav player referenciu pre Chameleon (potrebuje pre detekciu)
+            if (enemy.behaviorType === 'chameleon') {
+                enemy.player = this.player;
+            }
+            
+            // Aktualizuj správanie nepriateľa - pošli deltaTime
+            enemy.update(deltaTime);
+            
+            // Aktualizuj animáciu nepriateľa - pošli deltaTime
+            this.enemyAnimationManager.updateAnimation(enemy, deltaTime);
         }
-        
-        // Aktualizuj správanie nepriateľa (pohyb, AI)
-        enemy.update();
-        
-        // Aktualizuj animáciu nepriateľa
-        this.enemyAnimationManager.updateAnimation(enemy);
     }
-}
 
     startDeathAnimation(type) {
         this.deathAnimation.active = true;
@@ -3014,11 +3028,38 @@ class Game {
         this.gameState = 'playing';
     }
 
+    /**
+     * Aktualizácia hernej logiky
+     * @param {number} timestamp - Aktuálny čas v milisekundách
+     */
     update(timestamp) {
         if (this.gameState !== 'playing') return;
 
-        const deltaTime = timestamp - (this.lastTimestamp || timestamp);
+    // 🧪 TESTOVACÍ KÓD - spomalí hru na ~20 FPS
+    const now = performance.now();
+    while (performance.now() - now < 20) {
+        // Umelé spomalenie - čaká 30ms
+    }
+
+        // ✅ NOVÝ SYSTÉM: Výpočet delta time
+        // Ak toto je prvý frame, nastav lastTimestamp
+        if (!this.lastTimestamp) {
+            this.lastTimestamp = timestamp;
+            return; // Preskočíme prvý frame
+        }
+        
+        // Vypočítaj čas od posledného frame-u v milisekundách
+        const deltaTimeMs = timestamp - this.lastTimestamp;
         this.lastTimestamp = timestamp;
+        
+        // Vypočítaj deltaTime ako multiplikátor oproti 60 FPS
+        // Pri 60 FPS (16.67ms) = 1.0 (normálna rýchlosť)
+        // Pri 30 FPS (33.33ms) = 2.0 (dvojnásobná rýchlosť, aby sa vyrovnala)
+        const targetFrameTime = 1000 / 60; // 16.67ms (60 FPS)
+        const deltaTime = deltaTimeMs / targetFrameTime;
+        
+        // Obmedzíme deltaTime aby pri veľkých lagoch nepreskočila hra príliš veľa
+        const clampedDeltaTime = Math.min(deltaTime, 3); // Max 3x rýchlosť (20 FPS minimum)
 
         if (this.deathAnimation.active) {
             this.updateDeathAnimation(deltaTime);
@@ -3027,22 +3068,22 @@ class Game {
 
         // Pohyb hráča
         if (this.keys['ArrowLeft']) {
-            this.player.velocityX = -this.player.speed;
+            this.player.velocityX = -this.player.speed;  // ✅ BEZ deltaTime
         }
         if (this.keys['ArrowRight']) {
-            this.player.velocityX = this.player.speed;
+            this.player.velocityX = this.player.speed;   // ✅ BEZ deltaTime
         }
         if (this.keys['Space'] && !this.player.isJumping) {
-            this.player.velocityY = this.player.jumpForce;
+            this.player.velocityY = this.player.jumpForce;  // ✅ BEZ deltaTime (okamžitý impulz)
             this.player.isJumping = true;
         }
 
         // Aplikácia fyziky
-        this.player.velocityY += this.gravity;
+        this.player.velocityY += this.gravity * clampedDeltaTime; 
 
         // Obmedzenie maximálnej rýchlosť padania (terminal velocity)
         if (this.player.velocityY > this.maxFallSpeed) {
-            this.player.velocityY = this.maxFallSpeed;
+            this.player.velocityY = this.maxFallSpeed;  // ✅ BEZ deltaTime
         }
 
         this.player.velocityX *= this.friction;
@@ -3052,14 +3093,14 @@ class Game {
         this.handlePlatformCollisions();
 
         // Aktualizácia pozície
-        this.player.x += this.player.velocityX;
-        this.player.y += this.player.velocityY;
+        this.player.x += this.player.velocityX * clampedDeltaTime;  // ✅ S deltaTime
+        this.player.y += this.player.velocityY * clampedDeltaTime;
 
         // Kontrola dokončenia levelu
         this.checkLevelCompletion();
 
         // Aktualizácia nepriateľov
-        this.updateEnemies();
+        this.updateEnemies(clampedDeltaTime);
 
         // Ostatné kontroly
         this.handleSpecialBlockCollision();
@@ -3112,17 +3153,18 @@ class Game {
         }
 
         // Update animácie
-        this.animationManager.update();
+        this.animationManager.update(clampedDeltaTime);
         // Update animácií odmien (mince, diamanty)
-        this.coinAnimationManager.update();
+        this.coinAnimationManager.update(clampedDeltaTime);
 
+        // Update animácií checkpointov - pošli deltaTime
         for (let checkpoint of this.currentLevelData.checkpoints) {
-            this.checkpointAnimationManager.updateCheckpoint(checkpoint);
+            this.checkpointAnimationManager.updateCheckpoint(checkpoint, clampedDeltaTime);
         }
 
-        // Update animácie finish flag
+        // Update animácie finish flag - pošli deltaTime
         if (this.currentLevelData.endPoint) {
-            this.checkpointAnimationManager.updateCheckpoint(this.currentLevelData.endPoint);
+            this.checkpointAnimationManager.updateCheckpoint(this.currentLevelData.endPoint, clampedDeltaTime);
         }
 
 
@@ -3528,15 +3570,23 @@ for (let platform of this.currentLevelData.platforms) {
         }
     }
 
+    /**
+     * Hlavný herný loop - volá update a draw každý frame
+     * @param {number} timestamp - Čas od spustenia stránky v milisekundách
+     */
     gameLoop(timestamp) {
+        // Výpočet FPS (len pre debug)
         if (this.lastTime) {
             this.fps = 1000 / (timestamp - this.lastTime);
         }
         this.lastTime = timestamp;
-    
-        this.update();
+
+        // ✅ OPRAVENÉ: Posielame timestamp do update()
+        this.update(timestamp);
         this.draw();
-        requestAnimationFrame((timestamp) => this.gameLoop(timestamp));
+        
+        // Požiadaj prehliadač o ďalší frame
+        requestAnimationFrame((ts) => this.gameLoop(ts));
     }
 }
 

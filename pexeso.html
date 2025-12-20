@@ -27,12 +27,31 @@
     <!-- LOADING -->
     <div id="loading-screen" class="loading-screen">
       <div class="loading-content">
+          <!-- Logo -->
           <div class="loading-logo">
               <div class="loading-text-jozino">JOŽINO</div>
               <div class="loading-text-banik">BANÍK</div>
           </div>
+          
+          <!-- Spinner -->
           <div class="loading-spinner"></div>
-          <div class="loading-message">Načítavam...</div>
+          
+          <!-- NOVÉ: Progress Bar Container -->
+          <div class="loading-progress-container">
+              <!-- Progress Bar -->
+              <div class="loading-progress-bar">
+                  <div class="loading-progress-fill" id="loading-progress-fill"></div>
+              </div>
+              
+              <!-- Progress Text (percentá a počet zdrojov) -->
+              <div class="loading-progress-text">
+                  <span id="loading-progress-percentage">0%</span>
+                  <span id="loading-progress-details">0/0 zdrojov</span>
+              </div>
+          </div>
+          
+          <!-- Loading Message -->
+          <div class="loading-message" id="loading-message">Načítavam...</div>
       </div>
     </div>
 
