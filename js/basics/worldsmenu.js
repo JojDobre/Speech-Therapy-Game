@@ -10,15 +10,30 @@ let currentWorldIndex = 0; // Index aktuálneho sveta (stred z 3 zobrazených)
 let visibleWorldsStartIndex = 0; // Index prvého zo 3 zobrazených svetov
 let currentSelectedWorld = null; // Aktuálne vybraný svet pre zobrazenie levelov
 let playerProgress = null; // Pokrok hráča
+let allWorldButtons = []; // NOVÉ: Cache pre všetky predgenerované world buttony
 
 // Čakanie na načítanie DOM obsahu
 document.addEventListener('DOMContentLoaded', function() {
-    window.addEventListener('load', function() {
-        setTimeout(hideLoadingScreen, 1000); // Čaká 1 sekundu potom skryje
-    });
-    
     console.log('World menu načítané a pripravené na použitie');
-    initializeWorldsMenu();
+    
+    // Spusti preloading ako prvé
+    if (typeof startWorldsMenuPreloading === 'function') {
+        // Najprv preloading, potom inicializácia
+        startWorldsMenuPreloading().then(() => {
+            console.log('✅ Preloading dokončený, inicializujem menu...');
+            initializeWorldsMenu();
+        }).catch(error => {
+            console.error('❌ Chyba pri preloadingu, inicializujem menu aj tak...', error);
+            initializeWorldsMenu();
+        });
+    } else {
+        // Fallback ak preloader nie je dostupný
+        console.warn('⚠️ Preloader nie je dostupný, používam základné načítanie');
+        window.addEventListener('load', function() {
+            setTimeout(hideLoadingScreen, 1000);
+        });
+        initializeWorldsMenu();
+    }
 });
 
 /**
@@ -44,6 +59,9 @@ async function initializeWorldsMenu() {
         
         // Načítaj pokrok hráča
         loadPlayerProgress();
+        
+        // NOVÉ: Vytvor všetky world buttony naraz (predgenerované)
+        createAllWorldButtons();
         
         // Nastaví počiatočný svet (najaktívnejší alebo prvý odomknutý)
         setInitialWorld();
@@ -404,31 +422,23 @@ function updateDisplay() {
 }
 
 /**
- * Aktualizácia tlačidiel svetov (3 viditeľné)
+ * NOVÁ FUNKCIA: Vytvorenie všetkých world buttonov naraz
+ * Volá sa raz pri inicializácii, čím sa eliminuje prebliknutie pri navigácii
  */
-function updateWorldButtons() {
-    const container = document.querySelector('.worlds-buttons-container');
-    if (!container) return;
+function createAllWorldButtons() {
+    console.log('🎨 Vytváram všetky world buttony naraz...');
     
-    // Vymaž existujúce tlačidlá
-    container.innerHTML = '';
+    // Vymaž staré buttony ak existujú
+    allWorldButtons = [];
     
-    // Vytvor 3 tlačidlá pre viditeľné svety
-    for (let i = 0; i < 3 && (visibleWorldsStartIndex + i) < allWorlds.length; i++) {
-        const worldIndex = visibleWorldsStartIndex + i;
-        const world = allWorlds[worldIndex];
-        
+    // Vytvor button pre každý svet
+    allWorlds.forEach((world, worldIndex) => {
         const button = document.createElement('button');
         button.className = 'world-button';
         button.dataset.worldIndex = worldIndex;
         
-        // Pridaj CSS triedu pre pozadie
-        button.classList.add(`world-${world.name.toLowerCase()}`);
-        
-        // Ak je to aktuálne vybraný svet, pridaj active triedu
-        if (worldIndex === currentWorldIndex) {
-            button.classList.add('active');
-        }
+        // Aplikuj pozadie priamo z prednačítanej cache
+        applyWorldButtonBackground(button, world);
         
         // Vytvor span s písmenom
         const span = document.createElement('span');
@@ -440,7 +450,107 @@ function updateWorldButtons() {
             selectWorld(worldIndex);
         });
         
-        container.appendChild(button);
+        // Skry button defaultne (zobrazíme len potrebné 3)
+        button.style.display = 'none';
+        
+        // Ulož do cache
+        allWorldButtons[worldIndex] = button;
+    });
+    
+    console.log(`✅ Predgenerovaných ${allWorldButtons.length} world buttonov`);
+}
+
+/**
+ * Aktualizácia tlačidiel svetov (3 viditeľné)
+ */
+/**
+ * Aktualizácia tlačidiel svetov (3 viditeľné)
+ * UPRAVENÉ: Používa predgenerované buttony namiesto vytvárania nových
+ */
+function updateWorldButtons() {
+    const container = document.querySelector('.worlds-buttons-container');
+    if (!container) return;
+    
+    // Vymaž container
+    container.innerHTML = '';
+    
+    // Najprv skry všetky buttony a odstráň active triedu
+    allWorldButtons.forEach(button => {
+        if (button) {
+            button.classList.remove('active');
+            button.style.display = 'none';
+        }
+    });
+    
+    // Zobraz len 3 viditeľné buttony
+    for (let i = 0; i < 3 && (visibleWorldsStartIndex + i) < allWorlds.length; i++) {
+        const worldIndex = visibleWorldsStartIndex + i;
+        const button = allWorldButtons[worldIndex];
+        
+        if (button) {
+            // Zobraz button
+            button.style.display = 'block';
+            
+            // Pridaj active triedu ak je to aktuálny svet
+            if (worldIndex === currentWorldIndex) {
+                button.classList.add('active');
+            }
+            
+            // Pridaj do containera
+            container.appendChild(button);
+        }
+    }
+}
+
+/**
+ * NOVÁ FUNKCIA: Aplikuje pozadie world buttonu z prednačítanej cache
+ * Toto zabezpečí okamžité zobrazenie bez prebliknutia
+ */
+function applyWorldButtonBackground(button, world) {
+    // Mapovanie world name na súbor pozadia
+    const backgroundMap = {
+        'R': 'world_r.png',
+        'L': 'world_l.png',
+        'S': 'world_s.png',
+        'Č': 'world_ch.png',
+        'Z': 'world_z.jpg',
+        'C': 'world_c.png',
+        'Š': 'world_sh.png',
+        'Ž': 'world_zh.png',
+        'Ď': 'world_d.png',
+        'Ť': 'world_t.png',
+        'Ň': 'world_n.png',
+        'K': 'world_k.png',
+        'G': 'world_g.png'
+    };
+    
+    const backgroundFile = backgroundMap[world.name];
+    if (!backgroundFile) {
+        console.warn(`⚠️ Nenašiel sa background pre svet: ${world.name}`);
+        return;
+    }
+    
+    const imagePath = `images/worlds/${backgroundFile}`;
+    
+    // Skús použiť prednačítaný obrázok z cache
+    if (typeof getPreloadedImage === 'function') {
+        const preloadedImg = getPreloadedImage(imagePath);
+        
+        if (preloadedImg) {
+            // Použij prednačítaný obrázok - okamžite bez čakania!
+            button.style.backgroundImage = `url('${preloadedImg.src}')`;
+            button.style.backgroundSize = '115%';
+            button.style.backgroundPosition = 'center center';
+            button.style.backgroundRepeat = 'no-repeat';
+            console.log(`✅ Použitý prednačítaný obrázok pre ${world.name}`);
+        } else {
+            // Fallback na CSS triedu ak obrázok nie je v cache
+            console.log(`⚠️ Obrázok ${imagePath} nie je v cache, používam CSS`);
+            button.classList.add(`world-${world.name.toLowerCase()}`);
+        }
+    } else {
+        // Fallback ak preloader nie je dostupný
+        button.classList.add(`world-${world.name.toLowerCase()}`);
     }
 }
 

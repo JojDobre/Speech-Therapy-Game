@@ -2831,10 +2831,1984 @@ const LEVELS_CONFIG = {
             minStarsToPass: 1,
             isUnlocked: false
         }
-    ]
+    ],
 
+    world_c: [
+        {
+            id: 'c_001',
+            worldId: 'world_c',
+            levelNumber: 1,
+            name: 'Prvé C-ka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['palec', 'valec', 'cena', 'opica'],
+            gameConfig: {
+                diamonds: 1,
+                golds: 3,
+                crystals: 1,
+                speechExercises: 1,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 12, y: 7 }
+                ],
+                golds: [
+                    { x: 2, y: 9 }, 
+					{ x: 5, y: 10 }, 
+                    { x: 10, y: 13 },
+                ],
+                crystals: [
+                    { x: 11, y: 9 }  
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: null,
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: true
+        },
+        {
+            id: 'c_002',
+            worldId: 'world_c',
+            levelNumber: 2,
+            name: 'Prvé C-ka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['palec', 'valec', 'cena', 'opica', 'cesta', 'polica', 'maco'],
+            gameConfig: {
+                diamonds: 1,
+                golds: 3,
+                crystals: 2,
+				speechExercises: 1,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 6, y: 10 },
+                ],
+                golds: [
+                    { x: 2, y: 9 },   
+                    { x: 7, y: 8 },   
+                    { x: 10, y: 8 }
+                ],
+                crystals: [
+                    { x: 9, y: 7 },    
+                    { x: 10, y: 12 }
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'c_001',
+                minStars: 1
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'c_003',
+            worldId: 'world_c',
+            levelNumber: 3,
+            name: 'Prvé C-ka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['palec', 'valec', 'cena', 'opica', 'cesta', 'polica', 'maco'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 5,
+                crystals: 1,
+				speechExercises: 1,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 3, y: 8 },  
+                    { x: 12, y: 7 },  
+                    { x: 10, y: 12 }
+                ],
+                golds: [
+                    { x: 2, y: 9 },   
+                    { x: 7, y: 8 },   
+                    { x: 14, y: 9 },   
+                    { x: 9, y: 10 },
+                    { x: 10, y: 12 }
+                ],
+                crystals: [
+                    { x: 1, y: 15 }    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'c_002',
+                minStars: 2
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'c_004',
+            worldId: 'world_c',
+            levelNumber: 4,
+            name: 'Prvé C-ka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['palec', 'valec', 'cena', 'opica', 'cesta', 'polica', 'maco', 'cesto'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 3,
+                crystals: 2,
+				speechExercises: 2,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 8 },  
+                    { x: 10, y: 7 },  
+                    { x: 9, y: 14 }
+                ],
+                golds: [
+                    { x: 3, y: 9 },  
+                    { x: 7, y: 8 },   
+                    { x: 14, y: 6 }   
+                ],
+                crystals: [
+					{ x: 4, y: 12 },
+                    { x: 7, y: 11 }   
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'c_003',
+                minStars: 3
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'c_005',
+            worldId: 'worldc',
+            levelNumber: 5,
+            name: 'Prvé C-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['cesta', 'polica', 'maco', 'cesto', 'citrón'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 4,
+                crystals: 4,
+				speechExercises: 2,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 13, y: 8 }, 
+                    { x: 9, y: 10 },  
+                    { x: 1, y: 14 }
+                ],
+                golds: [
+                    { x: 0, y: 9 },
+                    { x: 3, y: 10 },					
+                    { x: 7, y: 8 }   
+                ],
+                crystals: [
+                    { x: 2, y: 10 },
+                    { x: 6, y: 12 },
+                    { x: 14, y: 14 },					
+                    { x: 8, y: 8 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'c_004',
+                minStars: 4
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'c_006',
+            worldId: 'world_c',
+            levelNumber: 6,
+            name: 'Prvé C-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['palec', 'valec', 'cena', 'opica', 'cesta', 'polica', 'maco', 'cesto', 'citrón'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 5,
+                crystals: 2,
+				speechExercises: 3,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 3, y: 7 }, 
+                    { x: 10, y: 7 },  
+                    { x: 2, y: 14 }
+                ],
+                golds: [
+                    { x: 1, y: 9 },
+                    { x: 10, y: 10 },
+                    { x: 6, y: 7 },
+                    { x: 3, y: 15 },					
+                    { x: 15, y: 12 }   
+                ],
+                crystals: [
+                    { x: 7, y: 11 },   
+                    { x: 10, y: 15 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'c_005',
+                minStars: 5
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'c_007',
+            worldId: 'world_c',
+            levelNumber: 7,
+            name: 'Prvé C-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['polica', 'maco', 'cesto', 'citrón', 'cirkus', 'cukor', 'pec'],
+            gameConfig: {
+                diamonds: 2,
+                golds: 2,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 3, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 0, y: 10 },  
+                    { x: 14, y: 14 }
+                ],
+                golds: [
+                    { x: 5, y: 8 },   
+                    { x: 7, y: 12 }  
+                ],
+                crystals: [   
+                    { x: 10, y: 9 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'c_006',
+                minStars: 6
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'c_008',
+            worldId: 'world_c',
+            levelNumber: 8,
+            name: 'Prvé C-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['palec', 'valec', 'cena', 'opica', 'cesta', 'polica', 'maco', 'cesto', 'citrón', 'cirkus', 'cukor', 'pec'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 3, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 10, y: 6 }, 
+                    { x: 6, y: 14 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   
+                    { x: 7, y: 11 },   
+                    { x: 8, y: 12 },
+                    { x: 1, y: 7 }
+                ],
+                crystals: [
+                    { x: 9, y: 15 },    
+                    { x: 14, y: 8 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'c_007',
+                minStars: 7
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'c_009',
+            worldId: 'world_c',
+            levelNumber: 9,
+            name: 'Prvé C-čka',
+            gameType: 'banik',
+            difficulty: 3,
+            words: ['palec', 'valec', 'cena', 'opica', 'cesta', 'polica', 'maco', 'cesto', 'citrón', 'cirkus', 'cukor', 'pec'],
+            gameConfig: {
+				diamonds: 3,
+                golds: 3,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 10 },  
+                    { x: 10, y: 14 },
+                    { x: 2, y: 9 }
+                ],
+                golds: [
+                    { x: 7, y: 11 },   
+                    { x: 12, y: 12 },
+                    { x: 0, y: 7 }
+                ],
+                crystals: [
+                    { x: 9, y: 11 },    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'c_008',
+                minStars: 10
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'c_010',
+            worldId: 'world_c',
+            levelNumber: 10,
+            name: 'Prvé C-čka',
+            gameType: 'banik',
+            difficulty: 3,
+            words: ['palec', 'valec', 'cena', 'opica', 'cesta', 'polica', 'maco', 'cesto', 'citrón', 'cirkus', 'cukor', 'pec'],
+            gameConfig: {
+				diamonds: 4,
+                golds: 6,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 6 },  
+                    { x: 10, y: 14 },
+                    { x: 6, y: 8 },
+                    { x: 0, y: 10 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   
+                    { x: 7, y: 11 },   
+                    { x: 12, y: 12 },
+                    { x: 1, y: 9 },
+                    { x: 3, y: 8 },
+                    { x: 5, y: 11 }
+                ],
+                crystals: [
+                    { x: 14, y: 10 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'c_009',
+                minStars: 11
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'c_011',
+            worldId: 'world_c',
+            levelNumber: 11,
+            name: 'Prvé Cka',
+            gameType: 'banik',
+            difficulty: 3,
+            words: ['palec', 'valec', 'cirkus', 'cukor', 'pec', 'facka', 'cap', 'cicavec'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 4,
+                crystals: 2,
+				speechExercises: 3,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 15, y: 14 },  
+					{ x: 12, y: 15 },  
+                    { x: 3, y: 12 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   
+                    { x: 7, y: 11 },   
+                    { x: 4, y: 15 },
+                    { x: 5, y: 10 }
+                ],
+                crystals: [
+                    { x: 9, y: 13 },    
+                    { x: 6, y: 7 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'c_010',
+                minStars: 12
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'c_012',
+            worldId: 'world_c',
+            levelNumber: 12,
+            name: 'Prvé C-čka',
+            gameType: 'banik',
+            difficulty: 3,
+            words: ['palec', 'valec', 'cena', 'opica', 'cesta', 'polica', 'maco', 'cesto', 'citrón', 'cirkus', 'cukor', 'pec', 'facka', 'cap', 'cicavec'],
+            gameConfig: {
+                diamonds: 2,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 7 },  
+                    { x: 10, y: 14 }
+                ],
+                golds: [
+                    { x: 6, y: 9 },   
+                    { x: 7, y: 11 },  
+                    { x: 14, y: 12 },
+                    { x: 4, y: 10 }
+                ],
+                crystals: [
+                    { x: 9, y: 15 }    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'c_011',
+                minStars: 13
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'c_013',
+            worldId: 'world_c',
+            levelNumber: 13,
+            name: 'Prvé C-čka',
+            gameType: 'banik',
+            difficulty: 4,
+            words: ['palec', 'valec', 'cena', 'opica', 'cesta', 'polica', 'maco', 'cesto', 'citrón', 'cirkus', 'cukor', 'pec', 'facka', 'cap', 'cicavec', 'cop'],
+            gameConfig: {
+                diamonds: 5,
+                golds: 3,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 3,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 4, y: 12 },  // diamant na pozícii 3,8
+                    { x: 9, y: 11 },
+                    { x: 10, y: 14 },
+                    { x: 5, y: 9 },
+                    { x: 0, y: 10 }
+                ],
+                golds: [
+                    { x: 14, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 10 },   // gold na pozícii 7,8
+                    { x: 2, y: 6 }
+                ],
+                crystals: [
+                    { x: 3, y: 8 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'c_012',
+                minStars: 14
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'c_014',
+            worldId: 'world_c',
+            levelNumber: 14,
+            name: 'Prvé C-čka',
+            gameType: 'banik',
+            difficulty: 4,
+            words: ['palec', 'valec', 'cena', 'opica', 'cesta', 'polica', 'maco', 'cesto', 'citrón', 'cirkus', 'cukor', 'pec', 'facka', 'cap', 'cicavec', 'cop'],
+            gameConfig: {
+                diamonds: 2,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 3,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 10 },  
+                    { x: 10, y: 14 }
+                ],
+                golds: [
+                    { x: 10, y: 10 },   
+                    { x: 0, y: 12 },   
+                    { x: 6, y: 13 },
+                    { x: 14, y: 15 }
+                ],
+                crystals: [
+                    { x: 9, y: 8 }    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'c_013',
+                minStars: 15
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'c_015',
+            worldId: 'world_c',
+            levelNumber: 15,
+            name: 'Prvé C-čka',
+            gameType: 'banik',
+            difficulty: 4,
+            words: ['palec', 'valec', 'cena', 'opica', 'cesta', 'polica', 'maco', 'cesto', 'citrón', 'cirkus', 'cukor', 'pec', 'facka', 'cap', 'cicavec', 'cop'],
+            gameConfig: {
+                diamonds: 2,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 3,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 8 },  
+                    { x: 10, y: 10 }
+                ],
+                golds: [
+                    { x: 0, y: 11 },   
+                    { x: 4, y: 9 },  
+                    { x: 7, y: 15 },
+                    { x: 15, y: 13 }
+                ],
+                crystals: [
+                    { x: 13, y: 12 }
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'c_014',
+                minStars: 16
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'c_016',
+            worldId: 'world_c',
+            levelNumber: 16,
+            name: 'Prvé C-čka',
+            gameType: 'banik',
+            difficulty: 5,
+            words: ['palec', 'valec', 'cena', 'opica', 'cesta', 'polica', 'maco', 'cesto', 'citrón', 'cirkus', 'cukor', 'pec', 'facka', 'cap', 'cicavec', 'cop'],
+            gameConfig: {
+                diamonds: 5,
+                golds: 6,
+                crystals: 2,
+				speechExercises: 4,
+                listeningExercises: 2,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 0, y: 8 },
+					{ x: 12, y: 10 },
+					{ x: 9, y: 12 },
+					{ x: 4, y: 13 },					
+                    { x: 15, y: 15 }
+                ],
+                golds: [
+                    { x: 1, y: 8 },
+					{ x: 2, y: 15 },
+					{ x: 5, y: 13 },					
+                    { x: 7, y: 9 },   
+                    { x: 6, y: 15 },
+                    { x: 13, y: 7 }
+                ],
+                crystals: [
+                    { x: 10, y: 11 },  
+                    { x: 2, y: 10 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'c_015',
+                minStars: 20
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+    ],
+
+    world_sh: [
+        {
+            id: 'sh_001',
+            worldId: 'world_sh',
+            levelNumber: 1,
+            name: 'Prvé Š-ka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['šum', 'šunka', 'šupka'],
+            gameConfig: {
+                diamonds: 1,
+                golds: 3,
+                crystals: 1,
+                speechExercises: 1,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 12, y: 7 }
+                ],
+                golds: [
+                    { x: 2, y: 9 }, 
+					{ x: 5, y: 10 }, 
+                    { x: 10, y: 13 },
+                ],
+                crystals: [
+                    { x: 11, y: 9 }  
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: null,
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: true
+        },
+        {
+            id: 'sh_002',
+            worldId: 'world_sh',
+            levelNumber: 2,
+            name: 'Prvé Š-ka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['šum', 'šunka', 'šupka', 'šošovka'],
+            gameConfig: {
+                diamonds: 1,
+                golds: 3,
+                crystals: 2,
+				speechExercises: 1,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 6, y: 10 },
+                ],
+                golds: [
+                    { x: 2, y: 9 },   
+                    { x: 7, y: 8 },   
+                    { x: 10, y: 8 }
+                ],
+                crystals: [
+                    { x: 9, y: 7 },    
+                    { x: 10, y: 12 }
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'sh_001',
+                minStars: 1
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'sh_003',
+            worldId: 'world_sh',
+            levelNumber: 3,
+            name: 'Prvé Š-ka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['šum', 'šunka', 'šupka', 'šošovka', 'šaty', 'myš'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 5,
+                crystals: 1,
+				speechExercises: 1,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 3, y: 8 },  
+                    { x: 12, y: 7 },  
+                    { x: 10, y: 12 }
+                ],
+                golds: [
+                    { x: 2, y: 9 },   
+                    { x: 7, y: 8 },   
+                    { x: 14, y: 9 },   
+                    { x: 9, y: 10 },
+                    { x: 10, y: 12 }
+                ],
+                crystals: [
+                    { x: 1, y: 15 }    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'sh_002',
+                minStars: 2
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'sh_004',
+            worldId: 'world_sh',
+            levelNumber: 4,
+            name: 'Prvé Š-ka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['šum', 'šunka', 'šupka', 'šošovka', 'šaty', 'myš'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 3,
+                crystals: 2,
+				speechExercises: 2,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 8 },  
+                    { x: 10, y: 7 },  
+                    { x: 9, y: 14 }
+                ],
+                golds: [
+                    { x: 3, y: 9 },  
+                    { x: 7, y: 8 },   
+                    { x: 14, y: 6 }   
+                ],
+                crystals: [
+					{ x: 4, y: 12 },
+                    { x: 7, y: 11 }   
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'sh_003',
+                minStars: 3
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'sh_005',
+            worldId: 'world_sh',
+            levelNumber: 5,
+            name: 'Prvé C-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['šum', 'šunka', 'šupka', 'šošovka', 'šaty', 'škola', 'špagety', 'myš'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 4,
+                crystals: 4,
+				speechExercises: 2,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 13, y: 8 }, 
+                    { x: 9, y: 10 },  
+                    { x: 1, y: 14 }
+                ],
+                golds: [
+                    { x: 0, y: 9 },
+                    { x: 3, y: 10 },					
+                    { x: 7, y: 8 }   
+                ],
+                crystals: [
+                    { x: 2, y: 10 },
+                    { x: 6, y: 12 },
+                    { x: 14, y: 14 },					
+                    { x: 8, y: 8 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'sh_004',
+                minStars: 4
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'sh_006',
+            worldId: 'world_sh',
+            levelNumber: 6,
+            name: 'Prvé Š-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['šum', 'šunka', 'šupka', 'šošovka', 'šaty', 'škola', 'špagety', 'šport', 'šašo', 'myš'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 5,
+                crystals: 2,
+				speechExercises: 3,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 3, y: 7 }, 
+                    { x: 10, y: 7 },  
+                    { x: 2, y: 14 }
+                ],
+                golds: [
+                    { x: 1, y: 9 },
+                    { x: 10, y: 10 },
+                    { x: 6, y: 7 },
+                    { x: 3, y: 15 },					
+                    { x: 15, y: 12 }   
+                ],
+                crystals: [
+                    { x: 7, y: 11 },   
+                    { x: 10, y: 15 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'sh_005',
+                minStars: 5
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'sh_007',
+            worldId: 'world_sh',
+            levelNumber: 7,
+            name: 'Prvé Š-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['šum', 'šunka', 'šupka', 'šošovka', 'šaty', 'šibačka', 'šarkan', 'škola', 'kôš', 'guláš', 'myš', 'Mikuláš'],
+            gameConfig: {
+                diamonds: 2,
+                golds: 2,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 3, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 0, y: 10 },  
+                    { x: 14, y: 14 }
+                ],
+                golds: [
+                    { x: 5, y: 8 },   
+                    { x: 7, y: 12 }  
+                ],
+                crystals: [   
+                    { x: 10, y: 9 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'sh_006',
+                minStars: 6
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'sh_008',
+            worldId: 'world_sh',
+            levelNumber: 8,
+            name: 'Prvé Š-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['šum', 'šunka', 'šupka', 'šošovka', 'šaty', 'šibačka', 'šarkan', 'škola', 'špagety', 'šport', 'šašo', 'šiška', 'taška', 'kôš', 'guláš', 'myš', 'mikuláš'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 3, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 10, y: 6 }, 
+                    { x: 6, y: 14 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   
+                    { x: 7, y: 11 },   
+                    { x: 8, y: 12 },
+                    { x: 1, y: 7 }
+                ],
+                crystals: [
+                    { x: 9, y: 15 },    
+                    { x: 14, y: 8 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'sh_007',
+                minStars: 7
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'sh_009',
+            worldId: 'world_sh',
+            levelNumber: 9,
+            name: 'Prvé Š-čka',
+            gameType: 'banik',
+            difficulty: 3,
+            words: [ 'Lukáš', 'vešiak', 'kaša', 'šiška', 'taška', 'kôš', 'guláš', 'myš', 'mikuláš'],
+            gameConfig: {
+				diamonds: 3,
+                golds: 3,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 10 },  
+                    { x: 10, y: 14 },
+                    { x: 2, y: 9 }
+                ],
+                golds: [
+                    { x: 7, y: 11 },   
+                    { x: 12, y: 12 },
+                    { x: 0, y: 7 }
+                ],
+                crystals: [
+                    { x: 9, y: 11 },    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'sh_008',
+                minStars: 10
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'sh_010',
+            worldId: 'world_sh',
+            levelNumber: 10,
+            name: 'Prvé Š-čka',
+            gameType: 'banik',
+            difficulty: 3,
+            words: ['špagety', 'šport', 'šašo', 'šach', 'šatka', 'šípka', 'šofér', 'Lukáš', 'vešiak', 'kaša', 'šiška', 'taška', 'kôš', 'guláš', 'myš', 'mikuláš'],
+            gameConfig: {
+				diamonds: 4,
+                golds: 6,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 6 },  
+                    { x: 10, y: 14 },
+                    { x: 6, y: 8 },
+                    { x: 0, y: 10 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   
+                    { x: 7, y: 11 },   
+                    { x: 12, y: 12 },
+                    { x: 1, y: 9 },
+                    { x: 3, y: 8 },
+                    { x: 5, y: 11 }
+                ],
+                crystals: [
+                    { x: 14, y: 10 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'sh_009',
+                minStars: 11
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'sh_011',
+            worldId: 'world_sh',
+            levelNumber: 11,
+            name: 'Prvé Ška',
+            gameType: 'banik',
+            difficulty: 3,
+            words: ['škola', 'špagety', 'šport', 'šašo', 'šach', 'šatka', 'šípka', 'šofér', 'Lukáš', 'vešiak', 'kaša', 'šiška', 'taška', 'kôš', 'guláš', 'myš', 'mikuláš'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 4,
+                crystals: 2,
+				speechExercises: 3,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 15, y: 14 },  
+					{ x: 12, y: 15 },  
+                    { x: 3, y: 12 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   
+                    { x: 7, y: 11 },   
+                    { x: 4, y: 15 },
+                    { x: 5, y: 10 }
+                ],
+                crystals: [
+                    { x: 9, y: 13 },    
+                    { x: 6, y: 7 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'sh_010',
+                minStars: 12
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'sh_012',
+            worldId: 'world_sh',
+            levelNumber: 12,
+            name: 'Prvé Š-čka',
+            gameType: 'banik',
+            difficulty: 3,
+            words: ['šum', 'šunka', 'šupka', 'šošovka', 'šaty', 'šibačka', 'šarkan', 'škola', 'špagety', 'šport', 'šašo', 'šach', 'šatka', 'šípka', 'šofér', 'Lukáš', 'vešiak', 'kaša', 'šiška'],
+            gameConfig: {
+                diamonds: 2,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 7 },  
+                    { x: 10, y: 14 }
+                ],
+                golds: [
+                    { x: 6, y: 9 },   
+                    { x: 7, y: 11 },  
+                    { x: 14, y: 12 },
+                    { x: 4, y: 10 }
+                ],
+                crystals: [
+                    { x: 9, y: 15 }    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'sh_011',
+                minStars: 13
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'sh_013',
+            worldId: 'world_sh',
+            levelNumber: 13,
+            name: 'Prvé Š-čka',
+            gameType: 'banik',
+            difficulty: 4,
+            words: ['šum', 'šunka', 'šupka', 'šošovka', 'šaty', 'šibačka', 'šarkan', 'škola', 'špagety', 'šport', 'šašo', 'šach', 'šatka', 'šípka', 'šofér', 'Lukáš', 'vešiak', 'kaša', 'šiška', 'taška'],
+            gameConfig: {
+                diamonds: 5,
+                golds: 3,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 3,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 4, y: 12 },  // diamant na pozícii 3,8
+                    { x: 9, y: 11 },
+                    { x: 10, y: 14 },
+                    { x: 5, y: 9 },
+                    { x: 0, y: 10 }
+                ],
+                golds: [
+                    { x: 14, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 10 },   // gold na pozícii 7,8
+                    { x: 2, y: 6 }
+                ],
+                crystals: [
+                    { x: 3, y: 8 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'sh_012',
+                minStars: 14
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'sh_014',
+            worldId: 'world_sh',
+            levelNumber: 14,
+            name: 'Prvé Š-čka',
+            gameType: 'banik',
+            difficulty: 4,
+            words: [ 'šarkan', 'škola', 'špagety', 'šport', 'šašo', 'šach', 'šatka', 'šípka', 'šofér', 'kaša', 'šiška', 'taška', 'kôš', 'guláš', 'myš', 'mikuláš'],
+            gameConfig: {
+                diamonds: 2,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 3,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 10 },  
+                    { x: 10, y: 14 }
+                ],
+                golds: [
+                    { x: 10, y: 10 },   
+                    { x: 0, y: 12 },   
+                    { x: 6, y: 13 },
+                    { x: 14, y: 15 }
+                ],
+                crystals: [
+                    { x: 9, y: 8 }    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'sh_013',
+                minStars: 15
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'sh_015',
+            worldId: 'world_sh',
+            levelNumber: 15,
+            name: 'Prvé Š-čka',
+            gameType: 'banik',
+            difficulty: 4,
+            words: [ 'šaty', 'šibačka', 'šarkan', 'škola', 'špagety', 'šport', 'šašo', 'šach', 'šatka', 'šípka', 'šofér', 'Lukáš', 'vešiak', 'kaša', 'šiška', 'taška', 'kôš', 'guláš', 'myš', 'mikuláš'],
+            gameConfig: {
+                diamonds: 2,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 3,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 8 },  
+                    { x: 10, y: 10 }
+                ],
+                golds: [
+                    { x: 0, y: 11 },   
+                    { x: 4, y: 9 },  
+                    { x: 7, y: 15 },
+                    { x: 15, y: 13 }
+                ],
+                crystals: [
+                    { x: 13, y: 12 }
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'sh_014',
+                minStars: 16
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'sh_016',
+            worldId: 'world_sh',
+            levelNumber: 16,
+            name: 'Prvé Š-čka',
+            gameType: 'banik',
+            difficulty: 5,
+            words: ['šum', 'šunka', 'šupka', 'šošovka', 'šaty', 'šibačka', 'šarkan', 'škola', 'špagety', 'šport', 'šašo', 'šach', 'šatka', 'šípka', 'šofér', 'Lukáš', 'vešiak', 'kaša', 'šiška', 'taška', 'kôš', 'guláš', 'myš', 'mikuláš'],
+            gameConfig: {
+                diamonds: 5,
+                golds: 6,
+                crystals: 2,
+				speechExercises: 4,
+                listeningExercises: 2,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 0, y: 8 },
+					{ x: 12, y: 10 },
+					{ x: 9, y: 12 },
+					{ x: 4, y: 13 },					
+                    { x: 15, y: 15 }
+                ],
+                golds: [
+                    { x: 1, y: 8 },
+					{ x: 2, y: 15 },
+					{ x: 5, y: 13 },					
+                    { x: 7, y: 9 },   
+                    { x: 6, y: 15 },
+                    { x: 13, y: 7 }
+                ],
+                crystals: [
+                    { x: 10, y: 11 },  
+                    { x: 2, y: 10 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'sh_015',
+                minStars: 20
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+    ],
     
-	
+	world_zh: [
+        {
+            id: 'zh_001',
+            worldId: 'world_zh',
+            levelNumber: 1,
+            name: 'Prvé Ž-ka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['žula', 'nožík'],
+            gameConfig: {
+                diamonds: 1,
+                golds: 3,
+                crystals: 1,
+                speechExercises: 1,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 12, y: 7 }
+                ],
+                golds: [
+                    { x: 2, y: 9 }, 
+					{ x: 5, y: 10 }, 
+                    { x: 10, y: 13 },
+                ],
+                crystals: [
+                    { x: 11, y: 9 }  
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: null,
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: true
+        },
+        {
+            id: 'zh_002',
+            worldId: 'world_zh',
+            levelNumber: 2,
+            name: 'Prvé Ž-ka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['žula', 'nožík', 'koža', 'žaba'],
+            gameConfig: {
+                diamonds: 1,
+                golds: 3,
+                crystals: 2,
+				speechExercises: 1,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 6, y: 10 },
+                ],
+                golds: [
+                    { x: 2, y: 9 },   
+                    { x: 7, y: 8 },   
+                    { x: 10, y: 8 }
+                ],
+                crystals: [
+                    { x: 9, y: 7 },    
+                    { x: 10, y: 12 }
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'zh_001',
+                minStars: 1
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'zh_003',
+            worldId: 'world_zh',
+            levelNumber: 3,
+            name: 'Prvé Ž-ka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['žula', 'nožík', 'koža', 'žaba' , 'žena'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 5,
+                crystals: 1,
+				speechExercises: 1,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 3, y: 8 },  
+                    { x: 12, y: 7 },  
+                    { x: 10, y: 12 }
+                ],
+                golds: [
+                    { x: 2, y: 9 },   
+                    { x: 7, y: 8 },   
+                    { x: 14, y: 9 },   
+                    { x: 9, y: 10 },
+                    { x: 10, y: 12 }
+                ],
+                crystals: [
+                    { x: 1, y: 15 }    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'zh_002',
+                minStars: 2
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'zh_004',
+            worldId: 'world_zh',
+            levelNumber: 4,
+            name: 'Prvé Ž-ka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['žula', 'nožík', 'koža', 'žaba' , 'žena', 'železo'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 3,
+                crystals: 2,
+				speechExercises: 2,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 8 },  
+                    { x: 10, y: 7 },  
+                    { x: 9, y: 14 }
+                ],
+                golds: [
+                    { x: 3, y: 9 },  
+                    { x: 7, y: 8 },   
+                    { x: 14, y: 6 }   
+                ],
+                crystals: [
+					{ x: 4, y: 12 },
+                    { x: 7, y: 11 }   
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'zh_003',
+                minStars: 3
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'zh_005',
+            worldId: 'world_zh',
+            levelNumber: 5,
+            name: 'Prvé Ž-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['žula', 'nožík', 'koža', 'žaba' , 'žena', 'železo', 'pyžamo'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 4,
+                crystals: 4,
+				speechExercises: 2,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 13, y: 8 }, 
+                    { x: 9, y: 10 },  
+                    { x: 1, y: 14 }
+                ],
+                golds: [
+                    { x: 0, y: 9 },
+                    { x: 3, y: 10 },					
+                    { x: 7, y: 8 }   
+                ],
+                crystals: [
+                    { x: 2, y: 10 },
+                    { x: 6, y: 12 },
+                    { x: 14, y: 14 },					
+                    { x: 8, y: 8 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'zh_004',
+                minStars: 4
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'zh_006',
+            worldId: 'world_zh',
+            levelNumber: 6,
+            name: 'Prvé Ž-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['žula', 'nožík', 'koža', 'žaba' , 'žena', 'železo', 'pyžamo', 'bežať', 'žiletka'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 5,
+                crystals: 2,
+				speechExercises: 3,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 3, y: 7 }, 
+                    { x: 10, y: 7 },  
+                    { x: 2, y: 14 }
+                ],
+                golds: [
+                    { x: 1, y: 9 },
+                    { x: 10, y: 10 },
+                    { x: 6, y: 7 },
+                    { x: 3, y: 15 },					
+                    { x: 15, y: 12 }   
+                ],
+                crystals: [
+                    { x: 7, y: 11 },   
+                    { x: 10, y: 15 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'zh_005',
+                minStars: 5
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'zh_007',
+            worldId: 'world_zh',
+            levelNumber: 7,
+            name: 'Prvé Ž-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['žula', 'nožík', 'koža', 'žaba' , 'žena', 'železo', 'pyžamo', 'ležať', 'bežať', 'žiletka', 'žolík'],
+            gameConfig: {
+                diamonds: 2,
+                golds: 2,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 3, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 0, y: 10 },  
+                    { x: 14, y: 14 }
+                ],
+                golds: [
+                    { x: 5, y: 8 },   
+                    { x: 7, y: 12 }  
+                ],
+                crystals: [   
+                    { x: 10, y: 9 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'zh_006',
+                minStars: 6
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'zh_008',
+            worldId: 'world_zh',
+            levelNumber: 8,
+            name: 'Prvé Ž-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['žula', 'nožík', 'koža', 'žaba' , 'žena', 'železo', 'pyžamo', 'ležať', 'bežať', 'žiletka', 'žatva'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 3, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 10, y: 6 }, 
+                    { x: 6, y: 14 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   
+                    { x: 7, y: 11 },   
+                    { x: 8, y: 12 },
+                    { x: 1, y: 7 }
+                ],
+                crystals: [
+                    { x: 9, y: 15 },    
+                    { x: 14, y: 8 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'zh_007',
+                minStars: 7
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'zh_009',
+            worldId: 'world_zh',
+            levelNumber: 9,
+            name: 'Prvé Ž-čka',
+            gameType: 'banik',
+            difficulty: 3,
+            words: ['koža', 'žaba' , 'žena', 'železo', 'pyžamo', 'žatva', 'žaluď', 'ruža'],
+            gameConfig: {
+				diamonds: 3,
+                golds: 3,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 10 },  
+                    { x: 10, y: 14 },
+                    { x: 2, y: 9 }
+                ],
+                golds: [
+                    { x: 7, y: 11 },   
+                    { x: 12, y: 12 },
+                    { x: 0, y: 7 }
+                ],
+                crystals: [
+                    { x: 9, y: 11 },    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'zh_008',
+                minStars: 10
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'zh_010',
+            worldId: 'world_zh',
+            levelNumber: 10,
+            name: 'Prvé Ž-čka',
+            gameType: 'banik',
+            difficulty: 3,
+            words: ['žula', 'nožík', 'koža', 'žaba' , 'žena', 'železo', 'pyžamo', 'žobrák', 'jazdec', 'žralok', 'žehliť', 'ležať'],
+            gameConfig: {
+				diamonds: 4,
+                golds: 6,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 6 },  
+                    { x: 10, y: 14 },
+                    { x: 6, y: 8 },
+                    { x: 0, y: 10 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   
+                    { x: 7, y: 11 },   
+                    { x: 12, y: 12 },
+                    { x: 1, y: 9 },
+                    { x: 3, y: 8 },
+                    { x: 5, y: 11 }
+                ],
+                crystals: [
+                    { x: 14, y: 10 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'zh_009',
+                minStars: 11
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'zh_011',
+            worldId: 'world_zh',
+            levelNumber: 11,
+            name: 'Prvé Žka',
+            gameType: 'banik',
+            difficulty: 3,
+            words: ['žaba' , 'žena', 'železo', 'pyžamo', 'žobrák', 'jazdec', 'žralok', 'žehliť', 'ležať', 'bežať', 'žiletka', 'žuť', 'žolík', 'žatva'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 4,
+                crystals: 2,
+				speechExercises: 3,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 15, y: 14 },  
+					{ x: 12, y: 15 },  
+                    { x: 3, y: 12 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   
+                    { x: 7, y: 11 },   
+                    { x: 4, y: 15 },
+                    { x: 5, y: 10 }
+                ],
+                crystals: [
+                    { x: 9, y: 13 },    
+                    { x: 6, y: 7 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'zh_010',
+                minStars: 12
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'zh_012',
+            worldId: 'world_zh',
+            levelNumber: 12,
+            name: 'Prvé Ž-čka',
+            gameType: 'banik',
+            difficulty: 3,
+            words: ['žaba' , 'žena', 'železo', 'pyžamo', 'žobrák', 'jazdec', 'žralok', 'žehliť', 'ležať', 'bežať', 'žiletka', 'žuť', 'žolík', 'žatva'],
+            gameConfig: {
+                diamonds: 2,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 7 },  
+                    { x: 10, y: 14 }
+                ],
+                golds: [
+                    { x: 6, y: 9 },   
+                    { x: 7, y: 11 },  
+                    { x: 14, y: 12 },
+                    { x: 4, y: 10 }
+                ],
+                crystals: [
+                    { x: 9, y: 15 }    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'zh_011',
+                minStars: 13
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'zh_013',
+            worldId: 'world_zh',
+            levelNumber: 13,
+            name: 'Prvé Ž-čka',
+            gameType: 'banik',
+            difficulty: 4,
+            words: ['koža', 'žaba' , 'žena', 'železo', 'pyžamo', 'žobrák', 'jazdec', 'žralok', 'žehliť', 'ležať', 'bežať', 'žiletka', 'žuť', 'žolík', 'žatva', 'žaluď'],
+            gameConfig: {
+                diamonds: 5,
+                golds: 3,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 3,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 4, y: 12 },  // diamant na pozícii 3,8
+                    { x: 9, y: 11 },
+                    { x: 10, y: 14 },
+                    { x: 5, y: 9 },
+                    { x: 0, y: 10 }
+                ],
+                golds: [
+                    { x: 14, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 10 },   // gold na pozícii 7,8
+                    { x: 2, y: 6 }
+                ],
+                crystals: [
+                    { x: 3, y: 8 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'zh_012',
+                minStars: 14
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'zh_014',
+            worldId: 'world_sh',
+            levelNumber: 14,
+            name: 'Prvé Š-čka',
+            gameType: 'banik',
+            difficulty: 4,
+            words: ['koža', 'žaba' , 'žena', 'železo', 'pyžamo', 'žobrák', 'jazdec', 'žralok', 'žehliť', 'ležať', 'bežať', 'žiletka', 'žuť', 'žolík', 'žatva', 'žaluď'],
+            gameConfig: {
+                diamonds: 2,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 3,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 10 },  
+                    { x: 10, y: 14 }
+                ],
+                golds: [
+                    { x: 10, y: 10 },   
+                    { x: 0, y: 12 },   
+                    { x: 6, y: 13 },
+                    { x: 14, y: 15 }
+                ],
+                crystals: [
+                    { x: 9, y: 8 }    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'zh_013',
+                minStars: 15
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'zh_015',
+            worldId: 'world_zh',
+            levelNumber: 15,
+            name: 'Prvé Ž-čka',
+            gameType: 'banik',
+            difficulty: 4,
+            words: ['žena', 'železo', 'pyžamo', 'žobrák', 'jazdec', 'žralok', 'žehliť', 'ležať', 'bežať', 'žiletka', 'žuť', 'žolík', 'žatva', 'žaluď', 'ruža', 'žuvačka'],
+            gameConfig: {
+                diamonds: 2,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 3,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 8 },  
+                    { x: 10, y: 10 }
+                ],
+                golds: [
+                    { x: 0, y: 11 },   
+                    { x: 4, y: 9 },  
+                    { x: 7, y: 15 },
+                    { x: 15, y: 13 }
+                ],
+                crystals: [
+                    { x: 13, y: 12 }
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'zh_014',
+                minStars: 16
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'zh_016',
+            worldId: 'world_zh',
+            levelNumber: 16,
+            name: 'Prvé Ž-čka',
+            gameType: 'banik',
+            difficulty: 5,
+            words: ['žula', 'nožík', 'koža', 'žaba' , 'žena', 'železo', 'pyžamo', 'žobrák', 'jazdec', 'žralok', 'žehliť', 'ležať', 'bežať', 'žiletka', 'žuť', 'žolík', 'žatva', 'žaluď', 'ruža', 'žuvačka', 'žriebä'],
+            gameConfig: {
+                diamonds: 5,
+                golds: 6,
+                crystals: 2,
+				speechExercises: 4,
+                listeningExercises: 2,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 0, y: 8 },
+					{ x: 12, y: 10 },
+					{ x: 9, y: 12 },
+					{ x: 4, y: 13 },					
+                    { x: 15, y: 15 }
+                ],
+                golds: [
+                    { x: 1, y: 8 },
+					{ x: 2, y: 15 },
+					{ x: 5, y: 13 },					
+                    { x: 7, y: 9 },   
+                    { x: 6, y: 15 },
+                    { x: 13, y: 7 }
+                ],
+                crystals: [
+                    { x: 10, y: 11 },  
+                    { x: 2, y: 10 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'zh_015',
+                minStars: 20
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+    ],
 };
 
 /**
