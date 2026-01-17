@@ -189,37 +189,29 @@
       </div>
     </div>
 
-    <div id="dialogove-okno" class="dialogove-okno">
-      <div class="execise-window">
-        <span class="close" onclick="closeDialog1()">&times;</span>
-        <nav class="main-menu">
-            <ul>
-                <li><a href="game.html" alt="Reštart" class="menu-button">Reštart</a></li>
-                <li><a href="worldsmenu.html" alt="Koniec" class="menu-button">Koniec</a></li>
-                <li><a href="menu.html" alt="Menu" class="menu-button">Menu</a></li>
-            </ul>
-        </nav>
+  <div id="pause-modal" class="pause-modal" style="display: none;">
+      <div class="pause-modal-overlay"></div>
+      <div class="pause-modal-content">
+          <div class="pause-modal-header">
+              <h2>PAUZA</h2>
+              <button class="pause-close-btn" id="pauseCloseBtn">&times;</button>
+          </div>
+          <div class="pause-modal-body">
+              <nav class="pause-menu">
+                  <ul>
+                      <li><button id="pauseResumeBtn" class="pause-button">Pokračovať</button></li>
+                      <li><button id="pauseRestartBtn" class="pause-button">Hrať znova</button></li>
+                      <li><button id="pauseMenuBtn" class="pause-button">Späť do menu</button></li>
+                  </ul>
+              </nav>
+          </div>
       </div>
-    </div>
+  </div>
+
 
     <div id="blur-background"></div>
   <script src="js/managers/progressManager.js"></script>
 
-  <script src="js/game.js"></script>
-  <script>
-    function openDialog1() {
-    document.getElementById("dialogove-okno").style.display = "block";
-    document.getElementById("blur-background").style.display = "block";
-    document.body.classList.add("dialog-open");
-    document.body.style.overflow = "hidden"; // Zabrániť posúvaniu stránky
-  }
 
-  function closeDialog1() {
-    document.getElementById("dialogove-okno").style.display = "none";
-    document.getElementById("blur-background").style.display = "none";
-    document.body.classList.remove("dialog-open");
-    document.body.style.overflow = "auto"; // Povoliť posúvanie stránky
-  }
-  </script>
   </body>
 </html>

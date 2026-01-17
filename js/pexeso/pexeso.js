@@ -37,43 +37,6 @@ let isPreloadingComplete = false; // Flag či je preloading úplne hotový
  * 4. Aktualizuje progress bar
  * 5. Skryje loading screen a spustí hru
  */
-async function startPreloading() {
-    try {
-        console.log('🎮 Spúšťam preloading pre pexeso...');
-        
-        // 1. Získaj konfiguráciu levelu z URL parametrov
-        const levelConfig = getLevelConfigFromURL();
-        console.log('📋 Level config:', levelConfig);
-        
-        // 2. Zisti všetky obrázky ktoré treba načítať
-        const imagesToLoad = collectAllPexesoImages(levelConfig);
-        
-        totalResources = imagesToLoad.length;
-        console.log(`📦 Celkovo načítavam ${totalResources} obrázkov...`);
-        
-        // 3. Načítaj všetky obrázky paralelne (pomocou Promise.all)
-        const promises = imagesToLoad.map(imagePath => preloadImage(imagePath));
-        await Promise.all(promises);
-        
-        console.log('✅ Všetky obrázky úspešne načítané!');
-        isPreloadingComplete = true;
-        
-        // 4. Skry loading screen a spusti hru po 500ms
-        setTimeout(() => {
-            hideLoadingScreen();
-            
-            // Inicializuj hru s načítanou konfiguráciou
-            if (levelConfig) {
-                initializePexesoWithLevel(levelConfig);
-            }
-        }, 500);
-        
-    } catch (error) {
-        console.error('❌ Chyba pri preloadingu:', error);
-        // Aj pri chybe spusti hru (aby hra fungovala aj s chybami)
-        hideLoadingScreen();
-    }
-}
 
 /**
  * ================================================
@@ -363,7 +326,17 @@ function getCustomGameConfig(urlParams) {
     // Tu môžeš pridať logiku pre custom hry
     // Napríklad načítanie slov z URL parametrov
     const wordsParam = urlParams.get('words');
-    const words = wordsParam ? wordsParam.split(',') : ['rak', 'ryba', 'ruka', 'ruža'];
+    let words = ['rak', 'ryba', 'ruka', 'ruža']; // Default slová
+    
+    if (wordsParam) {
+        try {
+            // Skús parsovať ako JSON (pre formát: ["slovo1","slovo2"])
+            words = JSON.parse(decodeURIComponent(wordsParam));
+        } catch (e) {
+            // Ak JSON parse zlyhá, skús split pomocou čiarky (pre formát: slovo1,slovo2)
+            words = wordsParam.split(',').map(w => w.trim());
+        }
+    }
     
     return {
         id: 'custom',
@@ -391,11 +364,74 @@ if (typeof window !== 'undefined') {
 // ==========================================
 // DÔLEŽITÉ: Tento kód sa musí spustiť PRED ostatným kódom v pexeso.js!
 // Preto ho dávame hneď na začiatok súboru.
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🎮 DOM načítaný, spúšťam preloading pre pexeso...');
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('🎮 Inicializujem pexeso hru...');
     
-    // Spusti preloading
-    startPreloading();
+    try {
+        // 1. Spustenie preloadingu
+        console.log('🎮 Spúšťam preloading pre pexeso...');
+        
+        // Získaj konfiguráciu levelu z URL parametrov
+        const levelConfig = getLevelConfigFromURL();
+        console.log('📋 Level config:', levelConfig);
+        
+        // Zisti všetky obrázky ktoré treba načítať
+        const imagesToLoad = collectAllPexesoImages(levelConfig);
+        
+        totalResources = imagesToLoad.length;
+        console.log(`📦 Celkovo načítavam ${totalResources} obrázkov...`);
+        
+        // Načítaj všetky obrázky paralelne
+        const promises = imagesToLoad.map(imagePath => preloadImage(imagePath));
+        await Promise.all(promises);
+        
+        console.log('✅ Všetky obrázky úspešne načítané!');
+        isPreloadingComplete = true;
+        
+        // 2. Po preloadingu - skrytie loading screen a inicializácia hry
+        setTimeout(() => {
+            hideLoadingScreen();
+            
+            // 3. Získanie parametrov z URL a inicializácia správnej hry
+            const params = getURLParameters();
+            
+            if (params.custom) {
+                // Custom hra s vlastnými parametrami
+                initCustomGame(params);
+            } else if (params.worldId && params.levelId) {
+                // Level hra z worlds menu
+                initLevelGame(params.worldId, params.levelId);
+            } else {
+                // Fallback - ukážková hra
+                initDemoGame();
+            }
+            
+            // 4. Nastavenie speech recognition
+            setupSpeechRecognition();
+            
+            // 5. Nastavenie event listenerov
+            setupEventListeners();
+        }, 500);
+        
+    } catch (error) {
+        console.error('❌ Chyba pri preloadingu:', error);
+        // Aj pri chybe spusti hru (aby hra fungovala aj s chybami)
+        hideLoadingScreen();
+        
+        // Získanie parametrov z URL
+        const params = getURLParameters();
+        
+        if (params.custom) {
+            initCustomGame(params);
+        } else if (params.worldId && params.levelId) {
+            initLevelGame(params.worldId, params.levelId);
+        } else {
+            initDemoGame();
+        }
+        
+        setupSpeechRecognition();
+        setupEventListeners();
+    }
 });
 
 // ==========================================
@@ -431,33 +467,6 @@ let recognition = null;          // Speech recognition objekt
 /**
  * Hlavná inicializačná funkcia - spúšťa sa pri načítaní stránky
  */
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🎮 Inicializujem pexeso hru...');
-    
-    // Skrytie loading screen
-    hideLoadingScreen();
-    
-    // Získanie parametrov z URL
-    const params = getURLParameters();
-    
-    if (params.custom) {
-        // Custom hra s vlastnými parametrami
-        initCustomGame(params);
-    } else if (params.worldId && params.levelId) {
-        // Level hra z worlds menu
-        initLevelGame(params.worldId, params.levelId);
-    } else {
-        // Fallback - ukážková hra
-        initDemoGame();
-    }
-    
-    // Nastavenie speech recognition
-    setupSpeechRecognition();
-    
-    // Nastavenie event listenerov
-    setupEventListeners();
-});
-
 
 /**
  * Získanie parametrov z URL
@@ -889,15 +898,24 @@ function flipCard(cardId) {
     card.isFlipped = true;
     flippedCards.push(card);
     
-    // Animácia otočenia karty
+    // Animácia otočenia karty (bez problémového "fix")
     cardElement.classList.add('flipping');
     
     setTimeout(() => {
-        // Zmena obrázka z baníka na slovo
+        // Zmena obrázka z baníka na slovo - použijeme prednačítaný obrázok z cache
         const image = cardElement.querySelector('.card-image');
         const text = cardElement.querySelector('.card-text');
         
-        if (image) image.src = image.dataset.wordImage; // Zmena na obrázok slova
+        if (image) {
+            const wordImagePath = image.dataset.wordImage;
+            // Ak existuje prednačítaný obrázok v cache, použijeme jeho src
+            if (preloadedImages[wordImagePath]) {
+                image.src = preloadedImages[wordImagePath].src;
+            } else {
+                // Fallback - ak z nejakého dôvodu nie je obrázok v cache
+                image.src = wordImagePath;
+            }
+        }
         if (text) text.textContent = text.dataset.wordText; // Zmena na text slova
         
         // Pridanie CSS triedy pre otočenú kartu
@@ -942,24 +960,20 @@ function handleMatchFound(card1, card2) {
     card2.isMatched = true;
     matchedPairs++;
     
-    // Vizuálne označenie nájdených kariet
+    // Vizuálne označenie nájdených kariet (bez opacity - to príde až po správnej odpovedi)
     const card1Element = document.querySelector(`[data-card-id="${card1.id}"]`);
     const card2Element = document.querySelector(`[data-card-id="${card2.id}"]`);
     
-    if (card1Element) card1Element.classList.add('matched');
-    if (card2Element) card2Element.classList.add('matched');
-    
-    // Zvýšenie skóre aktuálneho hráča
-    if (isMultiplayerMode) {
-        players[currentPlayerIndex].score++;
-        updateSidePanel();
-    } else {
-        // Pre single player mode aktualizuj skóre v side paneli
-        if (players[0]) {
-            players[0].score++;
-            updateSidePanel();
-        }
+    if (card1Element) {
+        card1Element.classList.add('matched');
     }
+    if (card2Element) {
+        card2Element.classList.add('matched');
+    }
+    
+    // BOD SA NEPRIPOČÍTAVA! Pripočíta sa až po správnej odpovedi v completeSpeechExercise()
+    // Aktualizácia zobrazenia side panelu (bez zmeny skóre)
+    updateSidePanel();
     
     // Spustenie rečového cvičenia
     startSpeechExercise(card1.word);
@@ -1340,12 +1354,18 @@ function completeSpeechExercise(wasSuccessful) {
             card2.isMatched = false;
             matchedPairs--;
             
-            // Vizuálne odstránenie matched triedy
+            // Vizuálne odstránenie matched triedy a opacity
             const card1Element = document.querySelector(`[data-card-id="${card1.id}"]`);
             const card2Element = document.querySelector(`[data-card-id="${card2.id}"]`);
             
-            if (card1Element) card1Element.classList.remove('matched');
-            if (card2Element) card2Element.classList.remove('matched');
+            if (card1Element) {
+                card1Element.classList.remove('matched');
+                card1Element.style.opacity = '1'; // Vrátenie plnej opacity
+            }
+            if (card2Element) {
+                card2Element.classList.remove('matched');
+                card2Element.style.opacity = '1'; // Vrátenie plnej opacity
+            }
             
             // Otočenie kariet späť
             flipCardBack(card1.id);
@@ -1356,18 +1376,43 @@ function completeSpeechExercise(wasSuccessful) {
                 switchToNextPlayer();
             }
             
-            // Aktualizácia skóre
-            if (isMultiplayerMode && players[currentPlayerIndex]) {
-                players[currentPlayerIndex].score = Math.max(0, players[currentPlayerIndex].score - 1);
-            } else if (players[0]) {
-                players[0].score = Math.max(0, players[0].score - 1);
-            }
+            // BOD SA NEODČÍTAVA - nebol nikdy pridaný!
+            // Aktualizácia zobrazenia side panelu
             updateSidePanel();
             
             resetFlippedCards();
         }, 500);
-    } else {
+    } else if (wasSuccessful && flippedCards.length === 2) {
+        // Pri úspešnom cvičení nastavíme opacity 0.5 pre nájdené páry
+        const [card1, card2] = flippedCards;
+        
+        const card1Element = document.querySelector(`[data-card-id="${card1.id}"]`);
+        const card2Element = document.querySelector(`[data-card-id="${card2.id}"]`);
+        
+        if (card1Element) {
+            card1Element.style.opacity = '0.5'; // Zníženie opacity po správnej odpovedi
+        }
+        if (card2Element) {
+            card2Element.style.opacity = '0.5'; // Zníženie opacity po správnej odpovedi
+        }
+        
+        // TERAZ PRIDÁME BOD HRÁČOVI - len pri úspešnom cvičení!
+        if (isMultiplayerMode) {
+            players[currentPlayerIndex].score++;
+        } else {
+            // Pre single player mode
+            if (players[0]) {
+                players[0].score++;
+            }
+        }
+        
+        // Aktualizácia zobrazenia side panelu s novým skóre
+        updateSidePanel();
+        
         // Reset flipped cards pre úspešné cvičenie
+        resetFlippedCards();
+    } else {
+        // Reset flipped cards
         resetFlippedCards();
     }
     
@@ -1391,18 +1436,70 @@ function startGameTimer() {
         clearInterval(timerInterval);
     }
     
+    // Ak je nastavený časový limit, začíname odpočítavaním
+    if (currentLevel.timeLimit) {
+        gameTime = currentLevel.timeLimit; // Nastavíme čas na časový limit (odpočítavanie)
+    } else {
+        gameTime = 0; // Normálne počítanie od nuly
+    }
+    
     timerInterval = setInterval(() => {
-        gameTime++;
-        updateTopPanel();
-        
-        // Kontrola časového limitu
-        if (currentLevel.timeLimit && gameTime >= currentLevel.timeLimit) {
-            console.log('⏰ Čas vypršal!');
-            endGameTimeOut();
+        // Ak je nastavený časový limit, odpočítavame
+        if (currentLevel.timeLimit) {
+            gameTime--; // Odpočítavanie času od časového limitu k nule
+            
+            // Kontrola či čas vypršal
+            if (gameTime <= 0) {
+                gameTime = 0; // Zaistíme, že čas nebude záporný
+                console.log('⏰ Čas vypršal!');
+                endGameTimeOut();
+            }
+        } else {
+            gameTime++; // Normálne počítanie času od nuly nahor
         }
+        
+        updateTopPanel(); // Aktualizácia zobrazenia času
     }, 1000);
     
     console.log('⏰ Časovač spustený');
+}
+
+/**
+ * Obnovenie herného časovača po pauze (bez resetovania času)
+ */
+function resumeGameTimer() {
+    console.log('⏰ RESUME: Začínam obnovovať časovač...');
+    console.log('⏰ RESUME: currentLevel:', currentLevel);
+    console.log('⏰ RESUME: currentLevel.timeLimit:', currentLevel?.timeLimit);
+    console.log('⏰ RESUME: gameTime pred obnovením:', gameTime);
+    console.log('⏰ RESUME: timerInterval pred clear:', timerInterval);
+    
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        console.log('⏰ RESUME: Starý interval vyčistený');
+    }
+    
+    // Spustenie intervalu bez resetovania gameTime
+    timerInterval = setInterval(() => {
+        // Ak je nastavený časový limit, odpočítavame
+        if (currentLevel.timeLimit) {
+            gameTime--; // Odpočítavanie času od časového limitu k nule
+            
+            // Kontrola či čas vypršal
+            if (gameTime <= 0) {
+                gameTime = 0; // Zaistíme, že čas nebude záporný
+                console.log('⏰ Čas vypršal!');
+                endGameTimeOut();
+            }
+        } else {
+            gameTime++; // Normálne počítanie času od nuly nahor
+        }
+        
+        updateTopPanel(); // Aktualizácia zobrazenia času
+    }, 1000);
+    
+    console.log('⏰ RESUME: Nový interval vytvorený, ID:', timerInterval);
+    console.log('⏰ Časovač obnovený (bez resetovania času)');
 }
 
 /**
@@ -1460,8 +1557,18 @@ function endGameTimeOut() {
  * @returns {Object} Objekt s výsledkami hry
  */
 function calculateGameResults() {
+    // OPRAVA: Prepočítanie času pre countdown časovač
+    // Ak používame countdown (timeLimit existuje), musíme prepočítať uplynulý čas
+    let actualTimeSpent = gameTime;
+    if (currentLevel.timeLimit) {
+        // gameTime obsahuje ostávajúci čas (napr. 20s ostáva)
+        // actualTimeSpent musí obsahovať uplynulý čas (napr. 40s uplynulo)
+        actualTimeSpent = currentLevel.timeLimit - gameTime;
+    }
+    // Ak nemá timeLimit, gameTime je už správne (počíta od 0 nahor)
+    
     const results = {
-        totalTime: gameTime,
+        totalTime: actualTimeSpent, // Používame prepočítaný čas namiesto gameTime
         totalAttempts: gameAttempts,
         matchedPairs: matchedPairs,
         totalPairs: totalPairs,
@@ -1488,18 +1595,11 @@ function calculateGameResults() {
 function calculateStars(results) {
     let stars = 1; // Základná hviezda za dokončenie
     
-    // Druhá hviezda - za rychlost alebo správne reč
-    if (currentLevel.timeLimit) {
-        // Ak existuje časový limit, hodnotíme podľa času
-        const timeRatio = results.totalTime / currentLevel.timeLimit;
-        if (timeRatio <= 0.7) stars = 2; // 70% času alebo menej
-        if (timeRatio <= 0.5) stars = 3; // 50% času alebo menej
-    } else {
-        // Bez časového limitu hodnotíme podľa rečových cvičení
-        const speechRatio = results.correctSpeechCount / results.matchedPairs;
-        if (speechRatio >= 0.7) stars = 2; // 70% správnych reči
-        if (speechRatio >= 0.9) stars = 3; // 90% správnych reči
-    }
+    // Hodnotenie LEN podľa rečových cvičení (správne vyslovených slov)
+    const speechRatio = results.correctSpeechCount / results.matchedPairs;
+    
+    if (speechRatio >= 0.7) stars = 2; // 70%+ správne vyslovených = 2 hviezdy
+    if (speechRatio >= 0.9) stars = 3; // 90%+ správne vyslovených = 3 hviezdy
     
     return stars;
 }
@@ -1559,26 +1659,138 @@ function showEndGameModal(results) {
  * @param {Object} results - Výsledky hry
  */
 function updateEndGameModalContent(results) {
-    // Aktualizácia času
-    const timeSpan = document.querySelector('#endgame .stats div:first-child span');
-    if (timeSpan) {
+    const modal = document.getElementById('endgame');
+    const contentDiv = modal.querySelector('.cvicenie-content-2');
+    
+    if (!contentDiv) {
+        console.error('❌ Content div nenájdený v modale!');
+        return;
+    }
+    
+    // Vyčistenie obsahu
+    contentDiv.innerHTML = '';
+    
+    // Rozlíšenie medzi timeout a victory
+    if (results.isTimeOut) {
+        // ======================================
+        // MODAL PRE VYPRŠANIE ČASU
+        // ======================================
+        
+        // Titulok
+        const title = document.createElement('h1');
+        title.textContent = 'ČAS VYPRŠAL!';
+        contentDiv.appendChild(title);
+        
+        // Stats sekcia - skóre hráčov
+        const statsDiv = document.createElement('div');
+        statsDiv.className = 'stats';
+        
+        // Nadpis skóre
+        const scoreHeader = document.createElement('div');
+        scoreHeader.innerHTML = '<a>SKÓRE:</a>';
+        statsDiv.appendChild(scoreHeader);
+        
+        // Zoradenie hráčov podľa skóre
+        const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
+        
+        // Skóre každého hráča
+        sortedPlayers.forEach((player) => {
+            const playerDiv = document.createElement('div');
+            const pluralForm = player.score === 1 ? 'pár' : player.score < 5 ? 'páry' : 'párov';
+            playerDiv.innerHTML = `<a>${player.name}: </a><span>${player.score} ${pluralForm}</span>`;
+            statsDiv.appendChild(playerDiv);
+        });
+        
+        contentDiv.appendChild(statsDiv);
+        
+    } else {
+        // ======================================
+        // MODAL PRE VÝHRU
+        // ======================================
+        
+        // Titulok
+        const title = document.createElement('h1');
+        title.textContent = isMultiplayerMode ? 'HRA SKONČILA!' : 'VYHRAL SI!';
+        contentDiv.appendChild(title);
+        
+        // Stats sekcia
+        const statsDiv = document.createElement('div');
+        statsDiv.className = 'stats';
+        
+        // Čas
+        const timeDiv = document.createElement('div');
         const minutes = Math.floor(results.totalTime / 60);
         const seconds = results.totalTime % 60;
-        timeSpan.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    }
-    
-    // Aktualizácia slov (správne/nesprávne)
-    const wordsStats = document.querySelector('#endgame .stats div:nth-child(2)');
-    if (wordsStats) {
-        const correctSpan = wordsStats.querySelector('span:first-child');
-        const incorrectSpan = wordsStats.querySelector('span:nth-child(3)');
+        timeDiv.innerHTML = `<a>Čas: </a><span>${minutes}:${seconds.toString().padStart(2, '0')}</span>`;
+        statsDiv.appendChild(timeDiv);
         
-        if (correctSpan) correctSpan.textContent = results.correctSpeechCount.toString();
-        if (incorrectSpan) incorrectSpan.textContent = (results.matchedPairs - results.correctSpeechCount).toString();
+        // Pokusy
+        const attemptsDiv = document.createElement('div');
+        attemptsDiv.innerHTML = `<a>Pokusy: </a><span>${results.totalAttempts}</span>`;
+        statsDiv.appendChild(attemptsDiv);
+        
+        // Nadpis skóre
+        const scoreHeader = document.createElement('div');
+        scoreHeader.innerHTML = '<a>SKÓRE:</a>';
+        statsDiv.appendChild(scoreHeader);
+        
+        // Zoradenie hráčov podľa skóre
+        const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
+        
+        // Skóre každého hráča
+        sortedPlayers.forEach((player) => {
+            const playerDiv = document.createElement('div');
+            const pluralForm = player.score === 1 ? 'pár' : player.score < 5 ? 'páry' : 'párov';
+            playerDiv.innerHTML = `<a>${player.name}: </a><span>${player.score} ${pluralForm}</span>`;
+            statsDiv.appendChild(playerDiv);
+        });
+        
+        contentDiv.appendChild(statsDiv);
+        
+        // Hviezdy (len pre single player)
+        if (!isMultiplayerMode) {
+            const starsDiv = document.createElement('div');
+            starsDiv.id = 'modal-stars';
+            starsDiv.className = 'modal-stars';
+            contentDiv.appendChild(starsDiv);
+            
+            // Aktualizácia hviezd
+            updateModalStars(results.stars);
+        }
     }
     
-    // Aktualizácia hviezd
-    updateModalStars(results.stars);
+    // ======================================
+    // TLAČIDLÁ (spoločné pre oba typy)
+    // ======================================
+    const gameendDiv = document.createElement('div');
+    gameendDiv.className = 'gameend';
+    
+    const nav = document.createElement('nav');
+    nav.className = 'main-menu';
+    
+    const ul = document.createElement('ul');
+    
+    // Tlačidlo "Hrať znova"
+    const restartLi = document.createElement('li');
+    const restartBtn = document.createElement('button');
+    restartBtn.textContent = 'Hrať znova';
+    restartBtn.className = 'menu-button';
+    restartBtn.onclick = restartCurrentLevel;
+    restartLi.appendChild(restartBtn);
+    ul.appendChild(restartLi);
+    
+    // Tlačidlo "Späť do menu"
+    const menuLi = document.createElement('li');
+    const menuBtn = document.createElement('button');
+    menuBtn.textContent = 'Späť do menu';
+    menuBtn.className = 'menu-button';
+    menuBtn.onclick = returnToMenu;
+    menuLi.appendChild(menuBtn);
+    ul.appendChild(menuLi);
+    
+    nav.appendChild(ul);
+    gameendDiv.appendChild(nav);
+    contentDiv.appendChild(gameendDiv);
 }
 
 /**
@@ -1689,58 +1901,140 @@ function returnToMenu() {
  * Nastavenie globálnych event listenerov
  */
 function setupEventListeners() {
-    // Tlačidlo menu (pauza)
+    console.log('🎮 Nastavujem event listenery...');
+    
+    // Tlačidlo menu (pauza) - otvorenie
     const menuButton = document.getElementById('menuButton');
     if (menuButton) {
         menuButton.addEventListener('click', openPauseMenu);
+        console.log('✅ Menu button listener nastavený');
+    } else {
+        console.warn('⚠️ Menu button nenájdený!');
+    }
+    
+    // NOVÉ PAUSE MENU - tlačidlá
+    
+    // 1. Close button (X)
+    const pauseCloseBtn = document.getElementById('pauseCloseBtn');
+    if (pauseCloseBtn) {
+        pauseCloseBtn.addEventListener('click', function() {
+            console.log('🖱️ Klik na close button (X)');
+            closePauseMenu();
+        });
+        console.log('✅ Pause close button listener nastavený');
+    } else {
+        console.warn('⚠️ Pause close button nenájdený!');
+    }
+    
+    // 2. Resume button (Pokračovať)
+    const pauseResumeBtn = document.getElementById('pauseResumeBtn');
+    if (pauseResumeBtn) {
+        pauseResumeBtn.addEventListener('click', function() {
+            console.log('🖱️ Klik na Resume button');
+            closePauseMenu();
+        });
+        console.log('✅ Pause resume button listener nastavený');
+    } else {
+        console.warn('⚠️ Pause resume button nenájdený!');
+    }
+    
+    // 3. Restart button (Hrať znova)
+    const pauseRestartBtn = document.getElementById('pauseRestartBtn');
+    if (pauseRestartBtn) {
+        pauseRestartBtn.addEventListener('click', function() {
+            console.log('🖱️ Klik na Restart button');
+            closePauseMenu();
+            restartCurrentLevel();
+        });
+        console.log('✅ Pause restart button listener nastavený');
+    } else {
+        console.warn('⚠️ Pause restart button nenájdený!');
+    }
+    
+    // 4. Menu button (Späť do menu)
+    const pauseMenuBtn = document.getElementById('pauseMenuBtn');
+    if (pauseMenuBtn) {
+        pauseMenuBtn.addEventListener('click', function() {
+            console.log('🖱️ Klik na Menu button');
+            returnToMenu();
+        });
+        console.log('✅ Pause menu button listener nastavený');
+    } else {
+        console.warn('⚠️ Pause menu button nenájdený!');
     }
     
     // Klávesové skratky (voliteľné)
     document.addEventListener('keydown', handleKeyPress);
     
-    console.log('✅ Event listenery nastavené');
+    console.log('✅ Všetky event listenery nastavené');
 }
 
 /**
  * Otvorenie pauza menu
  */
 function openPauseMenu() {
-    console.log('⏸️ Otváram pauza menu...');
+    console.log('⏸️ Otváram NOVÉ pauza menu...');
     
     // Pozastavenie časovača
     if (timerInterval) {
         clearInterval(timerInterval);
+        console.log('⏸️ Časovač zastavený, ID:', timerInterval);
     }
     
-    // Zobrazenie dialógového okna
-    const dialog = document.getElementById('dialogove-okno');
+    // Zobrazenie nového pause modalu
+    const pauseModal = document.getElementById('pause-modal');
     const blurBg = document.getElementById('blur-background');
     
-    if (dialog) dialog.style.display = 'block';
-    if (blurBg) blurBg.style.display = 'block';
+    if (pauseModal) {
+        pauseModal.style.display = 'flex';
+        console.log('⏸️ Pause modal zobrazený');
+    } else {
+        console.error('❌ Pause modal nenájdený!');
+    }
+    
+    if (blurBg) {
+        blurBg.style.display = 'block';
+    }
     
     document.body.classList.add('dialog-open');
     document.body.style.overflow = 'hidden';
+    
+    console.log('⏸️ Pause menu otvorené');
 }
 
 /**
  * Zatvorenie pauza menu
  */
 function closePauseMenu() {
-    console.log('▶️ Zatváram pauza menu...');
+    console.log('▶️ Zatváram NOVÉ pauza menu...');
+    console.log('▶️ gameTime pred obnovením:', gameTime);
+    console.log('▶️ currentLevel:', currentLevel);
+    console.log('▶️ timerInterval pred obnovením:', timerInterval);
     
-    // Obnovenie časovača
-    startGameTimer();
-    
-    // Skrytie dialógového okna
-    const dialog = document.getElementById('dialogove-okno');
+    // Skrytie nového pause modalu
+    const pauseModal = document.getElementById('pause-modal');
     const blurBg = document.getElementById('blur-background');
     
-    if (dialog) dialog.style.display = 'none';
-    if (blurBg) blurBg.style.display = 'none';
+    if (pauseModal) {
+        pauseModal.style.display = 'none';
+        console.log('▶️ Pause modal skrytý');
+    } else {
+        console.error('❌ Pause modal nenájdený!');
+    }
+    
+    if (blurBg) {
+        blurBg.style.display = 'none';
+    }
     
     document.body.classList.remove('dialog-open');
     document.body.style.overflow = 'auto';
+    
+    console.log('▶️ Teraz volám resumeGameTimer()...');
+    
+    // Obnovenie časovača (bez resetovania času)
+    resumeGameTimer();
+    
+    console.log('▶️ Pause menu zatvorené');
 }
 
 /**
@@ -1794,8 +2088,13 @@ function showErrorMessage(message) {
  * Globálne funkcie pre onclick v HTML
  * Tieto funkcie sú dostupné z HTML súborov
  */
-window.openDialog1 = openPauseMenu;
-window.closeDialog1 = closePauseMenu;
+// Staré funkcie (pre spätnú kompatibilitu, ak sú ešte v HTML)
+// window.openDialog1 = openPauseMenu;
+// window.closeDialog1 = closePauseMenu;
+
+// Nové funkcie pre pause menu
+window.openPauseMenu = openPauseMenu;
+window.closePauseMenu = closePauseMenu;
 window.restartCurrentLevel = restartCurrentLevel;
 window.goToNextLevel = goToNextLevel;
 window.returnToMenu = returnToMenu;
@@ -1804,4 +2103,4 @@ window.returnToMenu = returnToMenu;
 // KONIEC SÚBORU
 // ==========================================
 
-console.log('📋 pexeso.js načítaný - verzia 2.0');
+console.log('📋 pexeso.js načítaný - verzia 2.3');

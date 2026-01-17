@@ -1457,3 +1457,282 @@ body {
         font-size: 10px;                 /* Menšie detaily */
     }
 }
+
+
+
+
+
+
+/* ===== PLYNULÝ COUNTDOWN INDIKÁTOR ===== */
+.time-display {
+    transition: color 0.3s ease;
+}
+
+/* Červené upozornenie keď ostáva málo času */
+.time-display.warning {
+    color: #ff6b6b !important;
+    animation: timePulse 1s ease-in-out infinite;
+}
+
+@keyframes timePulse {
+    0%, 100% {
+        transform: scale(1);
+        text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+    }
+    50% {
+        transform: scale(1.1);
+        text-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
+    }
+}
+
+/* Použitie warning triedy v JS keď time < 10 sekúnd */
+
+
+/* ===== NOVÉ PAUSE MENU CSS - UPRAVENÉ PRE KONZISTENTNÝ DIZAJN ===== */
+/* Pridaj do pexeso.css */
+
+/* Hlavný container pause menu */
+.pause-modal {
+    display: none; /* Skrytý na začiatku */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.14);
+    backdrop-filter: blur(9px);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+/* Overlay (tmavé pozadie) */
+.pause-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Samotný modal box */
+.pause-modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    
+    /* Rovnaké rozmery ako execise-window */
+    width: 70%;
+    max-width: 450px;
+    min-width: 400px;
+    
+    /* DÔLEŽITÉ: Používame ROVNAKÉ pozadie ako ostatné modaly */
+    background: url('../images/pozadie_button_mobile_2.png') lightgray 50% / cover no-repeat;
+    
+    /* Rovnaký border ako ostatné modaly */
+    border: 4px solid #ECCF17;
+    border-radius: 30px;
+    
+    /* Padding */
+    padding: 2rem 3rem;
+    box-sizing: border-box;
+    
+    /* Animácie */
+    transition: all 0.4s ease;
+}
+
+/* Header pause menu */
+.pause-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 0;
+    position: relative;
+}
+
+/* Nadpis "PAUZA" */
+.pause-modal-header h2 {
+    font-family: 'Luckiest Guy', sans-serif;
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-transform: uppercase;
+    margin: 0;
+    padding: 0;
+    
+    /* Gradient text ako ostatné texty */
+    background: linear-gradient(180deg, #EF0 0%, #FFD900 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
+    /* Text stroke */
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+}
+
+/* Close button (X) - ROVNAKÝ ako v pôvodnom .close */
+.pause-close-btn {
+    position: absolute;
+    top: -20px;
+    right: -10px;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    
+    /* Text štýl */
+    color: #FFF;
+    text-align: center;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    
+    /* Cursor */
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
+    
+    /* Animácie */
+    transition: transform 0.4s ease;
+    z-index: 1001;
+}
+
+.pause-close-btn:hover {
+    transform: rotate(15deg) scale(1.05);
+}
+
+/* Body pause menu */
+.pause-modal-body {
+    padding: 10px 0;
+}
+
+/* Menu navigácia */
+.pause-menu {
+    margin: 0;
+    padding: 0;
+}
+
+.pause-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.pause-menu li {
+    margin: 0;
+    padding: 0;
+}
+
+/* Tlačidlá pause menu - ROVNAKÉ ako .menu-button */
+.pause-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    
+    /* Rozmery tlačidla */
+    width: 100%;
+    min-width: 250px;
+    height: 64px;
+    flex-shrink: 0;
+    border-radius: 30px;
+    
+    /* Tieň */
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
+    
+    /* Border a pozadie - ROVNAKÉ ako ostatné tlačidlá */
+    border: 4px solid #AC3F0B;
+    background: url('../images/pozadie_button.png') lightgray 50% / cover no-repeat;
+    
+    /* Prechod pre animácie */
+    transition: all 0.3s ease;
+    
+    /* Text štýlovanie - ROVNAKÉ ako menu-button */
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    text-transform: uppercase;
+    text-align: center;
+    
+    /* Text stroke */
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    
+    /* Farba textu - BIELA ako v originálnych tlačidlách */
+    color: #FFF;
+    
+    /* Cursor */
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
+    z-index: 10000;
+}
+
+/* Hover efekt */
+.pause-button:hover {
+    box-shadow: inset 0 0 20px 2px rgba(236, 207, 23, 0.3);
+    border: 4px solid #ECCF17;
+    transform: scale(0.98);
+}
+
+/* Active efekt */
+.pause-button:active {
+    transform: translateY(0) scale(0.98);
+    filter: drop-shadow(2px 4px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Responsivita */
+@media (max-width: 768px) {
+    .pause-modal-content {
+        width: 90%;
+        min-width: 300px;
+        padding: 1.5rem 2rem;
+    }
+    
+    .pause-modal-header h2 {
+        font-size: 48px;
+    }
+    
+    .pause-close-btn {
+        font-size: 48px;
+        top: -15px;
+        right: -5px;
+    }
+    
+    .pause-button {
+        font-size: 24px;
+        height: 56px;
+        min-width: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .pause-modal-content {
+        width: 95%;
+        min-width: 280px;
+        padding: 1rem 1.5rem;
+    }
+    
+    .pause-modal-header h2 {
+        font-size: 36px;
+    }
+    
+    .pause-close-btn {
+        font-size: 40px;
+    }
+    
+    .pause-button {
+        font-size: 20px;
+        height: 48px;
+        min-width: 180px;
+    }
+}
