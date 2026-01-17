@@ -367,6 +367,9 @@ if (typeof window !== 'undefined') {
 document.addEventListener('DOMContentLoaded', async function() {
     console.log('🎮 Inicializujem pexeso hru...');
     
+    // 🔊 Inicializácia zvukových efektov
+    initializeSounds();
+    
     try {
         // 1. Spustenie preloadingu
         console.log('🎮 Spúšťam preloading pre pexeso...');
@@ -459,6 +462,152 @@ let isMultiplayerMode = false;   // Či je multiplayer režim
 
 // Speech recognition
 let recognition = null;          // Speech recognition objekt
+
+// ==========================================
+// 🔊 ZVUKOVÝ SYSTÉM
+// ==========================================
+
+// Zvukové efekty pre pexeso hru
+let sounds = {
+    flipCard: null,      // Otočenie karty - flipcard.mp3
+    matchFound: null,    // Nájdený pár - collectpoints.mp3
+    matchWrong: null,    // Nenájdený pár - incorrect.mp3
+    speechCorrect: null, // Správna výslovnosť - spravne.mp3
+    speechWrong: null,   // Nesprávna výslovnosť - zle.mp3
+    gameEnd: null,       // Koniec hry/výhra - winfantasia.mp3
+    mouseClick: null,    // Kliknutie myšou - mouseclick.mp3
+    tickTock: null       // Tick-tock posledných 10s - clock-tic-tac.mp3
+};
+
+/**
+ * Inicializácia zvukových efektov pomocou Howler.js
+ */
+function initializeSounds() {
+    console.log('🔊 Inicializujem zvukové efekty...');
+    
+    try {
+        // Kontrola či je Howler.js načítaný
+        if (typeof Howl === 'undefined') {
+            console.warn('⚠️ Howler.js nie je načítaný! Zvuky nebudú fungovať.');
+            return;
+        }
+        
+        // Otočenie karty
+        sounds.flipCard = new Howl({
+            src: ['zvuky/effects/flipcard.mp3'],
+            volume: 0.5,
+            onloaderror: () => console.warn('⚠️ Nepodarilo sa načítať: flipcard.mp3')
+        });
+        
+        // Nájdený pár
+        sounds.matchFound = new Howl({
+            src: ['zvuky/effects/collectpoints.mp3'],
+            volume: 0.5,
+            onloaderror: () => console.warn('⚠️ Nepodarilo sa načítať: collectpoints.mp3')
+        });
+        
+        // Nenájdený pár
+        sounds.matchWrong = new Howl({
+            src: ['zvuky/effects/incorrect.mp3'],
+            volume: 0.5,
+            onloaderror: () => console.warn('⚠️ Nepodarilo sa načítať: incorrect.mp3')
+        });
+        
+        // Správna výslovnosť
+        sounds.speechCorrect = new Howl({
+            src: ['zvuky/effects/spravne.mp3'],
+            volume: 0.5,
+            onloaderror: () => console.warn('⚠️ Nepodarilo sa načítať: spravne.mp3')
+        });
+        
+        // Nesprávna výslovnosť
+        sounds.speechWrong = new Howl({
+            src: ['zvuky/effects/zle.mp3'],
+            volume: 0.5,
+            onloaderror: () => console.warn('⚠️ Nepodarilo sa načítať: zle.mp3')
+        });
+        
+        // Koniec hry / výhra
+        sounds.gameEnd = new Howl({
+            src: ['zvuky/effects/winfantasia.mp3'],
+            volume: 0.5,
+            onloaderror: () => console.warn('⚠️ Nepodarilo sa načítať: winfantasia.mp3')
+        });
+        
+        // Kliknutie myšou
+        sounds.mouseClick = new Howl({
+            src: ['zvuky/effects/mouseclick.mp3'],
+            volume: 0.1,
+            onloaderror: () => console.warn('⚠️ Nepodarilo sa načítať: mouseclick.mp3')
+        });
+        
+        // Tick-tock (posledných 10 sekúnd)
+        sounds.tickTock = new Howl({
+            src: ['zvuky/effects/timer-20.mp3'],
+            volume: 0.4,
+            loop: true, // Opakuje sa kým sa nezastaví
+            onloaderror: () => console.warn('⚠️ Nepodarilo sa načítať: clock-tic-tac.mp3')
+        });
+        
+        console.log('✅ Zvukové efekty načítané');
+        
+    } catch (error) {
+        console.error('❌ Chyba pri inicializácii zvukov:', error);
+    }
+}
+
+/**
+ * Prehranie zvukového efektu
+ * @param {string} soundKey - Kľúč zvuku (napr. 'flipCard')
+ */
+function playSound(soundKey) {
+    try {
+        const sound = sounds[soundKey];
+        
+        if (!sound) {
+            console.warn(`⚠️ Zvuk "${soundKey}" neexistuje`);
+            return;
+        }
+        
+        // Pre tick-tock používame play/stop, nie restart
+        if (soundKey === 'tickTock') {
+            if (!sound.playing()) {
+                sound.play();
+            }
+        } else {
+            // Pre ostatné zvuky - zastavíme a znova prehrávame
+            if (sound.playing()) {
+                sound.stop();
+            }
+            sound.play();
+        }
+        
+    } catch (error) {
+        console.warn(`⚠️ Chyba pri prehrávaní zvuku "${soundKey}":`, error);
+    }
+}
+
+/**
+ * Zastavenie zvukového efektu
+ * @param {string} soundKey - Kľúč zvuku (napr. 'tickTock')
+ */
+function stopSound(soundKey) {
+    try {
+        const sound = sounds[soundKey];
+        
+        if (!sound) {
+            return;
+        }
+        
+        if (sound.playing()) {
+            sound.stop();
+        }
+        
+    } catch (error) {
+        console.warn(`⚠️ Chyba pri zastavení zvuku "${soundKey}":`, error);
+    }
+}
+
 
 // ==========================================
 // INICIALIZÁCIA HRY
@@ -898,6 +1047,9 @@ function flipCard(cardId) {
     card.isFlipped = true;
     flippedCards.push(card);
     
+    // 🔊 Zvuk otočenia karty
+    playSound('flipCard');
+    
     // Animácia otočenia karty (bez problémového "fix")
     cardElement.classList.add('flipping');
     
@@ -955,6 +1107,9 @@ function checkCardMatch() {
 function handleMatchFound(card1, card2) {
     console.log(`🎉 Pár nájdený: ${card1.word}!`);
     
+    // 🔊 Zvuk nájdeného páru
+    playSound('matchFound');
+    
     // Označenie kariet ako nájdených
     card1.isMatched = true;
     card2.isMatched = true;
@@ -986,6 +1141,9 @@ function handleMatchFound(card1, card2) {
  */
 function handleMatchNotFound(card1, card2) {
     console.log(`❌ Pár nenájdený: ${card1.word} vs ${card2.word}`);
+    
+    // 🔊 Zvuk nenájdeného páru
+    playSound('matchWrong');
     
     // Pridanie animácie pre nesprávne páry
     const card1Element = document.querySelector(`[data-card-id="${card1.id}"]`);
@@ -1074,6 +1232,9 @@ function switchToNextPlayer() {
  */
 function startSpeechExercise(word) {
     console.log(`🎤 Spúšťam rečové cvičenie pre slovo: ${word}`);
+    
+    // ⏰ Zastavenie časovača počas rečového cvičenia
+    stopGameTimer();
     
     // Zobrazenie modalu pre cvičenie
     showSpeechExerciseModal(word);
@@ -1207,6 +1368,9 @@ function handleCorrectSpeech() {
     console.log('✅ Slovo správne vyslovené!');
     
     correctSpeechCount++;
+    
+    // 🔊 Zvuk správnej výslovnosti
+    playSound('speechCorrect');
     showSpeechFeedback(true);
     
     setTimeout(() => {
@@ -1221,6 +1385,9 @@ function handleCorrectSpeech() {
  */
 function handleIncorrectSpeech(spokenWord, expectedWord) {
     console.log(`❌ Nesprávne vyslovené. Pokus ${speechAttempts}/${maxSpeechAttempts}`);
+    
+    // 🔊 Zvuk nesprávnej výslovnosti
+    playSound('speechWrong');
     
     showSpeechFeedback(false, speechAttempts, maxSpeechAttempts);
     
@@ -1343,6 +1510,9 @@ function completeSpeechExercise(wasSuccessful) {
     hideSpeechExerciseModal();
     hideSpeechFeedback();
     
+    // ⏰ Obnovenie časovača po rečovom cvičení
+    resumeGameTimer();
+    
     // Ak bolo rečové cvičenie neúspešné, otočíme karty späť
     if (!wasSuccessful && flippedCards.length === 2) {
         // Otočenie kariet späť po neúspešnom rečovom cvičení
@@ -1458,6 +1628,13 @@ function startGameTimer() {
             gameTime++; // Normálne počítanie času od nuly nahor
         }
         
+        
+        // 🔊 Tick-tock efekt posledných 10 sekúnd (len pri countdown)
+        if (currentLevel.timeLimit && gameTime <= 10 && gameTime > 0) {
+            playSound('tickTock');
+        } else {
+            stopSound('tickTock');
+        }
         updateTopPanel(); // Aktualizácia zobrazenia času
     }, 1000);
     
@@ -1495,6 +1672,13 @@ function resumeGameTimer() {
             gameTime++; // Normálne počítanie času od nuly nahor
         }
         
+        
+        // 🔊 Tick-tock efekt posledných 10 sekúnd (len pri countdown)
+        if (currentLevel.timeLimit && gameTime <= 10 && gameTime > 0) {
+            playSound('tickTock');
+        } else {
+            stopSound('tickTock');
+        }
         updateTopPanel(); // Aktualizácia zobrazenia času
     }, 1000);
     
@@ -1511,6 +1695,9 @@ function stopGameTimer() {
         timerInterval = null;
         console.log('⏰ Časovač zastavený');
     }
+    
+    // 🔊 Zastavenie tick-tock zvuku
+    stopSound('tickTock');
 }
 
 // ==========================================
@@ -1524,6 +1711,9 @@ function endGame() {
     console.log('🎉 Hra ukončená - víťazstvo!');
     
     stopGameTimer();
+    
+    // 🔊 Zvuk konca hry
+    playSound('gameEnd');
     
     // Výpočet výsledkov
     const gameResults = calculateGameResults();
@@ -1544,6 +1734,9 @@ function endGameTimeOut() {
     console.log('⏰ Hra ukončená - vypršal čas!');
     
     stopGameTimer();
+    
+    // 🔊 Zvuk konca hry (timeout)
+    playSound('gameEnd');
     
     const gameResults = calculateGameResults();
     gameResults.isTimeOut = true;
@@ -2100,7 +2293,16 @@ window.goToNextLevel = goToNextLevel;
 window.returnToMenu = returnToMenu;
 
 // ==========================================
+// 🔊 GLOBÁLNY CLICK LISTENER
+// ==========================================
+
+// Prehrá zvuk pri každom kliknutí myšou
+document.addEventListener('click', function() {
+    playSound('mouseClick');
+});
+
+// ==========================================
 // KONIEC SÚBORU
 // ==========================================
 
-console.log('📋 pexeso.js načítaný - verzia 2.3');
+console.log('📋 pexeso.js načítaný - verzia 2.4 (so zvukmi)');

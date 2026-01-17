@@ -1461,6 +1461,23 @@ body {
 
 
 
+/* Blikanie času v posledných 10 sekundách */
+#game-time.time-warning {
+    animation: time-blink 0.5s ease-in-out infinite;
+}
+
+@keyframes time-blink {
+    0%, 100% {
+        color: #ffffff;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    50% {
+        color: #ff0000;
+        text-shadow: 0 0 10px rgba(255, 0, 0, 0.8),
+                     2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+}
+
 
 
 /* ===== PLYNULÝ COUNTDOWN INDIKÁTOR ===== */
