@@ -1618,7 +1618,7 @@ const LEVELS_CONFIG = {
             name: 'Suka a srdce',
             gameType: 'banik',
             difficulty: 1,
-            words: ['slnko', 'sova', 'seno', 'soľ', 'suka', 'srdce'],  // 6 slov
+            words: ['slnko', 'sova', 'seno', 'soľ', 'silák', 'srdce'],  // 6 slov
             gameConfig: {
                 diamonds: 2,
                 golds: 3,
@@ -4521,7 +4521,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé Ž-čka',
             gameType: 'banik',
             difficulty: 3,
-            words: ['žula', 'nožík', 'koža', 'žaba' , 'žena', 'železo', 'pyžamo', 'žobrák', 'jazdec', 'žralok', 'žehliť', 'ležať'],
+            words: ['žula', 'nožík', 'koža', 'žaba' , 'žena', 'železo', 'pyžamo', 'žobrák', 'žralok', 'žehlička', 'ležať'],
             gameConfig: {
 				diamonds: 4,
                 golds: 6,
@@ -4565,7 +4565,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé Žka',
             gameType: 'banik',
             difficulty: 3,
-            words: ['žaba' , 'žena', 'železo', 'pyžamo', 'žobrák', 'jazdec', 'žralok', 'žehliť', 'ležať', 'bežať', 'žiletka', 'žuť', 'žolík', 'žatva'],
+            words: ['žaba', 'žena', 'železo', 'pyžamo', 'žobrák', 'žralok', 'žehliť', 'ležať', 'bežať', 'žiletka', 'žuť', 'žolík', 'žatva'],
             gameConfig: {
                 diamonds: 3,
                 golds: 4,
@@ -4607,7 +4607,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé Ž-čka',
             gameType: 'banik',
             difficulty: 3,
-            words: ['žaba' , 'žena', 'železo', 'pyžamo', 'žobrák', 'jazdec', 'žralok', 'žehliť', 'ležať', 'bežať', 'žiletka', 'žuť', 'žolík', 'žatva'],
+            words: ['žaba', 'žena', 'železo', 'pyžamo', 'žobrák', 'žralok', 'žehliť', 'ležať', 'bežať', 'žiletka', 'žuť', 'žolík', 'žatva'],
             gameConfig: {
                 diamonds: 2,
                 golds: 4,
@@ -4647,7 +4647,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé Ž-čka',
             gameType: 'banik',
             difficulty: 4,
-            words: ['koža', 'žaba' , 'žena', 'železo', 'pyžamo', 'žobrák', 'jazdec', 'žralok', 'žehliť', 'ležať', 'bežať', 'žiletka', 'žuť', 'žolík', 'žatva', 'žaluď'],
+            words: ['koža', 'žaba' , 'žena', 'železo', 'pyžamo', 'žobrák', 'žralok', 'žehliť', 'ležať', 'bežať', 'žiletka', 'žuť', 'žolík', 'žatva', 'žaluď'],
             gameConfig: {
                 diamonds: 5,
                 golds: 3,
@@ -4689,7 +4689,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé Š-čka',
             gameType: 'banik',
             difficulty: 4,
-            words: ['koža', 'žaba' , 'žena', 'železo', 'pyžamo', 'žobrák', 'jazdec', 'žralok', 'žehliť', 'ležať', 'bežať', 'žiletka', 'žuť', 'žolík', 'žatva', 'žaluď'],
+            words: ['koža', 'žaba' , 'žena', 'železo', 'pyžamo', 'žobrák', 'žralok', 'žehliť', 'ležať', 'bežať', 'žiletka', 'žuť', 'žolík', 'žatva', 'žaluď'],
             gameConfig: {
                 diamonds: 2,
                 golds: 4,
@@ -4729,7 +4729,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé Ž-čka',
             gameType: 'banik',
             difficulty: 4,
-            words: ['žena', 'železo', 'pyžamo', 'žobrák', 'jazdec', 'žralok', 'žehliť', 'ležať', 'bežať', 'žiletka', 'žuť', 'žolík', 'žatva', 'žaluď', 'ruža', 'žuvačka'],
+            words: ['žena', 'železo', 'pyžamo', 'žobrák', 'žralok', 'žehliť', 'ležať', 'bežať', 'žiletka', 'žuť', 'žolík', 'žatva', 'žaluď', 'ruža', 'žuvačka'],
             gameConfig: {
                 diamonds: 2,
                 golds: 4,

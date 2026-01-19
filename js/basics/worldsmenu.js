@@ -1357,6 +1357,34 @@ function createPexesoTrainingModalIfNotExists() {
     console.log('✅ Pexeso training modal vytvorený');
 }
 
+function updatePexesoSelectionCounter() {
+    const selectedCount = document.querySelectorAll('#pexeso-words-list .word-item.selected').length;
+    
+    let counterElement = document.getElementById('pexeso-selection-counter');
+    
+    if (!counterElement) {
+        counterElement = document.createElement('div');
+        counterElement.id = 'pexeso-selection-counter';
+        counterElement.className = 'selection-counter';
+        
+        const wordsContainer = document.getElementById('pexeso-words-scrollable-container');
+        if (wordsContainer) {
+            wordsContainer.insertBefore(counterElement, wordsContainer.firstChild);
+        }
+    }
+    
+
+    
+    counterElement.className = 'selection-counter';
+    if (selectedCount < 3) {
+        counterElement.classList.add('too-few');
+    } else if (selectedCount >= 20) {
+        counterElement.classList.add('at-max');
+    } else {
+        counterElement.classList.add('ok');
+    }
+}
+
 /**
  * Naplnenie pexeso training modalu dátami
  */
@@ -1386,6 +1414,7 @@ function populatePexesoTrainingModal() {
         playersCountSelect.value = "1";
         updatePexesoPlayersNames(1);
     }
+    updatePexesoSelectionCounter();
 }
 
 /**
@@ -1450,10 +1479,20 @@ function createPexesoWordElement(word, isUnlocked = true, worldName = null) {
         if (this.classList.contains('selected')) {
             this.classList.remove('selected');
             console.log('Slovo odznačené:', word);
-        } else {
+        } 
+
+        const selectedCount = document.querySelectorAll('#pexeso-words-list .word-item.selected').length;
+        if (selectedCount >= 20){
+            // Zobraz upozornenie
+            alert('⚠️ Dosiahli ste maximum 20 slov!');
+            return; // Neoznač slovo
+        }
+
+        
             this.classList.add('selected');
             console.log('Slovo označené:', word);
-        }
+            updatePexesoSelectionCounter();
+        
     });
     
     return wordElement;
@@ -1608,6 +1647,12 @@ function startPexesoTrainingLevel() {
     // Kontrola minimálneho počtu slov
     if (selectedWords.length < 3) {
         alert('Prosím vyberte aspoň 3 slová pre pexeso tréning!');
+        return;
+    }
+
+    // Kontrola maximálneho počtu slov
+    if (selectedWords.length > 20) {
+        alert('Prosím vyberte maximálne 20 slóv pre pexeso tréning!');
         return;
     }
     

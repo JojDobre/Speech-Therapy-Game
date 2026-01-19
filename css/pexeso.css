@@ -127,6 +127,62 @@ body {
     50% { opacity: 1; }
 }
 
+/* Hlavný kontajner pre progress bar          */
+/* Obsahuje progress bar a textové informácie */
+.loading-progress-container {
+    width: 100%;                    /* Celá šírka */
+    max-width: 400px;              /* Maximálna šírka 400px */
+    margin: 1.5rem auto 0;         /* Vertikálny spacing a centrovanie */
+}
+
+/* Progress Bar (pozadie)                     */
+/* Sivý pruh ktorý reprezentuje 0-100%        */
+.loading-progress-bar {
+    width: 100%;                                        /* Celá šírka kontajnera */
+    height: 8px;                                       /* Výška progress baru */
+    background-color: rgba(236, 207, 23, 0.2);        /* Priehľadná žltá farba pozadia */
+    border-radius: 4px;                                /* Zaoblené rohy */
+    overflow: hidden;                                  /* Skryje obsah mimo progress baru */
+    margin-bottom: 0.5rem;                            /* Spacing pod progress barom */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);  /* Vnútorný tieň pre 3D efekt */
+}
+
+/* Progress Fill (žltý pásik)                 */
+/* Animovaný žltý pásik ktorý sa napĺňa       */
+.loading-progress-fill {
+    height: 100%;                                                      /* Celá výška progress baru */
+    width: 0%;                                                        /* Začína na 0% */
+    background: linear-gradient(90deg, #ECCF17 0%, #FFE55C 50%, #ECCF17 100%);  /* Žltý gradient */
+    border-radius: 4px;                                               /* Zaoblené rohy */
+    transition: width 0.3s ease;                                      /* Plynulá animácia šírky */
+    box-shadow: 0 0 10px rgba(236, 207, 23, 0.5);                    /* Žltý svietiaci efekt */
+}
+
+/* Progress Text (percentá a detaily)         */
+/* Zobrazuje percento a počet načítaných zdrojov */
+.loading-progress-text {
+    display: flex;                       /* Flexbox pre rozmiestnenie textu */
+    justify-content: space-between;      /* Text na ľavej a pravej strane */
+    align-items: center;                 /* Vertikálne vycentrovanie */
+    font-family: "Luckiest Guy", sans-serif;  /* Font rovnaký ako v hre */
+    color: #ECCF17;                      /* Žltá farba textu */
+    font-size: 14px;                     /* Veľkosť textu */
+}
+
+/* Progress Percentage (napr. "75%")         */
+/* Zobrazuje aktuálne percento načítania      */
+#loading-progress-percentage {
+    font-size: 16px;                     /* Väčší text pre percento */
+    font-weight: bold;                   /* Tučný text */
+}
+
+/* Progress Details (napr. "15/20 zdrojov")  */
+/* Zobrazuje počet načítaných zdrojov         */
+#loading-progress-details {
+    font-size: 12px;                     /* Menší text pre detaily */
+    opacity: 0.8;                        /* Mierne priehľadný text */
+}
+
 
 
 /* ============================ */
@@ -749,6 +805,55 @@ body {
     position: relative;                /* Pre správne poziciovanie */
 }
 
+.card-container:hover {
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
+    box-shadow: 0 0 20px 2px #ECCF17 inset;
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
+    scale: 0.98;
+}
+
+/* ===== ANIMÁCIA OTÁČANIA KARIET ===== */
+.card-container.flipping {
+    transform: rotateY(90deg) scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+/* ===== ANIMÁCIA PRE NESPRÁVNE PÁRY (TRASENIE) ===== */
+@keyframes wrongMatch {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+    100% { transform: translateX(0); }
+}
+
+.card-container.wrong-match {
+    animation: wrongMatch 0.5s ease;
+    border-color: #ff4757 !important;
+    box-shadow: 0 0 15px 2px rgba(255, 71, 87, 0.5) inset !important;
+}
+
+/* ===== ANIMÁCIA PRE SPRÁVNU ODPOVEĎ (NÁJDENÝ PÁR) ===== */
+@keyframes correctMatch {
+    0% { 
+        border-color: #16B921;
+        box-shadow: 0 0 15px 2px rgba(22, 185, 33, 0.3) inset;
+    }
+    50% { 
+        border-color: #1ED929;
+        box-shadow: 0 0 25px 4px rgba(30, 217, 41, 0.6) inset;
+        transform: scale(1.08);
+    }
+    100% { 
+        border-color: #16B921;
+        box-shadow: 0 0 15px 2px rgba(22, 185, 33, 0.3) inset;
+        transform: scale(1.02);
+    }
+}
+
+.card-container.correct-match {
+    animation: correctMatch 0.6s ease;
+}
+
 /* =========================================== */
 /* ZÁKLADNÉ OBRÁZKY A TEXT V KARTÁCH          */
 /* =========================================== */
@@ -767,6 +872,478 @@ body {
     font-size: 32px;                        /* Predvolená veľkosť textu */
 }
 
+
+/* =========================================== */
+/* Blikanie času v posledných 10 sekundách */
+/* =========================================== */
+#game-time.time-warning {
+    animation: time-blink 0.5s ease-in-out infinite;
+}
+
+@keyframes time-blink {
+    0%, 100% {
+        color: #ffffff;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    50% {
+        color: #ff0000;
+        text-shadow: 0 0 10px rgba(255, 0, 0, 0.8),
+                     2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+}
+
+.time-display {
+    transition: color 0.3s ease;
+}
+
+/* Červené upozornenie keď ostáva málo času */
+.time-display.warning {
+    color: #ff6b6b !important;
+    animation: timePulse 1s ease-in-out infinite;
+}
+
+@keyframes timePulse {
+    0%, 100% {
+        transform: scale(1);
+        text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+    }
+    50% {
+        transform: scale(1.1);
+        text-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
+    }
+}
+
+/* =========================================== */
+/* ===== PAUSE MENU  ===== */
+/* =========================================== */
+
+/* Hlavný container pause menu */
+.pause-modal {
+    display: none; /* Skrytý na začiatku */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.14);
+    backdrop-filter: blur(9px);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+/* Overlay (tmavé pozadie) */
+.pause-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Samotný modal box */
+.pause-modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    
+    /* Rovnaké rozmery ako execise-window */
+    width: 70%;
+    max-width: 450px;
+    min-width: 400px;
+    
+    /* DÔLEŽITÉ: Používame ROVNAKÉ pozadie ako ostatné modaly */
+    background: url('../images/pozadie_button_mobile_2.png') lightgray 50% / cover no-repeat;
+    
+    /* Rovnaký border ako ostatné modaly */
+    border: 4px solid #ECCF17;
+    border-radius: 30px;
+    
+    /* Padding */
+    padding: 2rem 3rem;
+    box-sizing: border-box;
+    
+    /* Animácie */
+    transition: all 0.4s ease;
+}
+
+/* Header pause menu */
+.pause-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 0;
+    position: relative;
+}
+
+/* Nadpis "PAUZA" */
+.pause-modal-header h2 {
+    font-family: 'Luckiest Guy', sans-serif;
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-transform: uppercase;
+    margin: 0;
+    padding: 0;
+    
+    /* Gradient text ako ostatné texty */
+    background: linear-gradient(180deg, #EF0 0%, #FFD900 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
+    /* Text stroke */
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+}
+
+/* Close button (X) - ROVNAKÝ ako v pôvodnom .close */
+.pause-close-btn {
+    position: absolute;
+    top: -20px;
+    right: -10px;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    
+    /* Text štýl */
+    color: #FFF;
+    text-align: center;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    
+    /* Cursor */
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
+    
+    /* Animácie */
+    transition: transform 0.4s ease;
+    z-index: 1001;
+}
+
+.pause-close-btn:hover {
+    transform: rotate(15deg) scale(1.05);
+}
+
+/* Body pause menu */
+.pause-modal-body {
+    padding: 10px 0;
+}
+
+/* Menu navigácia */
+.pause-menu {
+    margin: 0;
+    padding: 0;
+}
+
+.pause-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.pause-menu li {
+    margin: 0;
+    padding: 0;
+}
+
+.pause-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    
+    /* Rozmery tlačidla */
+    width: 100%;
+    min-width: 250px;
+    height: 64px;
+    flex-shrink: 0;
+    border-radius: 30px;
+    
+    /* Tieň */
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
+    
+    /* Border a pozadie - ROVNAKÉ ako ostatné tlačidlá */
+    border: 4px solid #AC3F0B;
+    background: url('../images/pozadie_button.png') lightgray 50% / cover no-repeat;
+    
+    /* Prechod pre animácie */
+    transition: all 0.3s ease;
+    
+    /* Text štýlovanie - ROVNAKÉ ako menu-button */
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    text-transform: uppercase;
+    text-align: center;
+    
+    /* Text stroke */
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+    
+    /* Farba textu - BIELA ako v originálnych tlačidlách */
+    color: #FFF;
+    
+    /* Cursor */
+    cursor: url('../images/active_cursor4.png') 5 5, pointer;
+    z-index: 10000;
+}
+
+.pause-button:hover {
+    box-shadow: inset 0 0 20px 2px rgba(236, 207, 23, 0.3);
+    border: 4px solid #ECCF17;
+    transform: scale(0.98);
+}
+
+.pause-button:active {
+    transform: translateY(0) scale(0.98);
+    filter: drop-shadow(2px 4px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* =============================================== */
+/* side panel s hráčmi */
+/* =============================================== */
+.side-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 300px;
+    min-height: 800px;
+    max-height: 800px;
+
+}
+.players-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    min-height: 158px;
+    border-radius: 30px;
+    border: 4px solid #AC3F0B;
+    background-image: url('../images/pozadie_button_mobile_2.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 20px;
+    box-sizing: border-box;
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
+}
+
+.players-panel :active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    min-height: 158px;
+    background-image: url('../images/pozadie_button_mobile_2.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 20px;
+    box-sizing: border-box;
+    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
+    border-radius: 30px;
+    border: 4px solid #ECCF17;
+    box-shadow: 0 0 20px 2px #ECCF17 inset;
+}
+
+.players-panel span {
+    font-size: 60px;
+    color: #FFF;
+    text-align: center;
+    text-transform: uppercase;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+}
+
+.players-panel h1 {
+    font-size: 40px;
+    margin: 0;
+    padding: 0;
+}
+
+.players-panel .name  {
+    background: linear-gradient(180deg, #EF0 0%, #FFD900 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: unset;
+}
+
+.player-1 .name {
+    background: linear-gradient(176deg, #00E5FF 3.52%, #2494A1 96.48%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.player-2 .name {
+    background: linear-gradient(176deg, #1EFF00 3.52%, #8EE046 96.48%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.player-3 .name {
+    background: linear-gradient(176deg, #5579D4 3.52%, #008CFF 96.48%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.player-4 .name {
+    background: linear-gradient(176deg, #D455D2 3.52%, #F0D 96.48%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ==========================================
+   POČÍTADLO VYBRANÝCH SLOV - "Vybraných: X / 14 slov"
+   ========================================== */
+
+.selection-counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(236, 207, 23, 0.3);
+    border-radius: 12px;
+    font-family: "Luckiest Guy", sans-serif;
+    transition: all 0.3s ease;
+}
+
+.counter-label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 16px;
+    -webkit-text-stroke: 0.5px #000;
+}
+
+.counter-value {
+    color: #ECCF17;
+    font-size: 28px;
+    font-weight: bold;
+    -webkit-text-stroke: 1px #000;
+    transition: all 0.3s ease;
+}
+
+.counter-separator {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 20px;
+}
+
+.counter-max {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 20px;
+    -webkit-text-stroke: 0.5px #000;
+}
+
+.counter-suffix {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 16px;
+    -webkit-text-stroke: 0.5px #000;
+}
+
+/* Stavy počítadla */
+.selection-counter.too-few {
+    border-color: rgba(255, 71, 87, 0.6);
+    background: rgba(255, 71, 87, 0.1);
+}
+
+.selection-counter.too-few .counter-value {
+    color: #ff4757;
+}
+
+.selection-counter.ok {
+    border-color: rgba(76, 209, 55, 0.6);
+    background: rgba(76, 209, 55, 0.1);
+}
+
+.selection-counter.ok .counter-value {
+    color: #4CD137;
+}
+
+.selection-counter.at-max {
+    border-color: rgba(255, 165, 0, 0.8);
+    background: rgba(255, 165, 0, 0.15);
+}
+
+.selection-counter.at-max .counter-value {
+    color: #FFA500;
+}
+
+/* Upozornenie o limite */
+.pexeso-selection-limit-warning {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10000;
+    background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
+    border: 4px solid #AC3F0B;
+    border-radius: 20px;
+    padding: 25px 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    animation: slideInBounce 0.5s ease-out;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.warning-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.warning-icon {
+    font-size: 40px;
+}
+
+.warning-text {
+    color: #FFFFFF;
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    -webkit-text-stroke: 2px #AC3F0B;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes slideInBounce {
+    0% {
+        transform: translate(-50%, -150%);
+        opacity: 0;
+    }
+    60% {
+        transform: translate(-50%, -45%);
+        opacity: 1;
+    }
+    80% {
+        transform: translate(-50%, -52%);
+    }
+    100% {
+        transform: translate(-50%, -50%);
+    }
+}
 
 /* =============================================== */
 /* AUTOMATICKÉ RESPONZÍVNE PRAVIDLÁ               */
@@ -1062,38 +1639,42 @@ body {
     font-size: 10px;
 }
 
-/* ===== 38-40 KARIET - veľmi malé karty ===== */
+
+
+/* ===== 38-41 KARIET - veľmi malé karty ===== */
 #gameCanvas.cards-38 .card-container,
 #gameCanvas.cards-39 .card-container,
-#gameCanvas.cards-40 .card-container {
-    width: 95px;
-    height: 95px;
-    margin: 3px;
+#gameCanvas.cards-40 .card-container,
+#gameCanvas.cards-41 .card-container {
+    width: 100px;
+    height: 100px;
+    margin: 4px;
 }
 #gameCanvas.cards-38 .card-container img,
 #gameCanvas.cards-39 .card-container img,
-#gameCanvas.cards-40 .card-container img {
+#gameCanvas.cards-40 .card-container img,
+#gameCanvas.cards-41 .card-container.img {
     width: 50px;
     height: 50px;
 }
 #gameCanvas.cards-38 .card-container span,
 #gameCanvas.cards-39 .card-container span,
-#gameCanvas.cards-40 .card-container span {
-    font-size: 16px;
+#gameCanvas.cards-40 .card-container span,
+#gameCanvas.cards-41 .card-container.span {
+    font-size: 18px;
 }
 #gameCanvas.cards-38 .card-container.flipped span,
 #gameCanvas.cards-39 .card-container.flipped span,
-#gameCanvas.cards-40 .card-container.flipped span {
-    font-size: 9px;
+#gameCanvas.cards-40 .card-container.flipped span,
+#gameCanvas.cards-41 .card-container.flipped span {
+    font-size: 10px;
 }
 
 
 /* =============================================== */
-/* RESPONZÍVNOSŤ PRE MOBILNÉ ZARIADENIA           */
-/* Pre obrazovky menšie ako 900px                 */
+/* RESPONZÍVNOSŤ KARIET         */           
 /* =============================================== */
-
-@media (max-width: 900px) {
+@media (max-width: 930px) {
     /* Ešte viac zmenšíme karty pre mobily */
     
     #gameCanvas.cards-16 .card-container {
@@ -1147,9 +1728,126 @@ body {
         width: 45px;
         height: 45px;
     }
+
+    /* ===== 38-41 KARIET - veľmi malé karty ===== */
+    #gameCanvas.cards-35 .card-container,
+    #gameCanvas.cards-36 .card-container,
+    #gameCanvas.cards-37 .card-container,
+    #gameCanvas.cards-38 .card-container,
+    #gameCanvas.cards-39 .card-container,
+    #gameCanvas.cards-40 .card-container,
+    #gameCanvas.cards-41 .card-container {
+        max-width: 13%; 
+        margin: 4px;
+        aspect-ratio: 1/1;
+    }
+
+    .card-container img {
+        width: 60%;
+        height: 60%;
+    }
+    
+    .card-container span {
+        font-size: 14px;
+        display: none; 
+    }
+    
+    .card-container.flipped span {
+        display: block;
+        font-size: 10px; 
+        width: 100%;
+        overflow: hidden;
+    }
 }
 
-@media (max-width: 600px) {
+
+@media (max-width: 765px) {
+    /* Ešte viac zmenšíme karty pre mobily */
+    
+    #gameCanvas.cards-16 .card-container {
+        width: 140px;
+        height: 140px;
+        margin: 8px;
+    }
+    #gameCanvas.cards-16 .card-container img {
+        width: 75px;
+        height: 75px;
+    }
+    
+    #gameCanvas.cards-20 .card-container {
+        width: 120px;
+        height: 120px;
+        margin: 6px;
+    }
+    #gameCanvas.cards-20 .card-container img {
+        width: 65px;
+        height: 65px;
+    }
+    
+    #gameCanvas.cards-24 .card-container,
+    #gameCanvas.cards-25 .card-container {
+        width: 105px;
+        height: 105px;
+        margin: 5px;
+    }
+    #gameCanvas.cards-24 .card-container img,
+    #gameCanvas.cards-25 .card-container img {
+        width: 56px;
+        height: 56px;
+    }
+    
+    #gameCanvas.cards-30 .card-container {
+        width: 95px;
+        height: 95px;
+        margin: 4px;
+    }
+    #gameCanvas.cards-30 .card-container img {
+        width: 50px;
+        height: 50px;
+    }
+    
+    #gameCanvas.cards-36 .card-container {
+        width: 85px;
+        height: 85px;
+        margin: 3px;
+    }
+    #gameCanvas.cards-36 .card-container img {
+        width: 45px;
+        height: 45px;
+    }
+
+    /* ===== 38-41 KARIET - veľmi malé karty ===== */
+    #gameCanvas.cards-35 .card-container,
+    #gameCanvas.cards-36 .card-container,
+    #gameCanvas.cards-37 .card-container,
+    #gameCanvas.cards-38 .card-container,
+    #gameCanvas.cards-39 .card-container,
+    #gameCanvas.cards-40 .card-container,
+    #gameCanvas.cards-41 .card-container {
+        max-width: 10%; 
+        margin: 4px;
+        aspect-ratio: 1/1;
+    }
+
+    .card-container img {
+        width: 60%;
+        height: 60%;
+    }
+    
+    .card-container span {
+        font-size: 14px;
+        display: none; 
+    }
+    
+    .card-container.flipped span {
+        display: block;
+        font-size: 10px; 
+        width: 100%;
+        overflow: hidden;
+    }
+}
+
+@media (max-width: 630px) {
     /* Ešte menšie pre veľmi malé obrazovky */
     
     #gameCanvas.cards-16 .card-container {
@@ -1195,544 +1893,408 @@ body {
         width: 38px;
         height: 38px;
     }
-}
-
-.card-container:hover {
-    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
-    box-shadow: 0 0 20px 2px #ECCF17 inset;
-    cursor: url('../images/active_cursor4.png') 5 5, pointer;
-    scale: 0.98;
-}
 
 
-
-
-/* ===== ANIMÁCIA OTÁČANIA KARIET ===== */
-.card-container.flipping {
-    transform: rotateY(90deg) scale(1.05);
-    transition: transform 0.3s ease;
-}
-
-/* ===== ANIMÁCIA PRE NESPRÁVNE PÁRY (TRASENIE) ===== */
-@keyframes wrongMatch {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-    100% { transform: translateX(0); }
-}
-
-.card-container.wrong-match {
-    animation: wrongMatch 0.5s ease;
-    border-color: #ff4757 !important;
-    box-shadow: 0 0 15px 2px rgba(255, 71, 87, 0.5) inset !important;
-}
-
-/* ===== ANIMÁCIA PRE SPRÁVNU ODPOVEĎ (NÁJDENÝ PÁR) ===== */
-@keyframes correctMatch {
-    0% { 
-        border-color: #16B921;
-        box-shadow: 0 0 15px 2px rgba(22, 185, 33, 0.3) inset;
+    /* ===== 38-41 KARIET - veľmi malé karty ===== */
+    #gameCanvas.cards-35 .card-container,
+    #gameCanvas.cards-36 .card-container,
+    #gameCanvas.cards-37 .card-container,
+    #gameCanvas.cards-38 .card-container,
+    #gameCanvas.cards-39 .card-container,
+    #gameCanvas.cards-40 .card-container,
+    #gameCanvas.cards-41 .card-container {
+        max-width: 8%; 
+        margin: 2px;
+        aspect-ratio: 1/1;
     }
-    50% { 
-        border-color: #1ED929;
-        box-shadow: 0 0 25px 4px rgba(30, 217, 41, 0.6) inset;
-        transform: scale(1.08);
+
+    #gameCanvas.cards-38 .card-container img, 
+    #gameCanvas.cards-39 .card-container img, 
+    #gameCanvas.cards-40 .card-container img, 
+    #gameCanvas.cards-41 .card-container.img {
+        width: 80%;
+        height: 80%;
     }
-    100% { 
-        border-color: #16B921;
-        box-shadow: 0 0 15px 2px rgba(22, 185, 33, 0.3) inset;
-        transform: scale(1.02);
-    }
-}
 
-.card-container.correct-match {
-    animation: correctMatch 0.6s ease;
-}
-
-/* side panel s hráčmi */
-.side-panel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    width: 300px;
-    min-height: 800px;
-    max-height: 800px;
-
-}
-.players-panel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    width: 100%;
-    min-height: 158px;
-    border-radius: 30px;
-    border: 4px solid #AC3F0B;
-    background-image: url('../images/pozadie_button_mobile_2.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    padding: 20px;
-    box-sizing: border-box;
-    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
-}
-
-.players-panel :active {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    width: 100%;
-    min-height: 158px;
-    background-image: url('../images/pozadie_button_mobile_2.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    padding: 20px;
-    box-sizing: border-box;
-    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
-    border-radius: 30px;
-    border: 4px solid #ECCF17;
-    box-shadow: 0 0 20px 2px #ECCF17 inset;
-}
-
-.players-panel span {
-    font-size: 60px;
-    color: #FFF;
-    text-align: center;
-    text-transform: uppercase;
-    -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: #000;
-}
-
-.players-panel h1 {
-    font-size: 40px;
-    margin: 0;
-    padding: 0;
-}
-
-.players-panel .name  {
-    background: linear-gradient(180deg, #EF0 0%, #FFD900 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    -webkit-text-stroke: unset;
-}
-
-.player-1 .name {
-    background: linear-gradient(176deg, #00E5FF 3.52%, #2494A1 96.48%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.player-2 .name {
-    background: linear-gradient(176deg, #1EFF00 3.52%, #8EE046 96.48%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.player-3 .name {
-    background: linear-gradient(176deg, #5579D4 3.52%, #008CFF 96.48%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.player-4 .name {
-    background: linear-gradient(176deg, #D455D2 3.52%, #F0D 96.48%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-
-
-
-
-
-
-
-
-
-
-/* =============================================== */
-/* PROGRESS BAR PRE PRELOADING V PEXESE          */
-/* Tieto štýly sa pridávajú do css/pexeso.css    */
-/* =============================================== */
-
-/* =========================================== */
-/* Hlavný kontajner pre progress bar          */
-/* Obsahuje progress bar a textové informácie */
-/* =========================================== */
-.loading-progress-container {
-    width: 100%;                    /* Celá šírka */
-    max-width: 400px;              /* Maximálna šírka 400px */
-    margin: 1.5rem auto 0;         /* Vertikálny spacing a centrovanie */
-}
-
-/* =========================================== */
-/* Progress Bar (pozadie)                     */
-/* Sivý pruh ktorý reprezentuje 0-100%        */
-/* =========================================== */
-.loading-progress-bar {
-    width: 100%;                                        /* Celá šírka kontajnera */
-    height: 8px;                                       /* Výška progress baru */
-    background-color: rgba(236, 207, 23, 0.2);        /* Priehľadná žltá farba pozadia */
-    border-radius: 4px;                                /* Zaoblené rohy */
-    overflow: hidden;                                  /* Skryje obsah mimo progress baru */
-    margin-bottom: 0.5rem;                            /* Spacing pod progress barom */
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);  /* Vnútorný tieň pre 3D efekt */
-}
-
-/* =========================================== */
-/* Progress Fill (žltý pásik)                 */
-/* Animovaný žltý pásik ktorý sa napĺňa       */
-/* =========================================== */
-.loading-progress-fill {
-    height: 100%;                                                      /* Celá výška progress baru */
-    width: 0%;                                                        /* Začína na 0% */
-    background: linear-gradient(90deg, #ECCF17 0%, #FFE55C 50%, #ECCF17 100%);  /* Žltý gradient */
-    border-radius: 4px;                                               /* Zaoblené rohy */
-    transition: width 0.3s ease;                                      /* Plynulá animácia šírky */
-    box-shadow: 0 0 10px rgba(236, 207, 23, 0.5);                    /* Žltý svietiaci efekt */
-}
-
-/* =========================================== */
-/* Progress Text (percentá a detaily)         */
-/* Zobrazuje percento a počet načítaných zdrojov */
-/* =========================================== */
-.loading-progress-text {
-    display: flex;                       /* Flexbox pre rozmiestnenie textu */
-    justify-content: space-between;      /* Text na ľavej a pravej strane */
-    align-items: center;                 /* Vertikálne vycentrovanie */
-    font-family: "Luckiest Guy", sans-serif;  /* Font rovnaký ako v hre */
-    color: #ECCF17;                      /* Žltá farba textu */
-    font-size: 14px;                     /* Veľkosť textu */
-}
-
-/* =========================================== */
-/* Progress Percentage (napr. "75%")         */
-/* Zobrazuje aktuálne percento načítania      */
-/* =========================================== */
-#loading-progress-percentage {
-    font-size: 16px;                     /* Väčší text pre percento */
-    font-weight: bold;                   /* Tučný text */
-}
-
-/* =========================================== */
-/* Progress Details (napr. "15/20 zdrojov")  */
-/* Zobrazuje počet načítaných zdrojov         */
-/* =========================================== */
-#loading-progress-details {
-    font-size: 12px;                     /* Menší text pre detaily */
-    opacity: 0.8;                        /* Mierne priehľadný text */
-}
-
-/* =========================================== */
-/* RESPONZÍVNOSŤ PRE MOBILY                  */
-/* Media query pre malé obrazovky (< 480px)  */
-/* =========================================== */
-@media (max-width: 480px) {
-    /* Menší kontajner na mobiloch */
-    .loading-progress-container {
-        max-width: 300px;                /* Užšia šírka pre mobily */
+    .card-container img {
+        width: 40%;
+        height: 40%;
     }
     
-    /* Menší text na mobiloch */
-    .loading-progress-text {
-        font-size: 12px;                 /* Menší základný text */
+    .card-container span {
+        font-size: 12px;
+        display: none; 
     }
     
-    /* Menšie percento na mobiloch */
-    #loading-progress-percentage {
-        font-size: 14px;                 /* Menšie percento */
+    .card-container.flipped span {
+        display: block;
+        font-size: 9px; 
+        width: 100%;
+        overflow: hidden;
+    }
+}
+
+@media (max-width: 445px) {
+    /* Ešte menšie pre veľmi malé obrazovky */
+    
+    #gameCanvas.cards-16 .card-container {
+        width: 110px;
+        height: 110px;
+        margin: 5px;
+    }
+    #gameCanvas.cards-16 .card-container img {
+        width: 58px;
+        height: 58px;
     }
     
-    /* Menšie detaily na mobiloch */
-    #loading-progress-details {
-        font-size: 10px;                 /* Menšie detaily */
+    #gameCanvas.cards-20 .card-container {
+        width: 95px;
+        height: 95px;
+        margin: 4px;
+    }
+    #gameCanvas.cards-20 .card-container img {
+        width: 50px;
+        height: 50px;
+    }
+    
+    #gameCanvas.cards-24 .card-container,
+    #gameCanvas.cards-25 .card-container {
+        width: 85px;
+        height: 85px;
+        margin: 3px;
+    }
+    #gameCanvas.cards-24 .card-container img,
+    #gameCanvas.cards-25 .card-container img {
+        width: 45px;
+        height: 45px;
+    }
+    
+    #gameCanvas.cards-30 .card-container,
+    #gameCanvas.cards-36 .card-container {
+        width: 70px;
+        height: 70px;
+        margin: 2px;
+    }
+    #gameCanvas.cards-30 .card-container img,
+    #gameCanvas.cards-36 .card-container img {
+        width: 38px;
+        height: 38px;
+    }
+
+
+    /* ===== 38-41 KARIET - veľmi malé karty ===== */
+    #gameCanvas.cards-35 .card-container,
+    #gameCanvas.cards-36 .card-container,
+    #gameCanvas.cards-37 .card-container,
+    #gameCanvas.cards-38 .card-container,
+    #gameCanvas.cards-39 .card-container,
+    #gameCanvas.cards-40 .card-container,
+    #gameCanvas.cards-41 .card-container {
+        max-width: 8%; 
+        margin: 1px;
+        aspect-ratio: 1/1;
+    }
+
+    #gameCanvas.cards-38 .card-container img, 
+    #gameCanvas.cards-39 .card-container img, 
+    #gameCanvas.cards-40 .card-container img, 
+    #gameCanvas.cards-41 .card-container.img {
+        width: 80%;
+    }
+
+    .card-container img {
+        width: 40%;
+    }
+    
+    .card-container span {
+        font-size: 10px;
+        display: none; 
+    }
+    
+    .card-container.flipped span {
+        display: block;
+        font-size: 7px; 
+        width: 100%;
+        overflow: hidden;
     }
 }
 
 
-
-
-/* Blikanie času v posledných 10 sekundách */
-#game-time.time-warning {
-    animation: time-blink 0.5s ease-in-out infinite;
-}
-
-@keyframes time-blink {
-    0%, 100% {
-        color: #ffffff;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+/* =========================================== */
+/* RESPONZÍVNOSŤ                 */
+/* =========================================== */
+@media (max-width: 1200px) { 
+    /* Zmena hlavného layoutu - Side panel ide pod hru */
+    .content-section {
+        flex-direction: column;
+        align-items: center;
+        width: 95%;
+        gap: 8px;
     }
-    50% {
-        color: #ff0000;
-        text-shadow: 0 0 10px rgba(255, 0, 0, 0.8),
-                     2px 2px 4px rgba(0, 0, 0, 0.5);
+
+    /* Prispôsobenie Game Canvasu */
+    #gameCanvas {
+        min-width: unset;
+        width: 100%;
+        max-width: 800px; /* Zachová maximálnu veľkosť */
+        height: auto;
+        min-height: auto;
+        aspect-ratio: 1 / 1; /* Udržiava štvorcový tvar */
+    }
+
+    /* Side panel - zmena na horizontálne zobrazenie hráčov */
+    .side-panel {
+        width: 100%;
+        max-width: 800px; 
+        min-height: auto;
+        max-height: unset;
+        flex-direction: row; /* Hráči vedľa seba */
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 5px;
+    }
+
+    .players-panel {
+        width: 180px; /* Menšia šírka pre karty hráčov */
+        min-height: 100px;
+        padding: 5px;
+    }
+    
+    .players-panel span {
+        font-size: 35px;
+    }
+    
+    .players-panel h1 {
+        font-size: 25px;
+    }
+
+    .top-panel {
+        gap: 20px;
+        flex-wrap: nowrap; 
+        justify-content: space-between;
+    }
+
+    .main-container {
+        width: 100%;
+        margin: 0 auto;
+        background-color: #17284900;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 8px;
+        align-content: center;
     }
 }
 
-
-
-/* ===== PLYNULÝ COUNTDOWN INDIKÁTOR ===== */
-.time-display {
-    transition: color 0.3s ease;
-}
-
-/* Červené upozornenie keď ostáva málo času */
-.time-display.warning {
-    color: #ff6b6b !important;
-    animation: timePulse 1s ease-in-out infinite;
-}
-
-@keyframes timePulse {
-    0%, 100% {
-        transform: scale(1);
-        text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+@media (max-width: 1200px) and (max-height: 1000px) { 
+    /* Zmena hlavného layoutu - Side panel ide pod hru */
+    .content-section {
+        flex-direction: column;
+        align-items: center;
+        width: 95%;
+        gap: 8px;
     }
-    50% {
-        transform: scale(1.1);
-        text-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
+
+    /* Prispôsobenie Game Canvasu */
+    #gameCanvas {
+        min-width: unset;
+        width: 100%;
+        max-width: 800px; /* Zachová maximálnu veľkosť */
+        height: auto;
+        min-height: auto;
+        aspect-ratio: unset; /* Udržiava štvorcový tvar */
+    }
+
+    /* Side panel - zmena na horizontálne zobrazenie hráčov */
+    .side-panel {
+        width: 100%;
+        max-width: 800px; 
+        min-height: auto;
+        max-height: unset;
+        flex-direction: row; /* Hráči vedľa seba */
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 5px;
+    }
+
+    .players-panel {
+        width: 180px; /* Menšia šírka pre karty hráčov */
+        min-height: 80px;
+        padding: 3px;
+    }
+    
+    .players-panel span {
+        font-size: 35px;
+    }
+    
+    .players-panel h1 {
+        font-size: 25px;
+    }
+
+    .top-panel {
+        gap: 20px;
+        flex-wrap: nowrap; 
+        justify-content: space-between;
+        display: flex;
+    }
+
+    .main-container {
+        width: 100%;
+        margin: 0 auto;
+        background-color: #17284900;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 8px;
+        align-content: center;
+    }
+
+    #gameCanvas {
+        max-height: 75vh; /* Ešte menšia výška canvasu */
+    }
+    
+    .top-panel {
+        height: 60px; /* Nižší horný panel */
+        gap: 10px;
+    }
+
+    .panel-item {
+        height: unset; 
     }
 }
 
-/* Použitie warning triedy v JS keď time < 10 sekúnd */
+@media (max-width: 930px) {
+    .main-container {
+        transform-origin: top center;
+        height: 100vh;
+        padding-top: 5px;
+    }
+    
+    .top-panel {
+        gap: 5px;
+        width: 95%;
+        flex-wrap: nowrap; /* Udrží v jednom riadku */
+        justify-content: space-between;
+        flex-shrink: unset;
+        height: unset;
+    }
 
+    .panel-item {
+        width: 32%; /* Rozdelenie na tretiny */
+        height: 50px;
+        font-size: 24px; /* Menší font */
+        background-image: url('../images/pozadie_button_mobile_2.png'); /* Uistenie sa že pozadie sedí */
+        border-width: 3px;
+    }
 
-/* ===== NOVÉ PAUSE MENU CSS - UPRAVENÉ PRE KONZISTENTNÝ DIZAJN ===== */
-/* Pridaj do pexeso.css */
+    .players-panel {
+        width: 45%; /* Dvaja hráči na riadok */
+        min-height: 80px;
+    }
 
-/* Hlavný container pause menu */
-.pause-modal {
-    display: none; /* Skrytý na začiatku */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.14);
-    backdrop-filter: blur(9px);
-    z-index: 1000;
-    transition: all 0.3s ease;
+    .players-panel h1 {
+        font-size: 22px;
+    }
+
+    .players-panel span {
+        font-size: 30px;
+    }
+
+    .side-panel {
+        padding-bottom: 5px;
+        gap: 10px;
+    }
 }
 
-/* Overlay (tmavé pozadie) */
-.pause-modal-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-}
-
-/* Samotný modal box */
-.pause-modal-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-    
-    /* Rovnaké rozmery ako execise-window */
-    width: 70%;
-    max-width: 450px;
-    min-width: 400px;
-    
-    /* DÔLEŽITÉ: Používame ROVNAKÉ pozadie ako ostatné modaly */
-    background: url('../images/pozadie_button_mobile_2.png') lightgray 50% / cover no-repeat;
-    
-    /* Rovnaký border ako ostatné modaly */
-    border: 4px solid #ECCF17;
-    border-radius: 30px;
-    
-    /* Padding */
-    padding: 2rem 3rem;
-    box-sizing: border-box;
-    
-    /* Animácie */
-    transition: all 0.4s ease;
-}
-
-/* Header pause menu */
-.pause-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    padding-bottom: 0;
-    position: relative;
-}
-
-/* Nadpis "PAUZA" */
-.pause-modal-header h2 {
-    font-family: 'Luckiest Guy', sans-serif;
-    font-size: 64px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    text-transform: uppercase;
-    margin: 0;
-    padding: 0;
-    
-    /* Gradient text ako ostatné texty */
-    background: linear-gradient(180deg, #EF0 0%, #FFD900 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    
-    /* Text stroke */
-    -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: #000;
-}
-
-/* Close button (X) - ROVNAKÝ ako v pôvodnom .close */
-.pause-close-btn {
-    position: absolute;
-    top: -20px;
-    right: -10px;
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
-    
-    /* Text štýl */
-    color: #FFF;
-    text-align: center;
-    font-family: "Luckiest Guy", sans-serif;
-    font-size: 64px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    
-    /* Cursor */
-    cursor: url('../images/active_cursor4.png') 5 5, pointer;
-    
-    /* Animácie */
-    transition: transform 0.4s ease;
-    z-index: 1001;
-}
-
-.pause-close-btn:hover {
-    transform: rotate(15deg) scale(1.05);
-}
-
-/* Body pause menu */
-.pause-modal-body {
-    padding: 10px 0;
-}
-
-/* Menu navigácia */
-.pause-menu {
-    margin: 0;
-    padding: 0;
-}
-
-.pause-menu ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.pause-menu li {
-    margin: 0;
-    padding: 0;
-}
-
-/* Tlačidlá pause menu - ROVNAKÉ ako .menu-button */
-.pause-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    position: relative;
-    
-    /* Rozmery tlačidla */
-    width: 100%;
-    min-width: 250px;
-    height: 64px;
-    flex-shrink: 0;
-    border-radius: 30px;
-    
-    /* Tieň */
-    filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
-    
-    /* Border a pozadie - ROVNAKÉ ako ostatné tlačidlá */
-    border: 4px solid #AC3F0B;
-    background: url('../images/pozadie_button.png') lightgray 50% / cover no-repeat;
-    
-    /* Prechod pre animácie */
-    transition: all 0.3s ease;
-    
-    /* Text štýlovanie - ROVNAKÉ ako menu-button */
-    font-family: "Luckiest Guy", sans-serif;
-    font-size: 32px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 20px;
-    text-transform: uppercase;
-    text-align: center;
-    
-    /* Text stroke */
-    -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: #000;
-    
-    /* Farba textu - BIELA ako v originálnych tlačidlách */
-    color: #FFF;
-    
-    /* Cursor */
-    cursor: url('../images/active_cursor4.png') 5 5, pointer;
-    z-index: 10000;
-}
-
-/* Hover efekt */
-.pause-button:hover {
-    box-shadow: inset 0 0 20px 2px rgba(236, 207, 23, 0.3);
-    border: 4px solid #ECCF17;
-    transform: scale(0.98);
-}
-
-/* Active efekt */
-.pause-button:active {
-    transform: translateY(0) scale(0.98);
-    filter: drop-shadow(2px 4px 4px rgba(0, 0, 0, 0.3));
-}
-
-/* Responsivita */
 @media (max-width: 768px) {
+    /* Horný panel - zmenšenie a usporiadanie */
+    .top-panel {
+        gap: 5px;
+        width: 95%;
+        flex-wrap: nowrap; /* Udrží v jednom riadku */
+        justify-content: space-between;
+    }
+
+    .panel-item {
+        width: 32%; /* Rozdelenie na tretiny */
+        height: 50px;
+        font-size: 24px; /* Menší font */
+        background-image: url('../images/pozadie_button_mobile_2.png'); /* Uistenie sa že pozadie sedí */
+        border-width: 3px;
+    }
+
+    .game-title span {
+        font-size: 24px; /* Menší nadpis PEXESO */
+    }
+
+    /* Hráči na mobile - ešte menšie karty */
+    .side-panel {
+        gap: 10px;
+    }
+
+    .players-panel {
+        width: 45%; /* Dvaja hráči na riadok */
+        min-height: 90px;
+    }
+
+    .players-panel h1 {
+        font-size: 24px;
+    }
+
+    .players-panel span {
+        font-size: 32px;
+    }
+
     .pause-modal-content {
         width: 90%;
         min-width: 300px;
         padding: 1.5rem 2rem;
     }
     
+    .execise-window, 
+    .pause-modal-content {
+        min-width: 90%; /* Zrušenie fixnej šírky */
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto; /* Scrollovanie ak je obsah dlhý */
+        padding: 1.5rem 1rem;
+    }
+    
     .pause-modal-header h2 {
-        font-size: 48px;
+        font-size: 40px;
     }
     
-    .pause-close-btn {
-        font-size: 48px;
-        top: -15px;
-        right: -5px;
-    }
-    
-    .pause-button {
+    .tlacidlo, .menu-button, .pause-button {
+        width: 100%;
+        min-width: unset;
+        height: 55px;
         font-size: 24px;
-        height: 56px;
-        min-width: 200px;
     }
+    
 }
 
 @media (max-width: 480px) {
+    .loading-progress-container {
+        max-width: 300px;            
+    }
+    
+    .loading-progress-text {
+        font-size: 12px;                
+    }
+    
+    #loading-progress-percentage {
+        font-size: 14px;                
+    }
+    
+    #loading-progress-details {
+        font-size: 10px;             
+    }
     .pause-modal-content {
         width: 95%;
         min-width: 280px;
@@ -1752,4 +2314,74 @@ body {
         height: 48px;
         min-width: 180px;
     }
+
+    .panel-item {
+        font-size: 18px;
+        height: 45px;
+        border-width: 2px;
+        border-radius: 15px;
+    }
+
+    #gameCanvas {
+        border-width: 2px;
+        background-size: 100% 100%; 
+    }
+
+    #gameCanvas.cards-16 .card-container {
+        width: 21%; /* 4 karty vedľa seba s medzerou */
+        height: auto;
+        aspect-ratio: 1/1;
+        margin: 1%;
+    }
+    
+    #gameCanvas.cards-20 .card-container {
+        width: 21%;
+        height: auto;
+        aspect-ratio: 1/1;
+        margin: 1%;
+    }
+    
+    #gameCanvas.cards-24 .card-container,
+    #gameCanvas.cards-30 .card-container,
+    #gameCanvas.cards-36 .card-container {
+        width: 14%; 
+        height: auto;
+        aspect-ratio: 1/1;
+        margin: 1%;
+    }
+
+    .card-container img {
+        width: 60%;
+        height: 60%;
+    }
+    
+    .card-container span {
+        font-size: 14px;
+        display: none; 
+    }
+    
+    .card-container.flipped span {
+        display: block;
+        font-size: 10px; 
+        width: 100%;
+        overflow: hidden;
+    }
+
+    #menuButton, .kruhove-tlacidlo {
+        width: 35px;
+        height: 35px;
+        top: 5px;
+        left: 5px;
+    }
+    
+    .cvicenie-text p, .loading-text-jozino {
+        font-size: 30px;
+    }
+    
+    .cvicenie-text img {
+        max-height: 120px;
+    }
 }
+
+
+

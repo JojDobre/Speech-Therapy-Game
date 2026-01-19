@@ -78,8 +78,23 @@ function getLevelConfigFromURL() {
     const worldId = urlParams.get('worldId') || urlParams.get('world');
     const levelId = urlParams.get('levelId') || urlParams.get('level');
 
+    // ========================================
+    // PRIDANÉ: Načítanie tréningovej konfigurácie
+    // ========================================
     const isTraining = urlParams.get('training') === 'true';
     const trainingConfig = urlParams.get('config');
+    
+    // Ak je tréningový level, načítaj konfiguráciu z URL
+    if (isTraining && trainingConfig) {
+        try {
+            const config = JSON.parse(decodeURIComponent(trainingConfig));
+            console.log('📋 Načítaná tréningová konfigurácia:', config);
+            return config; // Vráť tréningovú konfiguráciu
+        } catch (error) {
+            console.error('❌ Chyba pri parsovaní tréningovej konfigurácie:', error);
+            // Pokračuj na fallback
+        }
+    }
     
     console.log('URL parametre:', { worldId, levelId });
     
@@ -325,6 +340,7 @@ const diamonds = [];
 const kov = [];                         ///////////////////////
 const golds = [];                       // Základné premenné //
 const clay = [];                        ///////////////////////
+let generatedPositions = []; // Globálny zoznam pozícií všetkých objektov
 let PocetGenDiamant = 3;                
 let PocetGenKov = 1;
 let PocetGenGolds = 4;
@@ -1245,8 +1261,6 @@ function animateDigging() {
 // alebo náhodné generovanie                    //
 //////////////////////////////////////////////////
 function generateDiamonds() {
-    const generatedPositions = [];
-    
     // Ak máme presné pozície v levelConfig a nie je to custom level
     if (currentLevelConfig && currentLevelConfig.positions && 
         currentLevelConfig.positions.diamonds && !isCustomLevel) {
@@ -1282,9 +1296,7 @@ function generateDiamonds() {
 // Podporuje presné pozície z levelConfig       //
 // alebo náhodné generovanie                    //
 //////////////////////////////////////////////////
-function generateKov() {
-    const generatedPositions = [];
-    
+function generateKov() {  
     if (currentLevelConfig && currentLevelConfig.positions && 
         currentLevelConfig.positions.crystals && !isCustomLevel) {
         
@@ -1318,9 +1330,7 @@ function generateKov() {
 // Podporuje presné pozície z levelConfig       //
 // alebo náhodné generovanie                    //
 //////////////////////////////////////////////////
-function generateGolds() {
-    const generatedPositions = [];
-    
+function generateGolds() {    
     if (currentLevelConfig && currentLevelConfig.positions && 
         currentLevelConfig.positions.golds && !isCustomLevel) {
         
@@ -1992,6 +2002,7 @@ function resetGame() {
     diamondsCollected = 0; // Počet zozbieraných diamantov
     kovCollected = 0; // Počet zozbieraných diamantov
     goldsCollected = 0;
+    generatedPositions = []; // Vyčisti pozície objektov
 
     correctAnswers = 0;
     incorrectAnswers = 0;
