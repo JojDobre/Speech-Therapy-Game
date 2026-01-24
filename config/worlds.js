@@ -26,8 +26,8 @@ const WORLDS_CONFIG = [
         difficulty: 4,
         unlockRequirement: null, 
         totalLevels: 16,
-        gameTypes: ['banik', 'pexeso', 'mario'], // typy hier dostupné v tomto svete
-        isUnlocked: true // prvý svet je vždy odomknutý
+        gameTypes: ['banik', 'pexeso', 'mario'],
+        isUnlocked: true 
     },
     {
         id: 'world_l',
@@ -36,10 +36,44 @@ const WORLDS_CONFIG = [
         description: 'Nauč sa správne vyslovovať písmeno L',
         color: '#4ECDC4', 
         icon: 'images/worlds/world_l.png',
-        difficulty: 3,
+        difficulty: 4,
         unlockRequirement: null,
         totalLevels: 16,
-        gameTypes: ['banik', 'pexeso'],
+        gameTypes: ['banik', 'pexeso', 'mario'],
+        isUnlocked: true
+    },
+    {
+        id: 'world_c',
+        name: 'C',
+        title: 'Svet písmena C',
+        description: 'Precvičuj ostré písmeno C',
+        color: '#FFEAA7',
+        icon: 'images/worlds/world_c.png',
+        difficulty: 3,
+        unlockRequirement: null,
+        /*unlockRequirement: {
+            worldId: 'world_z',
+            minStars: 22
+        },*/
+        totalLevels: 16,
+        gameTypes: ['banik', 'pexeso', 'mario'],
+        isUnlocked: true
+    },
+    {
+        id: 'world_z',
+        name: 'Z',
+        title: 'Svet písmena Z',
+        description: 'Zvládni buzivé písmeno Z',
+        color: '#96CEB4', 
+        icon: 'images/worlds/world_z.png',
+        difficulty: 3,
+        /*unlockRequirement: {
+            worldId: 'world_s',
+            minStars: 20
+        },*/
+        unlockRequirement: null,
+        totalLevels: 16,
+        gameTypes: ['banik', 'pexeso', 'mario'],
         isUnlocked: true
     },
     {
@@ -49,7 +83,7 @@ const WORLDS_CONFIG = [
         description: 'Precvičuj sykavky s písmenom S',
         color: '#45B7D1', 
         icon: 'images/worlds/world_s.png',
-        difficulty: 2,
+        difficulty: 3,
         unlockRequirement: null,
         totalLevels: 16,
         gameTypes: ['banik', 'pexeso', 'mario'],
@@ -64,55 +98,7 @@ const WORLDS_CONFIG = [
         icon: 'images/worlds/world_ch.png',
         difficulty: 4,
         unlockRequirement: null,
-        totalLevels: 8,
-        gameTypes: ['banik', 'pexeso'],
-        isUnlocked: true
-    },
-    {
-        id: 'world_z',
-        name: 'Z',
-        title: 'Svet písmena Z',
-        description: 'Zvládni buzivé písmeno Z',
-        color: '#96CEB4', // svetlozelená
-        icon: 'images/worlds/world_z.png',
-        difficulty: 2,
-        unlockRequirement: {
-            worldId: 'world_s',
-            minStars: 20
-        },
-        totalLevels: 15,
-        gameTypes: ['banik', 'pexeso'],
-        isUnlocked: true
-    },
-    {
-        id: 'world_c',
-        name: 'C',
-        title: 'Svet písmena C',
-        description: 'Precvičuj ostré písmeno C',
-        color: '#FFEAA7', // žltá
-        icon: 'images/worlds/world_c.png',
-        difficulty: 3,
-        unlockRequirement: {
-            worldId: 'world_z',
-            minStars: 22
-        },
-        totalLevels: 17,
-        gameTypes: ['banik', 'pexeso'],
-        isUnlocked: true
-    },
-    {
-        id: 'world_sh',
-        name: 'Š',
-        title: 'Svet písmena Š',
-        description: 'Šušti s písmenom Š',
-        color: '#DDA0DD', // svetlofialová
-        icon: 'images/worlds/world_sh.png',
-        difficulty: 4,
-        unlockRequirement: {
-            worldId: 'world_c',
-            minStars: 25
-        },
-        totalLevels: 19,
+        totalLevels: 16,
         gameTypes: ['banik', 'pexeso', 'mario'],
         isUnlocked: true
     },
@@ -121,63 +107,25 @@ const WORLDS_CONFIG = [
         name: 'Ž',
         title: 'Svet písmena Ž',
         description: 'Žuži s písmenom Ž',
-        color: '#FF9FF3', // ružová
+        color: '#FF9FF3', 
         icon: 'images/worlds/world_zh.png',
         difficulty: 4,
-        unlockRequirement: {
-            worldId: 'world_sh',
-            minStars: 28
-        },
-        totalLevels: 18,
-        gameTypes: ['banik', 'pexeso'],
-        isUnlocked: true
-    },
-    {
-        id: 'world_d',
-        name: 'Ď',
-        title: 'Svet písmena Ď',
-        description: 'Ďabaj s mäkkým písmenom Ď',
-        color: '#FD79A8', // tmavoružová
-        icon: 'images/worlds/world_d.png',
-        difficulty: 5,
-        unlockRequirement: {
-            worldId: 'world_ch',
-            minStars: 30
-        },
+        unlockRequirement: null,
         totalLevels: 16,
-        gameTypes: ['banik', 'pexeso'],
+        gameTypes: ['banik', 'pexeso', 'mario'],
         isUnlocked: true
     },
     {
-        id: 'world_t',
-        name: 'Ť',
-        title: 'Svet písmena Ť',
-        description: 'Ťukaj s mäkkým písmenom Ť',
-        color: '#FDCB6E', // oranžová
-        icon: 'images/worlds/world_t.png',
-        difficulty: 5,
-        unlockRequirement: {
-            worldId: 'world_d',
-            minStars: 25
-        },
-        totalLevels: 15,
-        gameTypes: ['banik', 'pexeso'],
-        isUnlocked: true
-    },
-    {
-        id: 'world_n',
-        name: 'Ň',
-        title: 'Svet písmena Ň',
-        description: 'Ňafaj s mäkkým písmenom Ň',
-        color: '#A29BFE', // fialová
-        icon: 'images/worlds/world_n.png',
-        difficulty: 5,
-        unlockRequirement: {
-            worldId: 'world_t',
-            minStars: 22
-        },
-        totalLevels: 15,
-        gameTypes: ['banik', 'pexeso'],
+        id: 'world_sh',
+        name: 'Š',
+        title: 'Svet písmena Š',
+        description: 'Šušti s písmenom Š',
+        color: '#DDA0DD', 
+        icon: 'images/worlds/world_sh.png',
+        difficulty: 4,
+        unlockRequirement: null,
+        totalLevels: 16,
+        gameTypes: ['banik', 'pexeso', 'mario'],
         isUnlocked: true
     },
     {
@@ -185,13 +133,10 @@ const WORLDS_CONFIG = [
         name: 'K',
         title: 'Svet písmena K',
         description: 'Klopkaj s písmenom K',
-        color: '#00B894', // zelená
+        color: '#00B894', 
         icon: 'images/worlds/world_k.png',
-        difficulty: 3,
-        unlockRequirement: {
-            worldId: 'world_n',
-            minStars: 20
-        },
+        difficulty: 2,
+        unlockRequirement: null,
         totalLevels: 16,
         gameTypes: ['banik', 'pexeso', 'mario'],
         isUnlocked: true
@@ -201,17 +146,93 @@ const WORLDS_CONFIG = [
         name: 'G',
         title: 'Svet písmena G',
         description: 'Grgaj s písmenom G',
-        color: '#E84393', // tmavoružová
+        color: '#E84393', 
         icon: 'images/worlds/world_g.png',
+        difficulty: 2,
+        unlockRequirement: null,
+        totalLevels: 16,
+        gameTypes: ['banik', 'pexeso', 'mario'],
+        isUnlocked: true
+    },
+    {
+        id: 'world_d',
+        name: 'D',
+        title: 'Svet písmena D',
+        description: 'Dumaj s D',
+        color: '#5c1f34', 
+        icon: 'images/worlds/world_d.png',
+        difficulty: 2,
+        unlockRequirement: null,
+        totalLevels: 16,
+        gameTypes: ['banik', 'pexeso', 'mario'],
+        isUnlocked: true
+    },
+    {
+        id: 'world_t',
+        name: 'T',
+        title: 'Svet písmena T',
+        description: 'Tipuj s T',
+        color: '#e4970a', 
+        icon: 'images/worlds/world_t.png',
+        difficulty: 2,
+        unlockRequirement: null,
+        totalLevels: 16,
+        gameTypes: ['banik', 'pexeso', 'mario'],
+        isUnlocked: true
+    },
+    {
+        id: 'world_n',
+        name: 'N',
+        title: 'Svet písmena N',
+        description: 'Nafkaj s N',
+        color: '#3628fa', 
+        icon: 'images/worlds/world_n.png',
+        difficulty: 2,
+        unlockRequirement: null,
+        totalLevels: 16,
+        gameTypes: ['banik', 'pexeso', 'mario'],
+        isUnlocked: true
+    },
+    {
+        id: 'world_dh',
+        name: 'Ď',
+        title: 'Svet písmena Ď',
+        description: 'Ďabaj s mäkkým písmenom Ď',
+        color: '#FD79A8', // tmavoružová
+        icon: 'images/worlds/world_dh.png',
         difficulty: 3,
-        unlockRequirement: {
-            worldId: 'world_k',
-            minStars: 24
-        },
-        totalLevels: 17,
+        unlockRequirement: null,
+        totalLevels: 16,
+        gameTypes: ['banik', 'pexeso', 'mario'],
+        isUnlocked: true
+    },
+    {
+        id: 'world_th',
+        name: 'Ť',
+        title: 'Svet písmena Ť',
+        description: 'Ťukaj s mäkkým písmenom Ť',
+        color: '#FDCB6E', // oranžová
+        icon: 'images/worlds/world_th.png',
+        difficulty: 3,
+        unlockRequirement: null,
+        totalLevels: 16,
+        gameTypes: ['banik', 'pexeso', 'mario'],
+        isUnlocked: true
+    },
+    {
+        id: 'world_nh',
+        name: 'Ň',
+        title: 'Svet písmena Ň',
+        description: 'Ňafaj s mäkkým písmenom Ň',
+        color: '#A29BFE',
+        icon: 'images/worlds/world_nh.png',
+        difficulty: 3,
+        unlockRequirement: null,
+        totalLevels: 16,
         gameTypes: ['banik', 'pexeso', 'mario'],
         isUnlocked: true
     }
+    
 ];
 
 /**

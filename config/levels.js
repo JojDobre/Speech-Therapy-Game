@@ -967,7 +967,7 @@ const LEVELS_CONFIG = {
             name: 'Lyže a letisko',
             gameType: 'banik',
             difficulty: 2,
-            words: ['lopta', 'lietadlo', 'lupa', 'lúč', 'lízatko', 'lavína', 'lyže', 'linka', 'letisko', 'lilka'],  // 10 slov
+            words: ['lopta', 'lietadlo', 'lupa', 'lúč', 'lízatko', 'lavína', 'lyže', 'pílka', 'letisko', 'pílka'],  // 10 slov
             gameConfig: {
                 diamonds: 5,
                 golds: 4,
@@ -1010,7 +1010,7 @@ const LEVELS_CONFIG = {
             name: 'Levanduľa a ľudina',
             gameType: 'banik',
             difficulty: 2,
-            words: ['lopta', 'lúka', 'lietadlo', 'linka', 'lilka', 'levanduľa', 'list', 'lavína', 'lízatko', 'ľudina'],  // 10 slov
+            words: ['lopta', 'lúka', 'lietadlo', 'pílka', 'levanduľa', 'list', 'lavína', 'lízatko'],  // 10 slov
             gameConfig: {
                 diamonds: 5,
                 golds: 5,
@@ -1054,8 +1054,8 @@ const LEVELS_CONFIG = {
             gameType: 'banik',
             difficulty: 3,
             words: ['lano', 'lopta', 'list', 'les', 'líška', 'lyžica', 'lavička', 'lúka', 'ľalia', 'lampa', 
-                    'lúč', 'lekár', 'lavína', 'lietadlo', 'lev', 'leňochod', 'lupa', 'lízatko', 'lyže', 'linka', 
-                    'letisko', 'lilka', 'levanduľa', 'ľudina'],  // 24 slov
+                    'lúč', 'lekár', 'lavína', 'lietadlo', 'lev', 'leňochod', 'lupa', 'lízatko', 'lyže',  
+                    'letisko', 'pílka', 'levanduľa'],  // 24 slov
             gameConfig: {
                 diamonds: 6,
                 golds: 6,
@@ -1101,7 +1101,7 @@ const LEVELS_CONFIG = {
             name: 'Lyžiar a lektvar',
             gameType: 'banik',
             difficulty: 3,
-            words: ['lopta', 'lúka', 'lietadlo', 'lavička', 'lupa', 'linka', 'lilka', 'levanduľa', 'lyžiar', 'lektvar'],  // 10 slov
+            words: ['lopta', 'lúka', 'lietadlo', 'lavička', 'lupa', 'pílka', 'levanduľa', 'lyžiar', 'lektvar'],  // 10 slov
             gameConfig: {
                 diamonds: 5,
                 golds: 5,
@@ -1234,7 +1234,7 @@ const LEVELS_CONFIG = {
             name: 'Laborant a linkový',
             gameType: 'banik',
             difficulty: 3,
-            words: ['lopta', 'lúka', 'leporelo', 'lodička', 'lekáreň', 'lavína', 'lektor', 'laborant', 'linkový', 'listnatý'],  // 10 slov
+            words: ['lopta', 'lúka', 'leporelo', 'lodička', 'lekáreň', 'lavína', 'lektor', 'laborant', 'listnatý'],  // 10 slov
             gameConfig: {
                 diamonds: 6,
                 golds: 6,
@@ -1280,9 +1280,9 @@ const LEVELS_CONFIG = {
             gameType: 'banik',
             difficulty: 4,
             words: ['lano', 'lopta', 'list', 'les', 'líška', 'lyžica', 'lavička', 'lúka', 'ľalia', 'lampa',
-                    'lúč', 'lekár', 'lavína', 'lietadlo', 'lev', 'leňochod', 'lupa', 'lízatko', 'lyže', 'linka',
-                    'letisko', 'lilka', 'levanduľa', 'ľudina', 'lyžiar', 'lektvar', 'laboratórium', 'lektor', 'lúčny',
-                    'leporelo', 'lodička', 'lekáreň', 'laborant', 'linkový', 'listnatý'],  // 35 slov
+                    'lúč', 'lekár', 'lavína', 'lietadlo', 'lev', 'leňochod', 'lupa', 'lízatko', 'lyže', 'leopard',
+                    'letisko', 'pílka', 'levanduľa', 'lyžiar', 'lektvar', 'laboratórium', 'lektor', 'lúčny',
+                    'leporelo', 'lodička', 'lekáreň', 'laborant', 'listnatý'],  // 35 slov
             gameConfig: {
                 diamonds: 7,
                 golds: 7,
@@ -1331,7 +1331,7 @@ const LEVELS_CONFIG = {
             name: 'Liter a lievik',
             gameType: 'banik',
             difficulty: 4,
-            words: ['lopta', 'lúka', 'laborant', 'listnatý', 'linkový', 'levanduľa', 'liter', 'lievik', 'lampa', 'lopúch'],  // 10 slov
+            words: ['lopta', 'lúka', 'laborant', 'listnatý', 'levanduľa', 'liter', 'lievik', 'lampa', 'lopúch'],  // 10 slov
             gameConfig: {
                 diamonds: 6,
                 golds: 6,
@@ -1423,7 +1423,7 @@ const LEVELS_CONFIG = {
             name: 'Lesník a ľudovosť',
             gameType: 'banik',
             difficulty: 4,
-            words: ['lopta', 'lúka', 'logopéd', 'lopúch', 'liter', 'lievik', 'lesník', 'ľudovosť', 'laborant', 'linkový'],  // 10 slov
+            words: ['lopta', 'lúka', 'logopéd', 'lopúch', 'liter', 'lievik', 'lesník', 'ľudovosť', 'laborant'],  // 10 slov
             gameConfig: {
                 diamonds: 7,
                 golds: 6,
@@ -1517,14 +1517,14 @@ const LEVELS_CONFIG = {
             id: 'l_020',
             worldId: 'world_l',
             levelNumber: 20,
-            name: 'Veľké finále L',  // finálny level - všetky slová
+            name: 'Veľké finále L',  
             gameType: 'banik',
             difficulty: 5,
             words: ['lano', 'lopta', 'list', 'les', 'líška', 'lyžica', 'lavička', 'lúka', 'ľalia', 'lampa',
-                    'lúč', 'lekár', 'lavína', 'lietadlo', 'lev', 'leňochod', 'lupa', 'lízatko', 'lyže', 'linka',
-                    'letisko', 'lilka', 'levanduľa', 'ľudina', 'lyžiar', 'lektvar', 'laboratórium', 'lektor', 'lúčny',
-                    'leporelo', 'lodička', 'lekáreň', 'laborant', 'linkový', 'listnatý', 'liter', 'lievik', 'lopúch',
-                    'logopéd', 'lesník', 'ľudovosť'],  // 41 slov - všetky
+                    'lúč', 'lekár', 'lavína', 'lietadlo', 'lev', 'leňochod', 'lupa', 'lízatko', 'lyže',
+                    'letisko', 'lilka', 'levanduľa', ľudia', 'lyžiar', 'lektvar', 'laboratórium', 'lektor', 'lúčny',
+                    'leporelo', 'lodička', 'lekáreň', 'laborant', 'listnatý', 'liter', 'lievik', 'lopúch',
+                    'logopéd', 'lesník', 'ľudovosť'],  
             gameConfig: {
                 diamonds: 10,
                 golds: 8,
@@ -1738,7 +1738,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé opakovanie',  // opakovací level
             gameType: 'banik',
             difficulty: 2,
-            words: ['slnko', 'sova', 'seno', 'soľ', 'suka', 'srdce', 'stôl', 'silák', 'sitko', 'sviečka'],  // 10 slov
+            words: ['slnko', 'sova', 'seno', 'soľ', 'srdce', 'stôl', 'silák', 'sitko', 'sviečka'],  // 10 slov
             gameConfig: {
                 diamonds: 3,
                 golds: 4,
@@ -1955,7 +1955,7 @@ const LEVELS_CONFIG = {
             name: 'Druhé opakovanie',  // veľké opakovanie
             gameType: 'banik',
             difficulty: 3,
-            words: ['slnko', 'sova', 'seno', 'soľ', 'suka', 'srdce', 'stôl', 'silák', 'sitko', 'sviečka',
+            words: ['slnko', 'sova', 'seno', 'soľ', 'srdce', 'stôl', 'silák', 'sitko', 'sviečka',
                     'skala', 'smiech', 'sneh', 'sliepka', 'slama', 'sestra', 'sídlo', 'sklo', 'sladkosť', 'stavba',
                     'strom', 'stolička', 'sused'],  // 23 slov
             gameConfig: {
@@ -2186,7 +2186,7 @@ const LEVELS_CONFIG = {
             name: 'Tretie opakovanie',  // opakovací level
             gameType: 'banik',
             difficulty: 4,
-            words: ['slnko', 'sova', 'seno', 'soľ', 'suka', 'srdce', 'stôl', 'silák', 'sitko', 'sviečka',
+            words: ['slnko', 'sova', 'seno', 'soľ', 'srdce', 'stôl', 'silák', 'sitko', 'sviečka',
                     'skala', 'smiech', 'sneh', 'sliepka', 'slama', 'sestra', 'sídlo', 'sklo', 'sladkosť', 'stavba',
                     'strom', 'stolička', 'sused', 'sila', 'súťaž', 'skriňa', 'siréna', 'socha', 'sen', 'skokan',
                     'svetlo'],  // 31 slov
@@ -2292,7 +2292,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé Č-čka',
             gameType: 'banik',
             difficulty: 1,
-            words: ['čaj', 'čas', 'čap', 'čip'],
+            words: ['čaj', 'čas', 'čiapka', 'čip'],
             gameConfig: {
                 diamonds: 2,
                 golds: 5,
@@ -2332,7 +2332,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé Č-čka',
             gameType: 'banik',
             difficulty: 1,
-            words: ['čap', 'čiapka', 'čaj', 'česť', 'čip'],
+            words: ['čiapka',  'čaj', 'česť', 'čip'],
             gameConfig: {
                 diamonds: 3,
                 golds: 3,
@@ -2373,7 +2373,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé Č-čka',
             gameType: 'banik',
             difficulty: 1,
-            words: ['čip', 'čaj', 'čas', 'čap', 'čiapka'],
+            words: ['čip', 'čaj', 'čas', 'čiapka'],
             gameConfig: {
                 diamonds: 3,
                 golds: 5,
@@ -2456,7 +2456,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé R-čka',
             gameType: 'banik',
             difficulty: 1,
-            words: ['čaj', 'čip', 'čap', 'česť', 'čiapka', 'čudo', 'čas', 'čelo'], 
+            words: ['čaj', 'čip', 'česť', 'čiapka', 'čas', 'čelo'], 
             gameConfig: {
                 diamonds: 4,
                 golds: 2,
@@ -2497,7 +2497,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé Č-čka',
             gameType: 'banik',
             difficulty: 1,
-            words: ['čelo', 'čiapka', 'čap', 'čiara', 'česať', 'čudo', 'čip', 'čaj'], 
+            words: ['čelo', 'čiapka', 'čiara', 'česať', 'čip', 'čaj'], 
             gameConfig: {
                 diamonds: 4,
                 golds: 2,
@@ -2538,7 +2538,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé Č-čka',
             gameType: 'banik',
             difficulty: 1,
-            words: ['čelo', 'čiapka', 'čajník', 'čerta', 'česať'], 
+            words: ['čelo', 'čiapka', 'čajník', 'čert', 'česať'], 
             gameConfig: {
                 diamonds: 2,
                 golds: 2,
@@ -2579,7 +2579,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé Č-čka',
             gameType: 'banik',
             difficulty: 1,
-            words: ['čitateľ', 'čerešňa', 'čarodej', 'čajník', 'čarovný'],
+            words: ['čitateľ', 'čerešňa', 'čarodejník', 'čajník'],
             gameConfig: {
                 diamonds: 2,
                 golds: 2,
@@ -2733,7 +2733,7 @@ const LEVELS_CONFIG = {
             name: 'Z v strede',
             gameType: 'banik',
             difficulty: 2,
-            words: ['koza', 'slza', 'nozík', 'jazyk'],
+            words: ['koza', 'slza', 'vozík', 'jazyk'],
             gameConfig: {
                 diamonds: 3,
                 golds: 5,
@@ -4802,6 +4802,1349 @@ const LEVELS_CONFIG = {
             },
             unlockRequirement: {
                 levelId: 'zh_015',
+                minStars: 20
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+    ],
+
+    world_dh: [
+        {
+            id: 'dh_001',
+            worldId: 'world_dh',
+            levelNumber: 1,
+            name: 'Prvé Ď-ka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['loď', 'meď', 'dážď', 'hruď'],
+            gameConfig: {
+                diamonds: 1,
+                golds: 3,
+                crystals: 1,
+                speechExercises: 1,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 12, y: 7 }
+                ],
+                golds: [
+                    { x: 2, y: 9 }, 
+					{ x: 5, y: 10 }, 
+                    { x: 10, y: 13 },
+                ],
+                crystals: [
+                    { x: 11, y: 9 }  
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: null,
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: true
+        },
+        {
+            id: 'dh_002',
+            worldId: 'world_dh',
+            levelNumber: 2,
+            name: 'Prvé Ď',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['loď', 'meď', 'dážď', 'hruď', 'loďka', 'medveď'],
+            gameConfig: {
+                diamonds: 1,
+                golds: 3,
+                crystals: 2,
+				speechExercises: 1,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 6, y: 10 },
+                ],
+                golds: [
+                    { x: 2, y: 9 },   
+                    { x: 7, y: 8 },   
+                    { x: 10, y: 8 }
+                ],
+                crystals: [
+                    { x: 9, y: 7 },    
+                    { x: 10, y: 12 }
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'dh_001',
+                minStars: 1
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'dh_003',
+            worldId: 'world_dh',
+            levelNumber: 3,
+            name: 'Prvé Ď-ka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['loď', 'meď', 'dážď', 'hruď', 'loďka', 'medveď', 'ďasno'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 5,
+                crystals: 1,
+				speechExercises: 1,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 3, y: 8 },  
+                    { x: 12, y: 7 },  
+                    { x: 10, y: 12 }
+                ],
+                golds: [
+                    { x: 2, y: 9 },   
+                    { x: 7, y: 8 },   
+                    { x: 14, y: 9 },   
+                    { x: 9, y: 10 },
+                    { x: 10, y: 12 }
+                ],
+                crystals: [
+                    { x: 1, y: 15 }    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'dh_002',
+                minStars: 2
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'dh_004',
+            worldId: 'world_dh',
+            levelNumber: 4,
+            name: 'Prvé Ď-ka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['loď', 'meď', 'dážď', 'hruď', 'loďka', 'medveď', 'ďasno', 'ďateľ'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 3,
+                crystals: 2,
+				speechExercises: 2,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 8 },  
+                    { x: 10, y: 7 },  
+                    { x: 9, y: 14 }
+                ],
+                golds: [
+                    { x: 3, y: 9 },  
+                    { x: 7, y: 8 },   
+                    { x: 14, y: 6 }   
+                ],
+                crystals: [
+					{ x: 4, y: 12 },
+                    { x: 7, y: 11 }   
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'dh_003',
+                minStars: 3
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'dh_005',
+            worldId: 'world_dh',
+            levelNumber: 5,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['loď', 'meď', 'dážď', 'hruď', 'loďka', 'medveď', 'ďakujem'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 4,
+                crystals: 4,
+				speechExercises: 2,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 13, y: 8 }, 
+                    { x: 9, y: 10 },  
+                    { x: 1, y: 14 }
+                ],
+                golds: [
+                    { x: 0, y: 9 },
+                    { x: 3, y: 10 },					
+                    { x: 7, y: 8 }   
+                ],
+                crystals: [
+                    { x: 2, y: 10 },
+                    { x: 6, y: 12 },
+                    { x: 14, y: 14 },					
+                    { x: 8, y: 8 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'dh_004',
+                minStars: 4
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'dh_006',
+            worldId: 'world_dh',
+            levelNumber: 6,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['loď', 'meď', 'dážď', 'hruď', 'loďka', 'medveď', 'ďasno', 'ďateľ', 'ďakujem', 'ďumbier', 'žaluď'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 5,
+                crystals: 2,
+				speechExercises: 3,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 3, y: 7 }, 
+                    { x: 10, y: 7 },  
+                    { x: 2, y: 14 }
+                ],
+                golds: [
+                    { x: 1, y: 9 },
+                    { x: 10, y: 10 },
+                    { x: 6, y: 7 },
+                    { x: 3, y: 15 },					
+                    { x: 15, y: 12 }   
+                ],
+                crystals: [
+                    { x: 7, y: 11 },   
+                    { x: 10, y: 15 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'dh_005',
+                minStars: 5
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'dh_007',
+            worldId: 'world_dh',
+            levelNumber: 7,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['loď', 'meď', 'dážď', 'hruď', 'loďka', 'medveď', 'ďasno', 'ďateľ', 
+                'ďakujem', 'ďumbier', 'žaluď', 'ďalekohľad'],            
+            gameConfig: {
+                diamonds: 2,
+                golds: 2,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 3, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 0, y: 10 },  
+                    { x: 14, y: 14 }
+                ],
+                golds: [
+                    { x: 5, y: 8 },   
+                    { x: 7, y: 12 }  
+                ],
+                crystals: [   
+                    { x: 10, y: 9 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'dh_006',
+                minStars: 6
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'dh_008',
+            worldId: 'world_dh',
+            levelNumber: 8,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['loď', 'meď', 'dážď', 'hruď', 'loďka', 'medveď', 'ďasno', 'ďateľ', 
+                'ďakujem', 'ďumbier', 'žaluď', 'ďalekohľad', 'dedina', 'dedo' ],  
+            gameConfig: {
+                diamonds: 3,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 3, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 10, y: 6 }, 
+                    { x: 6, y: 14 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   
+                    { x: 7, y: 11 },   
+                    { x: 8, y: 12 },
+                    { x: 1, y: 7 }
+                ],
+                crystals: [
+                    { x: 9, y: 15 },    
+                    { x: 14, y: 8 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'dh_007',
+                minStars: 7
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'dh_009',
+            worldId: 'world_dh',
+            levelNumber: 9,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 3,
+            words: ['loď', 'meď', 'dážď', 'hruď', 'loďka', 'medveď', 'ďasno', 'ďateľ', 
+                'ďakujem', 'ďumbier', 'žaluď', 'ďalekohľad', 'dedina', 'dedo' ],  
+            gameConfig: {
+				diamonds: 3,
+                golds: 3,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 10 },  
+                    { x: 10, y: 14 },
+                    { x: 2, y: 9 }
+                ],
+                golds: [
+                    { x: 7, y: 11 },   
+                    { x: 12, y: 12 },
+                    { x: 0, y: 7 }
+                ],
+                crystals: [
+                    { x: 9, y: 11 },    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'dh_008',
+                minStars: 10
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'dh_010',
+            worldId: 'world_dh',
+            levelNumber: 10,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 3,
+            words: ['loď', 'meď', 'dážď', 'hruď', 'loďka', 'medveď', 'ďasno', 'ďateľ', 
+                'ďakujem', 'ďumbier', 'žaluď', 'ďalekohľad', 'dedina', 'dedo' ],             
+            gameConfig: {
+				diamonds: 4,
+                golds: 6,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 6 },  
+                    { x: 10, y: 14 },
+                    { x: 6, y: 8 },
+                    { x: 0, y: 10 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   
+                    { x: 7, y: 11 },   
+                    { x: 12, y: 12 },
+                    { x: 1, y: 9 },
+                    { x: 3, y: 8 },
+                    { x: 5, y: 11 }
+                ],
+                crystals: [
+                    { x: 14, y: 10 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'dh_009',
+                minStars: 11
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'dh_011',
+            worldId: 'world_dh',
+            levelNumber: 11,
+            name: 'Prvé Ďka',
+            gameType: 'banik',
+            difficulty: 3,
+            words: ['loď', 'meď', 'dážď', 'hruď', 'loďka', 'medveď', 'ďasno', 'ďateľ', 
+                'ďakujem', 'ďumbier', 'žaluď', 'ďalekohľad', 'dedina', 'dedo', 'divák', 'dievča'],                  
+            gameConfig: {
+                diamonds: 3,
+                golds: 4,
+                crystals: 2,
+				speechExercises: 3,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 15, y: 14 },  
+					{ x: 12, y: 15 },  
+                    { x: 3, y: 12 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   
+                    { x: 7, y: 11 },   
+                    { x: 4, y: 15 },
+                    { x: 5, y: 10 }
+                ],
+                crystals: [
+                    { x: 9, y: 13 },    
+                    { x: 6, y: 7 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'dh_010',
+                minStars: 12
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'dh_012',
+            worldId: 'world_dh',
+            levelNumber: 12,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 3,
+            words: ['ďasno', 'ďateľ', 
+                'ďakujem', 'ďumbier', 'žaluď', 'ďalekohľad', 'dedina', 'dedo', 'divák', 'dievča', 'desať'],   
+            gameConfig: {
+                diamonds: 2,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 7 },  
+                    { x: 10, y: 14 }
+                ],
+                golds: [
+                    { x: 6, y: 9 },   
+                    { x: 7, y: 11 },  
+                    { x: 14, y: 12 },
+                    { x: 4, y: 10 }
+                ],
+                crystals: [
+                    { x: 9, y: 15 }    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'dh_011',
+                minStars: 13
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'dh_013',
+            worldId: 'world_dh',
+            levelNumber: 13,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 4,
+            words: ['loď', 'meď', 'dážď', 'hruď', 'loďka', 'medveď', 'ďasno', 'ďateľ', 
+                'ďakujem', 'ďumbier', 'žaluď', 'ďalekohľad', 'dedina', 'dedo', 'divák', 'dievča', 'reďkovka'],   
+            gameConfig: {
+                diamonds: 5,
+                golds: 3,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 3,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 4, y: 12 },  // diamant na pozícii 3,8
+                    { x: 9, y: 11 },
+                    { x: 10, y: 14 },
+                    { x: 5, y: 9 },
+                    { x: 0, y: 10 }
+                ],
+                golds: [
+                    { x: 14, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 10 },   // gold na pozícii 7,8
+                    { x: 2, y: 6 }
+                ],
+                crystals: [
+                    { x: 3, y: 8 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'dh_012',
+                minStars: 14
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'dh_014',
+            worldId: 'world_dh',
+            levelNumber: 14,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 4,
+            words: ['loď', 'meď', 'dážď', 'hruď', 
+                'ďakujem', 'ďumbier', 'žaluď', 'ďalekohľad', 'dedina', 'dedo', 'divák', 'dievča', 'reďkovka'],   
+            gameConfig: {
+                diamonds: 2,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 3,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 10 },  
+                    { x: 10, y: 14 }
+                ],
+                golds: [
+                    { x: 10, y: 10 },   
+                    { x: 0, y: 12 },   
+                    { x: 6, y: 13 },
+                    { x: 14, y: 15 }
+                ],
+                crystals: [
+                    { x: 9, y: 8 }    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'dh_013',
+                minStars: 15
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'dh_015',
+            worldId: 'world_dh',
+            levelNumber: 15,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 4,
+            words: ['loď', 'meď', 'dážď', 'hruď', 'loďka', 'medveď', 'ďasno', 'ďateľ', 
+                'ďakujem', 'ďumbier', 'žaluď', 'ďalekohľad', 'dedina', 'dedo', 'divák', 'dievča', 'ďobnutie'],   
+            gameConfig: {
+                diamonds: 2,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 3,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 8 },  
+                    { x: 10, y: 10 }
+                ],
+                golds: [
+                    { x: 0, y: 11 },   
+                    { x: 4, y: 9 },  
+                    { x: 7, y: 15 },
+                    { x: 15, y: 13 }
+                ],
+                crystals: [
+                    { x: 13, y: 12 }
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'dh_014',
+                minStars: 16
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'dh_016',
+            worldId: 'world_dh',
+            levelNumber: 16,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 5,
+            words: ['loď', 'meď', 'dážď', 'hruď', 'loďka', 'medveď', 'ďasno', 'ďateľ', 
+                'ďakujem', 'ďumbier', 'žaluď', 'ďalekohľad', 'dedina', 'dedo', 'divák', 'dievča', 'ďobnutie', 'vzducholoď', 'deti'],   
+            gameConfig: {
+                diamonds: 5,
+                golds: 6,
+                crystals: 2,
+				speechExercises: 4,
+                listeningExercises: 2,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 0, y: 8 },
+					{ x: 12, y: 10 },
+					{ x: 9, y: 12 },
+					{ x: 4, y: 13 },					
+                    { x: 15, y: 15 }
+                ],
+                golds: [
+                    { x: 1, y: 8 },
+					{ x: 2, y: 15 },
+					{ x: 5, y: 13 },					
+                    { x: 7, y: 9 },   
+                    { x: 6, y: 15 },
+                    { x: 13, y: 7 }
+                ],
+                crystals: [
+                    { x: 10, y: 11 },  
+                    { x: 2, y: 10 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'dh_015',
+                minStars: 20
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+    ],
+
+    world_d: [
+        {
+            id: 'd_001',
+            worldId: 'world_d',
+            levelNumber: 1,
+            name: 'Prvé D-ka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['dom', 'dúha', 'donut', 'dym'],
+            gameConfig: {
+                diamonds: 1,
+                golds: 3,
+                crystals: 1,
+                speechExercises: 1,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 12, y: 7 }
+                ],
+                golds: [
+                    { x: 2, y: 9 }, 
+					{ x: 5, y: 10 }, 
+                    { x: 10, y: 13 },
+                ],
+                crystals: [
+                    { x: 11, y: 9 }  
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: null,
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: true
+        },
+        {
+            id: 'd_002',
+            worldId: 'world_d',
+            levelNumber: 2,
+            name: 'Prvé D',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['dom', 'dúha', 'donut', 'dym', 'duch', 'doska'],
+            gameConfig: {
+                diamonds: 1,
+                golds: 3,
+                crystals: 2,
+				speechExercises: 1,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 6, y: 10 },
+                ],
+                golds: [
+                    { x: 2, y: 9 },   
+                    { x: 7, y: 8 },   
+                    { x: 10, y: 8 }
+                ],
+                crystals: [
+                    { x: 9, y: 7 },    
+                    { x: 10, y: 12 }
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'd_001',
+                minStars: 1
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'd_003',
+            worldId: 'world_d',
+            levelNumber: 3,
+            name: 'Prvé Ď-ka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['dynamit', 'dúha', 'dáma', 'dym', 'duch', 'doska'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 5,
+                crystals: 1,
+				speechExercises: 1,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 3, y: 8 },  
+                    { x: 12, y: 7 },  
+                    { x: 10, y: 12 }
+                ],
+                golds: [
+                    { x: 2, y: 9 },   
+                    { x: 7, y: 8 },   
+                    { x: 14, y: 9 },   
+                    { x: 9, y: 10 },
+                    { x: 10, y: 12 }
+                ],
+                crystals: [
+                    { x: 1, y: 15 }    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'd_002',
+                minStars: 2
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'd_004',
+            worldId: 'world_d',
+            levelNumber: 4,
+            name: 'Prvé Ď-ka',
+            gameType: 'banik',
+            difficulty: 1,
+            words: ['dom', 'dúha', 'donut', 'dym', 'duch', 'doska', 'dynamit', 'dáma'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 3,
+                crystals: 2,
+				speechExercises: 2,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 8 },  
+                    { x: 10, y: 7 },  
+                    { x: 9, y: 14 }
+                ],
+                golds: [
+                    { x: 3, y: 9 },  
+                    { x: 7, y: 8 },   
+                    { x: 14, y: 6 }   
+                ],
+                crystals: [
+					{ x: 4, y: 12 },
+                    { x: 7, y: 11 }   
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'd_003',
+                minStars: 3
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'd_005',
+            worldId: 'world_d',
+            levelNumber: 5,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['dom', 'dúha', 'donut', 'dym', 'duch', 'doska', 'dynamit', 'dáma', 'dukát', 'disk', 'disketa'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 4,
+                crystals: 4,
+				speechExercises: 2,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 13, y: 8 }, 
+                    { x: 9, y: 10 },  
+                    { x: 1, y: 14 }
+                ],
+                golds: [
+                    { x: 0, y: 9 },
+                    { x: 3, y: 10 },					
+                    { x: 7, y: 8 }   
+                ],
+                crystals: [
+                    { x: 2, y: 10 },
+                    { x: 6, y: 12 },
+                    { x: 14, y: 14 },					
+                    { x: 8, y: 8 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'd_004',
+                minStars: 4
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'd_006',
+            worldId: 'world_d',
+            levelNumber: 6,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['domov', 'doklad', 'dudlík', 'diamant', 'dom', 'dúha', 'donut', 'dym', 'duch', 
+                'doska', 'dynamit', 'dáma', 'dukát', 'disk', 'disketa'],
+            gameConfig: {
+                diamonds: 3,
+                golds: 5,
+                crystals: 2,
+				speechExercises: 3,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 3, y: 7 }, 
+                    { x: 10, y: 7 },  
+                    { x: 2, y: 14 }
+                ],
+                golds: [
+                    { x: 1, y: 9 },
+                    { x: 10, y: 10 },
+                    { x: 6, y: 7 },
+                    { x: 3, y: 15 },					
+                    { x: 15, y: 12 }   
+                ],
+                crystals: [
+                    { x: 7, y: 11 },   
+                    { x: 10, y: 15 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'd_005',
+                minStars: 5
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'd_007',
+            worldId: 'world_d',
+            levelNumber: 7,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['domov', 'doklad', 'dudlík', 'diamant', 'dom', 'dúha', 'donut', 'dym', 'duch', 
+                'doska', 'dynamit', 'dáma', 'dukát', 'disk', 'disketa'],            
+            gameConfig: {
+                diamonds: 2,
+                golds: 2,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 3, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 0, y: 10 },  
+                    { x: 14, y: 14 }
+                ],
+                golds: [
+                    { x: 5, y: 8 },   
+                    { x: 7, y: 12 }  
+                ],
+                crystals: [   
+                    { x: 10, y: 9 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'd_006',
+                minStars: 6
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'd_008',
+            worldId: 'world_d',
+            levelNumber: 8,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 2,
+            words: ['domov', 'doklad', 'dudlík', 'diamant', 'delfín', 'dúha', 'donut', 'dym', 'duch'], 
+            gameConfig: {
+                diamonds: 3,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 3, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 10, y: 6 }, 
+                    { x: 6, y: 14 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   
+                    { x: 7, y: 11 },   
+                    { x: 8, y: 12 },
+                    { x: 1, y: 7 }
+                ],
+                crystals: [
+                    { x: 9, y: 15 },    
+                    { x: 14, y: 8 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'd_007',
+                minStars: 7
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'd_009',
+            worldId: 'world_d',
+            levelNumber: 9,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 3,
+            words: ['domov', 'doklad', 'dudlík', 'diamant', 'dom', 'dúha', 'donut', 'dym', 'duch', 
+                'doska', 'dynamit', 'dáma', 'dukát', 'disk', 'disketa', 'delfín', 'dáždnik', 'dvere'],    
+            gameConfig: {
+				diamonds: 3,
+                golds: 3,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 10 },  
+                    { x: 10, y: 14 },
+                    { x: 2, y: 9 }
+                ],
+                golds: [
+                    { x: 7, y: 11 },   
+                    { x: 12, y: 12 },
+                    { x: 0, y: 7 }
+                ],
+                crystals: [
+                    { x: 9, y: 11 },    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'd_008',
+                minStars: 10
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'd_010',
+            worldId: 'world_d',
+            levelNumber: 10,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 3,
+            words: ['domov', 'doklad', 'dudlík',  
+                'doska', 'dynamit', 'dáma', 'drak', 'disk', 'disketa', 'delfín', 'dáždnik', 'dvere' ],             
+            gameConfig: {
+				diamonds: 4,
+                golds: 6,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 6 },  
+                    { x: 10, y: 14 },
+                    { x: 6, y: 8 },
+                    { x: 0, y: 10 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   
+                    { x: 7, y: 11 },   
+                    { x: 12, y: 12 },
+                    { x: 1, y: 9 },
+                    { x: 3, y: 8 },
+                    { x: 5, y: 11 }
+                ],
+                crystals: [
+                    { x: 14, y: 10 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'd_009',
+                minStars: 11
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'd_011',
+            worldId: 'world_d',
+            levelNumber: 11,
+            name: 'Prvé Ďka',
+            gameType: 'banik',
+            difficulty: 3,
+            words: ['domov', 'doklad', 'dudlík', 'diamant', 'dom', 'dúha', 'donut', 'dym', 'duch', 
+                'doska', 'dynamit', 'dáma', 'dukát', 'disk', 'disketa', 'delfín', 'dáždnik', 'dvere', 'drak'],                  
+            gameConfig: {
+                diamonds: 3,
+                golds: 4,
+                crystals: 2,
+				speechExercises: 3,
+                listeningExercises: 1, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 15, y: 14 },  
+					{ x: 12, y: 15 },  
+                    { x: 3, y: 12 }
+                ],
+                golds: [
+                    { x: 10, y: 9 },   
+                    { x: 7, y: 11 },   
+                    { x: 4, y: 15 },
+                    { x: 5, y: 10 }
+                ],
+                crystals: [
+                    { x: 9, y: 13 },    
+                    { x: 6, y: 7 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'd_010',
+                minStars: 12
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'd_012',
+            worldId: 'world_d',
+            levelNumber: 12,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 3,
+            words: ['domov', 'doklad', 'dudlík', 'diamant', 'dom', 'dúha', 'donut', 'dym', 'duch', 
+                'doska', 'dynamit', 'dáma', 'dukát', 'disk', 'disketa', 'delfín', 'dáždnik', 'dvere', 
+                'drak', 'drevo', 'diera'],   
+            gameConfig: {
+                diamonds: 2,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 2, 
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 7 },  
+                    { x: 10, y: 14 }
+                ],
+                golds: [
+                    { x: 6, y: 9 },   
+                    { x: 7, y: 11 },  
+                    { x: 14, y: 12 },
+                    { x: 4, y: 10 }
+                ],
+                crystals: [
+                    { x: 9, y: 15 }    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'd_011',
+                minStars: 13
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'd_013',
+            worldId: 'world_d',
+            levelNumber: 13,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 4,
+            words: ['domov', 'doklad', 'dudlík', 'diamant', 'dom', 'dúha', 'donut', 'dym', 'duch', 
+                'doska',  'dáždnik', 'dvere', 
+                'drak', 'drevo', 'diera', 'dinosaurus', 'doktor', 'sídlo', 'záhrada'],      
+            gameConfig: {
+                diamonds: 5,
+                golds: 3,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 3,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 4, y: 12 },  // diamant na pozícii 3,8
+                    { x: 9, y: 11 },
+                    { x: 10, y: 14 },
+                    { x: 5, y: 9 },
+                    { x: 0, y: 10 }
+                ],
+                golds: [
+                    { x: 14, y: 9 },   // gold na pozícii 2,9
+                    { x: 7, y: 10 },   // gold na pozícii 7,8
+                    { x: 2, y: 6 }
+                ],
+                crystals: [
+                    { x: 3, y: 8 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'd_012',
+                minStars: 14
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'd_014',
+            worldId: 'world_d',
+            levelNumber: 14,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 4,
+            words: ['domov', 'doklad', 'dudlík', 'diamant', 'dom', 'dúha', 'donut', 'dym', 'duch', 
+                'doska', 'dynamit', 'dáma', 'dáždnik', 'dvere', 
+                'drak', 'drevo', 'diera', 'dinosaurus', 'doktor', 'sídlo', 'záhrada'],     
+            gameConfig: {
+                diamonds: 2,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 4,
+                listeningExercises: 3,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 10 },  
+                    { x: 10, y: 14 }
+                ],
+                golds: [
+                    { x: 10, y: 10 },   
+                    { x: 0, y: 12 },   
+                    { x: 6, y: 13 },
+                    { x: 14, y: 15 }
+                ],
+                crystals: [
+                    { x: 9, y: 8 }    
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'd_013',
+                minStars: 15
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'd_015',
+            worldId: 'world_d',
+            levelNumber: 15,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 4,
+            words: ['domov', 'doklad', 'dudlík', 'dym', 'duch', 
+                'doska', 'dynamit', 'dáma', 'dukát', 'disk', 'disketa', 'delfín', 'dáždnik', 'dvere', 
+                'drak', 'drevo', 'diera', 'dinosaurus', 'doktor', 'sídlo', 'záhrada'],     
+            gameConfig: {
+                diamonds: 2,
+                golds: 4,
+                crystals: 1,
+				speechExercises: 3,
+                listeningExercises: 3,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 1, y: 8 },  
+                    { x: 10, y: 10 }
+                ],
+                golds: [
+                    { x: 0, y: 11 },   
+                    { x: 4, y: 9 },  
+                    { x: 7, y: 15 },
+                    { x: 15, y: 13 }
+                ],
+                crystals: [
+                    { x: 13, y: 12 }
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'd_014',
+                minStars: 16
+            },
+            timeLimit: null,
+            minStarsToPass: 1,
+            isUnlocked: false
+        },
+        {
+            id: 'd_016',
+            worldId: 'world_d',
+            levelNumber: 16,
+            name: 'Prvé Ď-čka',
+            gameType: 'banik',
+            difficulty: 5,
+            words: ['domov', 'doklad', 'dudlík', 'diamant', 'dom', 'dúha', 'donut', 'dym', 'duch', 
+                'doska', 'dynamit', 'dáma', 'dukát', 'disk', 'disketa', 'delfín', 'dáždnik', 'dvere', 
+                'drak', 'drevo', 'diera', 'dinosaurus', 'doktor', 'sídlo', 'záhrada'],     
+            gameConfig: {
+                diamonds: 5,
+                golds: 6,
+                crystals: 2,
+				speechExercises: 4,
+                listeningExercises: 2,
+                mapSize: { width: 16, height: 10 }
+            },
+            positions: {
+                diamonds: [
+                    { x: 0, y: 8 },
+					{ x: 12, y: 10 },
+					{ x: 9, y: 12 },
+					{ x: 4, y: 13 },					
+                    { x: 15, y: 15 }
+                ],
+                golds: [
+                    { x: 1, y: 8 },
+					{ x: 2, y: 15 },
+					{ x: 5, y: 13 },					
+                    { x: 7, y: 9 },   
+                    { x: 6, y: 15 },
+                    { x: 13, y: 7 }
+                ],
+                crystals: [
+                    { x: 10, y: 11 },  
+                    { x: 2, y: 10 } 
+                ],
+                player: { x: 1, y: 1 }
+            },
+            unlockRequirement: {
+                levelId: 'd_015',
                 minStars: 20
             },
             timeLimit: null,

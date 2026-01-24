@@ -289,12 +289,21 @@ body {
     background-image: url(../images/worlds/world_ch.png);
 }
 .world-ď {
-    background-image: url(../images/worlds/world_d.png);
+    background-image: url(../images/worlds/world_dh.png);
 }
 .world-ť {
-    background-image: url(../images/worlds/world_t.png);
+    background-image: url(../images/worlds/world_th.png);
 }
 .world-ň {
+    background-image: url(../images/worlds/world_nh.png);
+}
+.world-d {
+    background-image: url(../images/worlds/world_d.png);
+}
+.world-t {
+    background-image: url(../images/worlds/world_t.png);
+}
+.world-n {
     background-image: url(../images/worlds/world_n.png);
 }
 .world-k {
@@ -518,12 +527,21 @@ body {
     background-image: url(../images/worlds/world_ch.png);
 }
 .game-panel.world-ď-bg {
-    background-image: url(../images/worlds/world_d.png);
+    background-image: url(../images/worlds/world_dh.png);
 }
 .game-panel.world-ť-bg {
-    background-image: url(../images/worlds/world_t.png);
+    background-image: url(../images/worlds/world_th.png);
 }
 .game-panel.world-ň-bg {
+    background-image: url(../images/worlds/world_nh.png);
+}
+.game-panel.world-d-bg {
+    background-image: url(../images/worlds/world_d.png);
+}
+.game-panel.world-t-bg {
+    background-image: url(../images/worlds/world_t.png);
+}
+.game-panel.world-n-bg {
     background-image: url(../images/worlds/world_n.png);
 }
 .game-panel.world-k-bg {

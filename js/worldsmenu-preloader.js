@@ -9,7 +9,7 @@
 // ==========================================
 
 // Verzia cache - zvýš túto hodnotu pri zmenách obrázkov
-const CACHE_VERSION = 'worldsmenu-v1.1';  // ZVÝŠENÉ: Opravené 404 chyby
+const CACHE_VERSION = 'worldsmenu-v1.3';  // ZVÝŠENÉ: Opravené 404 chyby
 const CACHE_NAME = `banik-jozino-${CACHE_VERSION}`;
 
 // Cache pre prednačítané obrázky (in-memory cache)

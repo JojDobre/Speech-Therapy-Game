@@ -342,7 +342,7 @@ function setupEventListeners() {
     // Event listener pre level modal zatvorenie
     setupLevelModalListeners();
     setupTrainingModalListeners();
-    setupPexesoTrainingModalListeners(); // PRIDANÉ
+    setupPexesoTrainingModalListeners(); 
 }
 
 /**
@@ -511,17 +511,25 @@ function applyWorldButtonBackground(button, world) {
     const backgroundMap = {
         'R': 'world_r.png',
         'L': 'world_l.png',
-        'S': 'world_s.png',
-        'Č': 'world_ch.png',
-        'Z': 'world_z.jpg',
+
         'C': 'world_c.png',
-        'Š': 'world_sh.png',
+        'Z': 'world_z.jpg',
+        'S': 'world_s.png',
+
+        'Č': 'world_ch.png',
         'Ž': 'world_zh.png',
-        'Ď': 'world_d.png',
-        'Ť': 'world_t.png',
-        'Ň': 'world_n.png',
+        'Š': 'world_sh.png',
+
         'K': 'world_k.png',
-        'G': 'world_g.png'
+        'G': 'world_g.png',
+
+        'D': 'world_d.png',
+        'T': 'world_t.png',
+        'N': 'world_n.png',
+
+        'Ď': 'world_dh.png',
+        'Ť': 'world_th.png',
+        'Ň': 'world_nh.png',
     };
     
     const backgroundFile = backgroundMap[world.name];
