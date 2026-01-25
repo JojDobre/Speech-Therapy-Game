@@ -366,21 +366,13 @@ function setupLevelModalListeners() {
 
 /**
  * Navigácia medzi svetmi (šípky)
+ * OPRAVENÉ: Plynulá cyklická navigácia - vždy posun o 1 svet
  */
 function navigateWorlds(direction) {
     console.log(`Navigujem svety: ${direction}`);
     
-    // Posun visible worlds
-    const newStartIndex = visibleWorldsStartIndex + direction;
-    
-    // Cyklická navigácia
-    if (newStartIndex < 0) {
-        visibleWorldsStartIndex = Math.max(0, allWorlds.length - 3);
-    } else if (newStartIndex + 2 >= allWorlds.length) {
-        visibleWorldsStartIndex = 0;
-    } else {
-        visibleWorldsStartIndex = newStartIndex;
-    }
+    // Vypočítaj nový index s wrap-around (modulo)
+    visibleWorldsStartIndex = (visibleWorldsStartIndex + direction + allWorlds.length) % allWorlds.length;
     
     // Aktualizuj display
     updateDisplay();
@@ -482,9 +474,10 @@ function updateWorldButtons() {
         }
     });
     
-    // Zobraz len 3 viditeľné buttony
-    for (let i = 0; i < 3 && (visibleWorldsStartIndex + i) < allWorlds.length; i++) {
-        const worldIndex = visibleWorldsStartIndex + i;
+    // Zobraz 3 viditeľné buttony s wrap-around
+    for (let i = 0; i < 3; i++) {
+        // Vypočítaj worldIndex s wrap-around (modulo)
+        const worldIndex = (visibleWorldsStartIndex + i) % allWorlds.length;
         const button = allWorldButtons[worldIndex];
         
         if (button) {
@@ -1481,26 +1474,29 @@ function createPexesoWordElement(word, isUnlocked = true, worldName = null) {
         wordElement.title = `Slovo zo sveta ${worldName}`;
     }
     
-    // Event listener pre výber slova - funguje pre všetky slová
+    // Event listener pre výber slova - OPRAVENÝ
     wordElement.addEventListener('click', function() {
         console.log('Kliknuté na slovo v pexeso modali:', word);
+        
+        // Ak je slovo už označené, odznač ho
         if (this.classList.contains('selected')) {
             this.classList.remove('selected');
             console.log('Slovo odznačené:', word);
-        } 
-
-        const selectedCount = document.querySelectorAll('#pexeso-words-list .word-item.selected').length;
-        if (selectedCount >= 20){
-            // Zobraz upozornenie
-            alert('⚠️ Dosiahli ste maximum 20 slov!');
-            return; // Neoznač slovo
+            updatePexesoSelectionCounter(); // Aktualizuj počítadlo
+            return; // DÔLEŽITÉ: Ukonči funkciu, aby sa nepokračovalo ďalej
         }
-
         
-            this.classList.add('selected');
-            console.log('Slovo označené:', word);
-            updatePexesoSelectionCounter();
+        // Ak slovo NIE JE označené, skontroluj či nie je dosiahnutý limit
+        const selectedCount = document.querySelectorAll('#pexeso-words-list .word-item.selected').length;
+        if (selectedCount >= 20) {
+            alert('⚠️ Dosiahli ste maximum 20 slov!');
+            return; // Neoznač slovo, lebo je dosiahnutý limit
+        }
         
+        // Označ slovo (pridaj selected triedu)
+        this.classList.add('selected');
+        console.log('Slovo označené:', word);
+        updatePexesoSelectionCounter(); // Aktualizuj počítadlo
     });
     
     return wordElement;

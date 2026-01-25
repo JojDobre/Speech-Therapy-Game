@@ -313,6 +313,8 @@ body {
     background-image: url(../images/worlds/world_g.png);
 }
 
+
+
 .world-button span{
     color: #FFF;
     -webkit-text-stroke-width: 1px;
@@ -345,6 +347,9 @@ body {
 .world-button:hover {
     transform: scale(1.05);
 }
+
+
+
 
 
 /* ====================================
