@@ -4539,7 +4539,7 @@ const LEVELS_CONFIG = {
             name: 'Prvé Š-čka',
             gameType: 'banik',
             difficulty: 2,
-            words: ['šum', 'šunka', 'šupka', 'šošovka', 'šaty', 'šibačka', 'šarkan', 'škola', 'kôš', 'guláš', 'myš', 'Mikuláš'],
+            words: ['šum', 'šunka', 'šupka', 'šošovka', 'šaty', 'šibačka', 'šarkan', 'škola', 'kôš', 'guláš', 'myš', 'mikuláš'],
             gameConfig: {
                 diamonds: 2,
                 golds: 2,

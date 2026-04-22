@@ -18,7 +18,7 @@ body {
     padding: 0;
     min-height: 100vh;
     font-family: "Luckiest Guy", sans-serif;
-    overflow: hidden; 
+    overflow-x: hidden; 
     background: var(--Backgrtound, url('../images/worlds/background.jpg')) lightgray 50% / cover no-repeat;
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
     cursor: url('../images/cursor.png') 5 5, auto;
@@ -741,15 +741,14 @@ body {
 /* ============================= */
 .content-section {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: flex-start;
     gap: 20px;
-    width: 100%;
     max-width: 1200px;
     flex-wrap: wrap;
     flex-direction: row;
     align-content: center;
-    margin: 0 auto;
+    margin: 0;
     background-color: #17284900;
 }
 
