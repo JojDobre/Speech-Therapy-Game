@@ -753,55 +753,79 @@ body {
 }
 
 /* Hlavný herný canvas */
+/* Hlavný herný canvas */
+/* Zmena z flexbox na CSS Grid - karty sa budú rozmiestňovať cez
+   grid-template-columns definovaný v pravidlách .cards-N nižšie. */
 #gameCanvas {
     background-image: url("../images/pozadie.jpg");
-    min-width: 800px;
+    min-width: 800px;                    /* Desktopová veľkosť */
     min-height: 800px;
-    max-height: 800px;
     max-width: 800px;
-    display: flex;
+    max-height: 800px;
+
+    /* === GRID NASTAVENIE === */
+    display: grid;                       /* Mriežkový layout pre karty */
+    gap: 1.5%;                           /* Medzera medzi kartami (% zo šírky canvasu) */
+    padding: 2%;                         /* Vnútorný odstup od okrajov canvasu */
+    align-content: center;               /* Vertikálne vycentrovanie gridu ak je menší */
+    justify-content: center;             /* Horizontálne vycentrovanie */
+    align-items: stretch;                /* Karty vyplnia výšku bunky */
+    justify-items: stretch;              /* Karty vyplnia šírku bunky */
+
+    /* === VZHĽAD === */
     overflow: hidden;
     border-radius: 10px;
     border: 4px solid #AC3F0B;
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
-    flex: 1; 
     transition: all 0.4s ease;
     filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.30));
-    gap: 0px; 
-    flex-wrap: wrap;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
+
+    /* === BOX-SIZING === */
+    /* Padding sa počíta dovnútra - canvas zostane presne 800x800 */
+    box-sizing: border-box;
 }
 
 /* =========================================== */
 /* ZÁKLADNÉ NASTAVENIE KARTY                  */
 /* Toto je predvolené nastavenie pre karty    */
 /* =========================================== */
+/* =========================================== */
+/* ZÁKLADNÉ NASTAVENIE KARTY                  */
+/* Karta vyplní bunku gridu cez 100% šírky.   */
+/* Aspect-ratio 1/1 zabezpečí štvorec.         */
+/* container-type umožňuje používať cqw units */
+/* (napr. font-size: 20cqw = 20% šírky karty) */
+/* =========================================== */
 .card-container {
-    display: flex;                          /* Flexbox pre centrované obrázky a text */
-    width: 150px;                           /* Predvolená šírka (pre malý počet kariet) */
-    height: 150px;                          /* Predvolená výška */
-    background-image: url('../images/pozadie_button_mobile_2.png');  /* Pozadie karty */
-    margin: 10px;                           /* Medzery medzi kartami */
-    border: 2px solid #ECCF17 !important;  /* Žltý okraj */
-    border-radius: 10px;                    /* Zaoblené rohy */
+    display: flex;                     /* Flexbox pre centrovanie obsahu vnútri */
+    width: 100%;                       /* Vyplní celú šírku gridovej bunky */
+    height: auto;                      /* Výška sa dopočíta z aspect-ratio */
+    aspect-ratio: 1 / 1;               /* Karta je vždy štvorec */
+    
+    /* Container Queries - umožňuje cqw units pre obsah karty */
+    container-type: inline-size;       /* 1cqw = 1% šírky karty */
+    
+    background-image: url('../images/pozadie_button_mobile_2.png');
+    border: 2px solid #ECCF17 !important;
+    border-radius: 10px;
     
     /* Centrované vnútro */
-    justify-items: center;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
-    flex-direction: column;
+    flex-direction: column;            /* Obrázok nad textom */
+    align-items: center;               /* Horizontálne vycentrovanie */
+    justify-content: center;           /* Vertikálne vycentrovanie */
     
-    /* Plynulá animácia pri zmenách */
+    /* Animácie */
     transition: all 0.5s ease;
 
-    perspective: 1000px;              /* 3D perspektíva pre flip efekt */
-    transform-style: preserve-3d;     /* Zachováva 3D transformácie */
-    position: relative;                /* Pre správne poziciovanie */
+    /* 3D efekt pre flip */
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    position: relative;
+    
+    /* Box-sizing zabezpečí že border je započítaný v rozmere */
+    box-sizing: border-box;
 }
 
 .card-container:hover {
@@ -854,23 +878,42 @@ body {
 }
 
 /* =========================================== */
-/* ZÁKLADNÉ OBRÁZKY A TEXT V KARTÁCH          */
+/* OBRÁZKY A TEXT V KARTÁCH                   */
+/* Všetko v relatívnych jednotkách:           */
+/*   - obrázok: 55% rozmerov karty            */
+/*   - text:    cqw = % šírky karty           */
+/* Takto sa automaticky škáluje s veľkosťou   */
+/* karty bez potreby rôznych pravidiel.       */
 /* =========================================== */
 .card-container img {
-    width: 80px;                            /* Predvolená veľkosť obrázka */
-    height: 80px;
-    object-fit: contain;                    /* Zachová pomer strán */
+    width: 55%;                        /* 55% šírky karty */
+    height: 55%;                       /* 55% výšky karty */
+    object-fit: contain;               /* Zachová pomer strán obrázku */
 }
 
+/* Text na rubovej strane karty (PEXESO) - väčší */
 .card-container span {
+    font-size: 20cqw;                  /* 20% šírky karty (napr. 160px karta = 32px font) */
+    
+    /* Farebný gradient (nezmenené) */
     background: linear-gradient(180deg, #EF0 0%, #FFD900 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     -webkit-text-stroke: unset;
-    font-size: 32px;                        /* Predvolená veľkosť textu */
+    
+    /* Text nesmie pretekať kartu */
+    max-width: 90%;                    /* Max 90% šírky karty */
+    overflow: hidden;                  /* Skryje pretekajúci text */
+    text-overflow: ellipsis;           /* "..." ak je text príliš dlhý */
+    white-space: nowrap;               /* Neláme text */
+    padding: 0 5%;                     /* Malý odstup od okrajov */
 }
 
+/* Text po otočení karty (konkrétne slovo) - menší aby sa zmestil */
+.card-container.flipped span {
+    font-size: 11cqw;                  /* 11% šírky karty (pre dlhšie slová) */
+}
 
 /* =========================================== */
 /* Blikanie času v posledných 10 sekundách */
@@ -1345,938 +1388,213 @@ body {
 }
 
 /* =============================================== */
-/* AUTOMATICKÉ RESPONZÍVNE PRAVIDLÁ               */
-/* Pre každý možný počet kariet (4 až 40)         */
+/* GRID ROZLOŽENIE PRE KAŽDÝ POČET KARIET         */
+/* Definuje iba počet stĺpcov - šírka karty sa    */
+/* automaticky vypočíta z gridu (1fr = 1 podiel). */
+/* Veľkosť karty, obrázku a textu je riešená cez  */
+/* aspect-ratio a cqw v .card-container vyššie.   */
 /* =============================================== */
 
-/* ===== 4 KARTY (2 páry) - 2x2 grid ===== */
-#gameCanvas.cards-4 .card-container {
-    width: 180px;
-    height: 180px;
-    margin: 15px;
-}
-#gameCanvas.cards-4 .card-container img {
-    width: 100px;
-    height: 100px;
-}
-#gameCanvas.cards-4 .card-container span {
-    font-size: 40px;
-}
-#gameCanvas.cards-4 .card-container.flipped span {
-    font-size: 22px;
-}
+/* 4 karty = 2 stĺpce (2×2) */
+#gameCanvas.cards-4 { grid-template-columns: repeat(2, 1fr); }
 
-/* ===== 6 KARIET (3 páry) - 2x3 grid ===== */
-#gameCanvas.cards-6 .card-container {
-    width: 170px;
-    height: 170px;
-    margin: 14px;
-}
-#gameCanvas.cards-6 .card-container img {
-    width: 95px;
-    height: 95px;
-}
-#gameCanvas.cards-6 .card-container span {
-    font-size: 38px;
-}
-#gameCanvas.cards-6 .card-container.flipped span {
-    font-size: 20px;
-}
+/* 6 kariet = 3 stĺpce (3×2) */
+#gameCanvas.cards-6 { grid-template-columns: repeat(3, 1fr); }
 
-/* ===== 8 KARIET (4 páry) - 2x4 grid ===== */
-#gameCanvas.cards-8 .card-container {
-    width: 165px;
-    height: 165px;
-    margin: 13px;
-}
-#gameCanvas.cards-8 .card-container img {
-    width: 92px;
-    height: 92px;
-}
-#gameCanvas.cards-8 .card-container span {
-    font-size: 36px;
-}
-#gameCanvas.cards-8 .card-container.flipped span {
-    font-size: 19px;
-}
+/* 8 kariet = 4 stĺpce (4×2) */
+#gameCanvas.cards-8 { grid-template-columns: repeat(4, 1fr); }
 
-/* ===== 10 KARIET (5 párov) - 2x5 grid ===== */
-#gameCanvas.cards-10 .card-container {
-    width: 162px;
-    height: 162px;
-    margin: 12px;
-}
-#gameCanvas.cards-10 .card-container img {
-    width: 90px;
-    height: 90px;
-}
-#gameCanvas.cards-10 .card-container span {
-    font-size: 35px;
-}
-#gameCanvas.cards-10 .card-container.flipped span {
-    font-size: 19px;
-}
+/* 10 kariet = 5 stĺpcov (5×2) */
+#gameCanvas.cards-10 { grid-template-columns: repeat(4, 1fr); }
 
-/* ===== 12 KARIET (6 párov) - 3x4 grid ===== */
-#gameCanvas.cards-12 .card-container {
-    width: 160px;
-    height: 160px;
-    margin: 12px;
-}
-#gameCanvas.cards-12 .card-container img {
-    width: 88px;
-    height: 88px;
-}
-#gameCanvas.cards-12 .card-container span {
-    font-size: 34px;
-}
-#gameCanvas.cards-12 .card-container.flipped span {
-    font-size: 18px;
-}
+/* 12 kariet = 4 stĺpce (4×3) */
+#gameCanvas.cards-12 { grid-template-columns: repeat(4, 1fr); }
 
-/* ===== 14 KARIET (7 párov) - rozloženie môže byť 2x7 alebo 3x5 ===== */
-#gameCanvas.cards-14 .card-container {
-    width: 155px;
-    height: 155px;
-    margin: 11px;
-}
-#gameCanvas.cards-14 .card-container img {
-    width: 85px;
-    height: 85px;
-}
-#gameCanvas.cards-14 .card-container span {
-    font-size: 33px;
-}
-#gameCanvas.cards-14 .card-container.flipped span {
-    font-size: 18px;
-}
+/* 14 kariet = 7 stĺpcov (7×2) */
+#gameCanvas.cards-14 { grid-template-columns: repeat(4, 1fr); }
 
-/* ===== 16 KARIET (8 párov) - 4x4 grid ===== */
-/* DÔLEŽITÉ: Toto je "štandardná" veľkosť */
-#gameCanvas.cards-16 .card-container {
-    width: 160px;
-    height: 160px;
-    margin: 12px;
-}
-#gameCanvas.cards-16 .card-container img {
-    width: 90px;
-    height: 90px;
-}
-#gameCanvas.cards-16 .card-container span {
-    font-size: 32px;
-}
-#gameCanvas.cards-16 .card-container.flipped span {
-    font-size: 18px;
-}
+/* 16 kariet = 4 stĺpce (4×4) - ŠTANDARDNÁ VEĽKOSŤ */
+#gameCanvas.cards-16 { grid-template-columns: repeat(4, 1fr); }
 
-/* ===== 18 KARIET (9 párov) - 3x6 grid ===== */
-#gameCanvas.cards-18 .card-container {
-    width: 145px;
-    height: 145px;
-    margin: 10px;
-}
-#gameCanvas.cards-18 .card-container img {
-    width: 78px;
-    height: 78px;
-}
-#gameCanvas.cards-18 .card-container span {
-    font-size: 30px;
-}
-#gameCanvas.cards-18 .card-container.flipped span {
-    font-size: 17px;
-}
+/* 18 kariet = 6 stĺpcov (6×3) */
+#gameCanvas.cards-18 { grid-template-columns: repeat(5, 1fr); }
 
-/* ===== 20 KARIET (10 párov) - 4x5 grid ===== */
-#gameCanvas.cards-20 .card-container {
-    width: 140px;
-    height: 140px;
-    margin: 9px;
-}
-#gameCanvas.cards-20 .card-container img {
-    width: 75px;
-    height: 75px;
-}
-#gameCanvas.cards-20 .card-container span {
-    font-size: 28px;
-}
-#gameCanvas.cards-20 .card-container.flipped span {
-    font-size: 16px;
-}
+/* 20 kariet = 5 stĺpcov (5×4) */
+#gameCanvas.cards-20 { grid-template-columns: repeat(5, 1fr); }
 
-/* ===== 22 KARTY (11 párov) - môže byť 4x6 s prázdnymi miestami ===== */
-#gameCanvas.cards-22 .card-container {
-    width: 135px;
-    height: 135px;
-    margin: 8px;
-}
-#gameCanvas.cards-22 .card-container img {
-    width: 72px;
-    height: 72px;
-}
-#gameCanvas.cards-22 .card-container span {
-    font-size: 27px;
-}
-#gameCanvas.cards-22 .card-container.flipped span {
-    font-size: 15px;
-}
+/* 22-24 kariet = 6 stĺpcov (6×4, 22 bude mať 2 prázdne bunky) */
+#gameCanvas.cards-22,
+#gameCanvas.cards-23,
+#gameCanvas.cards-24 { grid-template-columns: repeat(5, 1fr); }
 
-/* ===== 24 KARIET (12 párov) - 4x6 grid ===== */
-#gameCanvas.cards-24 .card-container {
-    width: 130px;
-    height: 130px;
-    margin: 8px;
-}
-#gameCanvas.cards-24 .card-container img {
-    width: 70px;
-    height: 70px;
-}
-#gameCanvas.cards-24 .card-container span {
-    font-size: 26px;
-}
-#gameCanvas.cards-24 .card-container.flipped span {
-    font-size: 14px;
-}
+/* 25 kariet = 5 stĺpcov (5×5) */
+#gameCanvas.cards-25 { grid-template-columns: repeat(5, 1fr); }
 
-/* ===== 25 KARIET (12.5 párov) - 5x5 grid ===== */
-#gameCanvas.cards-25 .card-container {
-    width: 125px;
-    height: 125px;
-    margin: 7px;
-}
-#gameCanvas.cards-25 .card-container img {
-    width: 68px;
-    height: 68px;
-}
-#gameCanvas.cards-25 .card-container span {
-    font-size: 25px;
-}
-#gameCanvas.cards-25 .card-container.flipped span {
-    font-size: 14px;
-}
+/* 26-28 kariet = 7 stĺpcov */
+#gameCanvas.cards-26,
+#gameCanvas.cards-27,
+#gameCanvas.cards-28 { grid-template-columns: repeat(6, 1fr); }
 
-/* ===== 26-28 KARIET - postupné zmenšovanie ===== */
-#gameCanvas.cards-26 .card-container,
-#gameCanvas.cards-27 .card-container,
-#gameCanvas.cards-28 .card-container {
-    width: 120px;
-    height: 120px;
-    margin: 6px;
-}
-#gameCanvas.cards-26 .card-container img,
-#gameCanvas.cards-27 .card-container img,
-#gameCanvas.cards-28 .card-container img {
-    width: 65px;
-    height: 65px;
-}
-#gameCanvas.cards-26 .card-container span,
-#gameCanvas.cards-27 .card-container span,
-#gameCanvas.cards-28 .card-container span {
-    font-size: 24px;
-}
-#gameCanvas.cards-26 .card-container.flipped span,
-#gameCanvas.cards-27 .card-container.flipped span,
-#gameCanvas.cards-28 .card-container.flipped span {
-    font-size: 13px;
-}
+/* 30 kariet = 6 stĺpcov (6×5) */
+#gameCanvas.cards-29,
+#gameCanvas.cards-30 { grid-template-columns: repeat(6, 1fr); }
 
-/* ===== 30 KARIET (15 párov) - 5x6 grid ===== */
-#gameCanvas.cards-30 .card-container {
-    width: 115px;
-    height: 115px;
-    margin: 5px;
-}
-#gameCanvas.cards-30 .card-container img {
-    width: 62px;
-    height: 62px;
-}
-#gameCanvas.cards-30 .card-container span {
-    font-size: 22px;
-}
-#gameCanvas.cards-30 .card-container.flipped span {
-    font-size: 12px;
-}
+/* 32-34 kariet = 7 stĺpcov */
+#gameCanvas.cards-31,
+#gameCanvas.cards-32,
+#gameCanvas.cards-33,
+#gameCanvas.cards-34 { grid-template-columns: repeat(7, 1fr); }
 
-/* ===== 32-34 KARIET - postupné zmenšovanie ===== */
-#gameCanvas.cards-32 .card-container,
-#gameCanvas.cards-33 .card-container,
-#gameCanvas.cards-34 .card-container {
-    width: 108px;
-    height: 108px;
-    margin: 4px;
-}
-#gameCanvas.cards-32 .card-container img,
-#gameCanvas.cards-33 .card-container img,
-#gameCanvas.cards-34 .card-container img {
-    width: 58px;
-    height: 58px;
-}
-#gameCanvas.cards-32 .card-container span,
-#gameCanvas.cards-33 .card-container span,
-#gameCanvas.cards-34 .card-container span {
-    font-size: 20px;
-}
-#gameCanvas.cards-32 .card-container.flipped span,
-#gameCanvas.cards-33 .card-container.flipped span,
-#gameCanvas.cards-34 .card-container.flipped span {
-    font-size: 11px;
-}
+/* 36 kariet = 6 stĺpcov (6×6) */
+#gameCanvas.cards-35,
+#gameCanvas.cards-36 { grid-template-columns: repeat(7, 1fr); }
 
-/* ===== 36 KARIET (18 párov) - 6x6 grid ===== */
-#gameCanvas.cards-36 .card-container {
-    width: 100px;
-    height: 100px;
-    margin: 4px;
-}
-#gameCanvas.cards-36 .card-container img {
-    width: 54px;
-    height: 54px;
-}
-#gameCanvas.cards-36 .card-container span {
-    font-size: 18px;
-}
-#gameCanvas.cards-36 .card-container.flipped span {
-    font-size: 10px;
-}
+/* 38-41 kariet = 7 stĺpcov */
+#gameCanvas.cards-37,
+#gameCanvas.cards-38,
+#gameCanvas.cards-39,
+#gameCanvas.cards-40,
+#gameCanvas.cards-41 { grid-template-columns: repeat(7, 1fr); }
 
 
+/* ============================================================ */
+/* ====             RESPONZÍVNY LAYOUT                     ==== */
+/* ============================================================ */
 
-/* ===== 38-41 KARIET - veľmi malé karty ===== */
-#gameCanvas.cards-38 .card-container,
-#gameCanvas.cards-39 .card-container,
-#gameCanvas.cards-40 .card-container,
-#gameCanvas.cards-41 .card-container {
-    width: 100px;
-    height: 100px;
-    margin: 4px;
-}
-#gameCanvas.cards-38 .card-container img,
-#gameCanvas.cards-39 .card-container img,
-#gameCanvas.cards-40 .card-container img,
-#gameCanvas.cards-41 .card-container.img {
-    width: 50px;
-    height: 50px;
-}
-#gameCanvas.cards-38 .card-container span,
-#gameCanvas.cards-39 .card-container span,
-#gameCanvas.cards-40 .card-container span,
-#gameCanvas.cards-41 .card-container.span {
-    font-size: 18px;
-}
-#gameCanvas.cards-38 .card-container.flipped span,
-#gameCanvas.cards-39 .card-container.flipped span,
-#gameCanvas.cards-40 .card-container.flipped span,
-#gameCanvas.cards-41 .card-container.flipped span {
-    font-size: 10px;
-}
-
-
-/* =============================================== */
-/* RESPONZÍVNOSŤ KARIET         */           
-/* =============================================== */
-@media (max-width: 930px) {
-    /* Ešte viac zmenšíme karty pre mobily */
-    
-    #gameCanvas.cards-16 .card-container {
-        width: 140px;
-        height: 140px;
-        margin: 8px;
-    }
-    #gameCanvas.cards-16 .card-container img {
-        width: 75px;
-        height: 75px;
-    }
-    
-    #gameCanvas.cards-20 .card-container {
-        width: 120px;
-        height: 120px;
-        margin: 6px;
-    }
-    #gameCanvas.cards-20 .card-container img {
-        width: 65px;
-        height: 65px;
-    }
-    
-    #gameCanvas.cards-24 .card-container,
-    #gameCanvas.cards-25 .card-container {
-        width: 105px;
-        height: 105px;
-        margin: 5px;
-    }
-    #gameCanvas.cards-24 .card-container img,
-    #gameCanvas.cards-25 .card-container img {
-        width: 56px;
-        height: 56px;
-    }
-    
-    #gameCanvas.cards-30 .card-container {
-        width: 95px;
-        height: 95px;
-        margin: 4px;
-    }
-    #gameCanvas.cards-30 .card-container img {
-        width: 50px;
-        height: 50px;
-    }
-    
-    #gameCanvas.cards-36 .card-container {
-        width: 85px;
-        height: 85px;
-        margin: 3px;
-    }
-    #gameCanvas.cards-36 .card-container img {
-        width: 45px;
-        height: 45px;
-    }
-
-    /* ===== 38-41 KARIET - veľmi malé karty ===== */
-    #gameCanvas.cards-35 .card-container,
-    #gameCanvas.cards-36 .card-container,
-    #gameCanvas.cards-37 .card-container,
-    #gameCanvas.cards-38 .card-container,
-    #gameCanvas.cards-39 .card-container,
-    #gameCanvas.cards-40 .card-container,
-    #gameCanvas.cards-41 .card-container {
-        max-width: 13%; 
-        margin: 4px;
-        aspect-ratio: 1/1;
-    }
-
-    .card-container img {
-        width: 60%;
-        height: 60%;
-    }
-    
-    .card-container span {
-        font-size: 14px;
-        display: none; 
-    }
-    
-    .card-container.flipped span {
-        display: block;
-        font-size: 10px; 
-        width: 100%;
-        overflow: hidden;
-    }
-}
-
-
-@media (max-width: 765px) {
-    /* Ešte viac zmenšíme karty pre mobily */
-    
-    #gameCanvas.cards-16 .card-container {
-        width: 140px;
-        height: 140px;
-        margin: 8px;
-    }
-    #gameCanvas.cards-16 .card-container img {
-        width: 75px;
-        height: 75px;
-    }
-    
-    #gameCanvas.cards-20 .card-container {
-        width: 120px;
-        height: 120px;
-        margin: 6px;
-    }
-    #gameCanvas.cards-20 .card-container img {
-        width: 65px;
-        height: 65px;
-    }
-    
-    #gameCanvas.cards-24 .card-container,
-    #gameCanvas.cards-25 .card-container {
-        width: 105px;
-        height: 105px;
-        margin: 5px;
-    }
-    #gameCanvas.cards-24 .card-container img,
-    #gameCanvas.cards-25 .card-container img {
-        width: 56px;
-        height: 56px;
-    }
-    
-    #gameCanvas.cards-30 .card-container {
-        width: 95px;
-        height: 95px;
-        margin: 4px;
-    }
-    #gameCanvas.cards-30 .card-container img {
-        width: 50px;
-        height: 50px;
-    }
-    
-    #gameCanvas.cards-36 .card-container {
-        width: 85px;
-        height: 85px;
-        margin: 3px;
-    }
-    #gameCanvas.cards-36 .card-container img {
-        width: 45px;
-        height: 45px;
-    }
-
-    /* ===== 38-41 KARIET - veľmi malé karty ===== */
-    #gameCanvas.cards-35 .card-container,
-    #gameCanvas.cards-36 .card-container,
-    #gameCanvas.cards-37 .card-container,
-    #gameCanvas.cards-38 .card-container,
-    #gameCanvas.cards-39 .card-container,
-    #gameCanvas.cards-40 .card-container,
-    #gameCanvas.cards-41 .card-container {
-        max-width: 10%; 
-        margin: 4px;
-        aspect-ratio: 1/1;
-    }
-
-    .card-container img {
-        width: 60%;
-        height: 60%;
-    }
-    
-    .card-container span {
-        font-size: 14px;
-        display: none; 
-    }
-    
-    .card-container.flipped span {
-        display: block;
-        font-size: 10px; 
-        width: 100%;
-        overflow: hidden;
-    }
-}
-
-@media (max-width: 630px) {
-    /* Ešte menšie pre veľmi malé obrazovky */
-    
-    #gameCanvas.cards-16 .card-container {
-        width: 110px;
-        height: 110px;
-        margin: 5px;
-    }
-    #gameCanvas.cards-16 .card-container img {
-        width: 58px;
-        height: 58px;
-    }
-    
-    #gameCanvas.cards-20 .card-container {
-        width: 95px;
-        height: 95px;
-        margin: 4px;
-    }
-    #gameCanvas.cards-20 .card-container img {
-        width: 50px;
-        height: 50px;
-    }
-    
-    #gameCanvas.cards-24 .card-container,
-    #gameCanvas.cards-25 .card-container {
-        width: 85px;
-        height: 85px;
-        margin: 3px;
-    }
-    #gameCanvas.cards-24 .card-container img,
-    #gameCanvas.cards-25 .card-container img {
-        width: 45px;
-        height: 45px;
-    }
-    
-    #gameCanvas.cards-30 .card-container,
-    #gameCanvas.cards-36 .card-container {
-        width: 70px;
-        height: 70px;
-        margin: 2px;
-    }
-    #gameCanvas.cards-30 .card-container img,
-    #gameCanvas.cards-36 .card-container img {
-        width: 38px;
-        height: 38px;
-    }
-
-
-    /* ===== 38-41 KARIET - veľmi malé karty ===== */
-    #gameCanvas.cards-35 .card-container,
-    #gameCanvas.cards-36 .card-container,
-    #gameCanvas.cards-37 .card-container,
-    #gameCanvas.cards-38 .card-container,
-    #gameCanvas.cards-39 .card-container,
-    #gameCanvas.cards-40 .card-container,
-    #gameCanvas.cards-41 .card-container {
-        max-width: 8%; 
-        margin: 2px;
-        aspect-ratio: 1/1;
-    }
-
-    #gameCanvas.cards-38 .card-container img, 
-    #gameCanvas.cards-39 .card-container img, 
-    #gameCanvas.cards-40 .card-container img, 
-    #gameCanvas.cards-41 .card-container.img {
-        width: 80%;
-        height: 80%;
-    }
-
-    .card-container img {
-        width: 40%;
-        height: 40%;
-    }
-    
-    .card-container span {
-        font-size: 12px;
-        display: none; 
-    }
-    
-    .card-container.flipped span {
-        display: block;
-        font-size: 9px; 
-        width: 100%;
-        overflow: hidden;
-    }
-}
-
-@media (max-width: 445px) {
-    /* Ešte menšie pre veľmi malé obrazovky */
-    
-    #gameCanvas.cards-16 .card-container {
-        width: 110px;
-        height: 110px;
-        margin: 5px;
-    }
-    #gameCanvas.cards-16 .card-container img {
-        width: 58px;
-        height: 58px;
-    }
-    
-    #gameCanvas.cards-20 .card-container {
-        width: 95px;
-        height: 95px;
-        margin: 4px;
-    }
-    #gameCanvas.cards-20 .card-container img {
-        width: 50px;
-        height: 50px;
-    }
-    
-    #gameCanvas.cards-24 .card-container,
-    #gameCanvas.cards-25 .card-container {
-        width: 85px;
-        height: 85px;
-        margin: 3px;
-    }
-    #gameCanvas.cards-24 .card-container img,
-    #gameCanvas.cards-25 .card-container img {
-        width: 45px;
-        height: 45px;
-    }
-    
-    #gameCanvas.cards-30 .card-container,
-    #gameCanvas.cards-36 .card-container {
-        width: 70px;
-        height: 70px;
-        margin: 2px;
-    }
-    #gameCanvas.cards-30 .card-container img,
-    #gameCanvas.cards-36 .card-container img {
-        width: 38px;
-        height: 38px;
-    }
-
-
-    /* ===== 38-41 KARIET - veľmi malé karty ===== */
-    #gameCanvas.cards-35 .card-container,
-    #gameCanvas.cards-36 .card-container,
-    #gameCanvas.cards-37 .card-container,
-    #gameCanvas.cards-38 .card-container,
-    #gameCanvas.cards-39 .card-container,
-    #gameCanvas.cards-40 .card-container,
-    #gameCanvas.cards-41 .card-container {
-        max-width: 8%; 
-        margin: 1px;
-        aspect-ratio: 1/1;
-    }
-
-    #gameCanvas.cards-38 .card-container img, 
-    #gameCanvas.cards-39 .card-container img, 
-    #gameCanvas.cards-40 .card-container img, 
-    #gameCanvas.cards-41 .card-container.img {
-        width: 80%;
-    }
-
-    .card-container img {
-        width: 40%;
-    }
-    
-    .card-container span {
-        font-size: 10px;
-        display: none; 
-    }
-    
-    .card-container.flipped span {
-        display: block;
-        font-size: 7px; 
-        width: 100%;
-        overflow: hidden;
-    }
-}
-
-
-/* =========================================== */
-/* RESPONZÍVNOSŤ                 */
-/* =========================================== */
-@media (max-width: 1200px) { 
-    /* Zmena hlavného layoutu - Side panel ide pod hru */
-    .content-section {
-        flex-direction: column;
-        align-items: center;
-        width: 95%;
-        gap: 8px;
-    }
-
-    /* Prispôsobenie Game Canvasu */
-    #gameCanvas {
-        min-width: unset;
-        width: 100%;
-        max-width: 800px; /* Zachová maximálnu veľkosť */
-        height: auto;
-        min-height: auto;
-        aspect-ratio: 1 / 1; /* Udržiava štvorcový tvar */
-    }
-
-    /* Side panel - zmena na horizontálne zobrazenie hráčov */
-    .side-panel {
-        width: 100%;
-        max-width: 800px; 
-        min-height: auto;
-        max-height: unset;
-        flex-direction: row; /* Hráči vedľa seba */
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-        margin-bottom: 5px;
-    }
-
-    .players-panel {
-        width: 180px; /* Menšia šírka pre karty hráčov */
-        min-height: 100px;
-        padding: 5px;
-    }
-    
-    .players-panel span {
-        font-size: 35px;
-    }
-    
-    .players-panel h1 {
-        font-size: 25px;
-    }
-
-    .top-panel {
-        gap: 20px;
-        flex-wrap: nowrap; 
-        justify-content: space-between;
-    }
-
+@media (max-width: 1199px), (max-height: 899px) {
     .main-container {
-        width: 100%;
-        margin: 0 auto;
-        background-color: #17284900;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        gap: 8px;
-        align-content: center;
-    }
-}
-
-@media (max-width: 1200px) and (max-height: 1000px) { 
-    /* Zmena hlavného layoutu - Side panel ide pod hru */
-    .content-section {
-        flex-direction: column;
-        align-items: center;
-        width: 95%;
-        gap: 8px;
+        width: 100%;                    /* Plná šírka viewportu */
+        padding: 8px;                   /* Odstup od okrajov obrazovky */
+        gap: 10px;                      /* Menšia medzera medzi sekciami */
     }
 
-    /* Prispôsobenie Game Canvasu */
-    #gameCanvas {
-        min-width: unset;
-        width: 100%;
-        max-width: 800px; /* Zachová maximálnu veľkosť */
-        height: auto;
-        min-height: auto;
-        aspect-ratio: unset; /* Udržiava štvorcový tvar */
-    }
-
-    /* Side panel - zmena na horizontálne zobrazenie hráčov */
-    .side-panel {
-        width: 100%;
-        max-width: 800px; 
-        min-height: auto;
-        max-height: unset;
-        flex-direction: row; /* Hráči vedľa seba */
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-        margin-bottom: 5px;
-    }
-
-    .players-panel {
-        width: 180px; /* Menšia šírka pre karty hráčov */
-        min-height: 80px;
-        padding: 3px;
-    }
-    
-    .players-panel span {
-        font-size: 35px;
-    }
-    
-    .players-panel h1 {
-        font-size: 25px;
-    }
-
+    /* -------------------------------------------------------- */
+    /* HORNÝ PANEL (čas / PEXESO / pokusy)                      */
+    /* -------------------------------------------------------- */
     .top-panel {
-        gap: 20px;
-        flex-wrap: nowrap; 
-        justify-content: space-between;
-        display: flex;
+        width: 100%;                    /* Plná šírka rodiča */
+        max-width: 800px;               /* Ale nie širší ako canvas */
+        height: auto;                   /* Výška podľa obsahu */
+        gap: 10px;                      /* Menší rozostup medzi boxmi */
+        flex-wrap: nowrap;              /* Ostanú v jednom riadku */
+        justify-content: space-between; /* Rovnomerne rozložené */
     }
 
-    .main-container {
-        width: 100%;
-        margin: 0 auto;
-        background-color: #17284900;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        gap: 8px;
-        align-content: center;
-    }
-
-    #gameCanvas {
-        max-height: 75vh; /* Ešte menšia výška canvasu */
-    }
-    
-    .top-panel {
-        height: 60px; /* Nižší horný panel */
-        gap: 10px;
-    }
-
+    /* Jednotlivé boxy v hornom paneli (čas, názov hry, pokusy) */
     .panel-item {
-        height: unset; 
-    }
-}
-
-@media (max-width: 930px) {
-    .main-container {
-        transform-origin: top center;
-        height: 100vh;
-        padding-top: 5px;
-    }
-    
-    .top-panel {
-        gap: 5px;
-        width: 95%;
-        flex-wrap: nowrap; /* Udrží v jednom riadku */
-        justify-content: space-between;
-        flex-shrink: unset;
-        height: unset;
+        flex: 1 1 0;                    /* Rovnaký podiel priestoru */
+        min-width: 0;                   /* Dovolí flex-u zmrštiť box */
+        max-width: 240px;               /* Horný limit pre širšie obrazovky */
+        width: auto;                    /* Prepis desktopovej fixnej šírky 253px */
+        height: 56px;                   /* Nižší box ako na desktope */
+        font-size: 28px;                /* Menší text */
+        border-width: 3px;              /* Tenší border */
     }
 
-    .panel-item {
-        width: 32%; /* Rozdelenie na tretiny */
-        height: 50px;
-        font-size: 24px; /* Menší font */
-        background-image: url('../images/pozadie_button_mobile_2.png'); /* Uistenie sa že pozadie sedí */
-        border-width: 3px;
+    /* -------------------------------------------------------- */
+    /* CONTENT SECTION                                          */
+    /* Zmena z riadku [canvas | panel] na stĺpec [canvas]       */
+    /*                                             [panel]      */
+    /* -------------------------------------------------------- */
+    .content-section {
+        flex-direction: column;         /* Stĺpec namiesto riadku */
+        align-items: center;            /* Vycentrovať deti */
+        width: 100%;                    /* Plná šírka */
+        max-width: 800px;               /* Ale maximálne ako canvas */
+        gap: 10px;                      /* Medzera medzi canvasom a panelom */
+        flex-wrap: nowrap;              /* Neumožniť wrap - stĺpec je jasný */
     }
 
+    /* -------------------------------------------------------- */
+    /* GAME CANVAS - RESPONZÍVNY                                */
+    /* Canvas je vždy štvorec (aspect-ratio 1:1).               */
+    /* Jeho šírka sa vypočíta ako menšia z:                     */
+    /*   - 100% šírky rodiča                                    */
+    /*   - dostupnej výšky viewportu mínus rezervácia (240px    */
+    /*     na top-panel + side-panel + gaps + padding)          */
+    /* Takto sa canvas vždy zmestí na obrazovku bez scrollovania*/
+    /* -------------------------------------------------------- */
+    #gameCanvas {
+        min-width: 0;
+        min-height: 0;
+        width: min(calc(100vw - 20px), calc(100dvh - 200px), 800px);
+        height: min(calc(100vw - 20px), calc(100dvh - 200px), 800px);
+    }
+
+    /* -------------------------------------------------------- */
+    /* SIDE PANEL (hráči)                                       */
+    /* Namiesto stĺpca vedľa canvasu - riadok pod canvasom      */
+    /* -------------------------------------------------------- */
+    .side-panel {
+        width: 100%;                    /* Plná šírka rodiča */
+        max-width: 800px;               /* Ako canvas */
+        min-height: auto;               /* Zrušíme 800px z desktopu */
+        max-height: unset;              /* Zrušíme 800px z desktopu */
+        flex-direction: row;            /* Vedľa seba, nie pod sebou */
+        flex-wrap: wrap;                /* Povoliť zalomenie na nový riadok */
+        justify-content: center;        /* Vycentrovanie hráčov */
+        gap: 10px;                      /* Menšia medzera medzi hráčmi */
+    }
+
+    /* Panel jedného hráča - kompaktnejší, 2-4 sa zmestia vedľa seba */
     .players-panel {
-        width: 45%; /* Dvaja hráči na riadok */
-        min-height: 80px;
+        width: auto;                    /* Šírka podľa obsahu */
+        min-width: 140px;               /* Ale aspoň 140px široký */
+        max-width: 200px;               /* Max 200px široký */
+        flex: 1 1 auto;                 /* Povolený rast aj zmrštenie */
+        min-height: 80px;               /* Nižšia min. výška */
+        padding: 8px 12px;              /* Menší vnútorný padding */
     }
 
+    /* Meno hráča - menší font */
     .players-panel h1 {
         font-size: 22px;
     }
 
-    .players-panel span {
-        font-size: 30px;
-    }
-
-    .side-panel {
-        padding-bottom: 5px;
-        gap: 10px;
-    }
-}
-
-@media (max-width: 768px) {
-    /* Horný panel - zmenšenie a usporiadanie */
-    .top-panel {
-        gap: 5px;
-        width: 95%;
-        flex-wrap: nowrap; /* Udrží v jednom riadku */
-        justify-content: space-between;
-    }
-
-    .panel-item {
-        width: 32%; /* Rozdelenie na tretiny */
-        height: 50px;
-        font-size: 24px; /* Menší font */
-        background-image: url('../images/pozadie_button_mobile_2.png'); /* Uistenie sa že pozadie sedí */
-        border-width: 3px;
-    }
-
-    .game-title span {
-        font-size: 24px; /* Menší nadpis PEXESO */
-    }
-
-    /* Hráči na mobile - ešte menšie karty */
-    .side-panel {
-        gap: 10px;
-    }
-
-    .players-panel {
-        width: 45%; /* Dvaja hráči na riadok */
-        min-height: 90px;
-    }
-
-    .players-panel h1 {
-        font-size: 24px;
-    }
-
+    /* Skóre hráča - menší font */
     .players-panel span {
         font-size: 32px;
     }
+}
 
+/* ============================================================ */
+/* ====     DROBNÉ ÚPRAVY PRE ÚZKE OBRAZOVKY (< 768px)    ==== */
+/* ====     Tieto sú o modálnych oknách, NIE o layoute     ==== */
+/* ============================================================ */
+@media (max-width: 768px) {
+
+    /* Pause modal a cvičenie okno - zmestia sa aj na telefón */
+    .execise-window,
     .pause-modal-content {
-        width: 90%;
-        min-width: 300px;
-        padding: 1.5rem 2rem;
+        min-width: 90%;                 /* Zrušenie fixnej šírky */
+        width: 90%;                     /* 90% šírky obrazovky */
+        max-height: 90vh;               /* Max 90% výšky viewportu */
+        overflow-y: auto;               /* Scroll ak je obsah dlhý */
+        padding: 1.5rem 1rem;           /* Menší padding */
     }
-    
-    .execise-window, 
-    .pause-modal-content {
-        min-width: 90%; /* Zrušenie fixnej šírky */
-        width: 90%;
-        max-height: 90vh;
-        overflow-y: auto; /* Scrollovanie ak je obsah dlhý */
-        padding: 1.5rem 1rem;
-    }
-    
+
+    /* Nadpis "PAUZA" - menší font na telefóne */
     .pause-modal-header h2 {
         font-size: 40px;
     }
-    
-    .tlacidlo, .menu-button, .pause-button {
-        width: 100%;
-        min-width: unset;
-        height: 55px;
+
+    /* Tlačidlá v modáloch - plná šírka */
+    .tlacidlo,
+    .menu-button,
+    .pause-button {
+        width: 100%;                    /* Plná šírka */
+        min-width: unset;               /* Zruš fixnú min šírku */
+        height: 55px;                   /* Nižšie */
+        font-size: 24px;                /* Menší text */
+    }
+
+    /* Nadpis "PEXESO" v hornom paneli - menší */
+    .game-title span {
         font-size: 24px;
     }
-    
 }
+
+
 
 @media (max-width: 480px) {
     .loading-progress-container {
@@ -2312,58 +1630,6 @@ body {
         font-size: 20px;
         height: 48px;
         min-width: 180px;
-    }
-
-    .panel-item {
-        font-size: 18px;
-        height: 45px;
-        border-width: 2px;
-        border-radius: 15px;
-    }
-
-    #gameCanvas {
-        border-width: 2px;
-        background-size: 100% 100%; 
-    }
-
-    #gameCanvas.cards-16 .card-container {
-        width: 21%; /* 4 karty vedľa seba s medzerou */
-        height: auto;
-        aspect-ratio: 1/1;
-        margin: 1%;
-    }
-    
-    #gameCanvas.cards-20 .card-container {
-        width: 21%;
-        height: auto;
-        aspect-ratio: 1/1;
-        margin: 1%;
-    }
-    
-    #gameCanvas.cards-24 .card-container,
-    #gameCanvas.cards-30 .card-container,
-    #gameCanvas.cards-36 .card-container {
-        width: 14%; 
-        height: auto;
-        aspect-ratio: 1/1;
-        margin: 1%;
-    }
-
-    .card-container img {
-        width: 60%;
-        height: 60%;
-    }
-    
-    .card-container span {
-        font-size: 14px;
-        display: none; 
-    }
-    
-    .card-container.flipped span {
-        display: block;
-        font-size: 10px; 
-        width: 100%;
-        overflow: hidden;
     }
 
     #menuButton, .kruhove-tlacidlo {
