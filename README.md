@@ -1,12 +1,93 @@
-# Speech Therapy Game
-This repository contains the source code for a web application developed as part of my bachelor's thesis at the Faculty of Electrical Engineering and Informatics, Technical University of Košice. The application is designed to support speech therapy games, focusing primarily on speech recognition. **This is a demo, not the complete game.**
+# Baník Jožino
 
-## Introduction
-The goal of this project was to develop a web application to assist in speech therapy through interactive games. This application is designed for children with speech disorders and aims to provide a fun and engaging way of practicing pronunciation.
+A Slovak-language speech therapy game platform for children aged up to 8 with speech disorders. The platform combines three mini-games with browser-based speech recognition to make pronunciation practice engaging and effective.
 
-## Features
+Developed as a master's thesis project at the Technical University of Košice (TUKE FEI).
 
- - Speech Recognition: Utilizes Web Speech API for real-time speech recognition.
- - Interactive Game: Features a simple 2D game where children collect gems by correctly pronouncing words.
- - Immediate Feedback: Provides immediate feedback to users based on their speech accuracy.
+## Overview
 
+Baník Jožino targets 16 problematic Slovak phonemes (R, L, S, Z, C, Š, Ž, Č, D, T, N, Ď, Ť, Ň, K, G), each represented by its own themed world. Every world contains 16+ levels with progressive difficulty, totaling over 256 playable levels. The platform aims to be a free, accessible complement to traditional speech therapy.
+
+## Mini-games
+
+- **Baník (Miner)** — Grid-based mining game. Collect gold freely; diamonds require a speech exercise, crystals require a listening exercise.
+- **Pexeso** — Memory card game where matching a pair triggers a speech exercise on the matched word.
+- **Super Jožino** — Side-scrolling platformer in the style of Mario, with speech and listening exercises tied to collected items.
+
+## Tech stack
+
+- **Electron** — cross-platform desktop runtime
+- **HTML5 / CSS3 / JavaScript** — application core
+- **Web Speech API** — in-browser speech recognition
+- **Howler.js** — audio playback
+- **Canvas API** — game rendering
+- **localStorage** — progress persistence
+- **Cache API** — asset preloading
+
+## Project structure
+
+```
+Speech-Therapy-Game/
+├── config/          # World and level configuration
+│   ├── worlds.js
+│   └── levels.js
+├── js/
+│   ├── basics/      # Menu logic
+│   ├── managers/    # ProgressManager, GameRouter, CachePreloader
+│   ├── miner/       # Baník game logic
+│   ├── pexeso/      # Pexeso game logic
+│   └── superjozino/ # Super Jožino game logic
+├── css/             # Stylesheets per game
+├── images/          # Sprites, icons, world assets
+├── sounds/          # Audio assets
+├── index.html       # Main menu
+├── worldsmenu.html  # World and level selection
+├── game.html        # Baník entry point
+├── pexeso.html      # Pexeso entry point
+└── superjozino.html # Super Jožino entry point
+```
+
+## Getting started
+
+### Prerequisites
+
+- Node.js 18+
+- npm 9+
+
+### Installation
+
+```bash
+git clone https://github.com/JojDobre/Speech-Therapy-Game.git
+cd Speech-Therapy-Game
+npm install
+npm start
+```
+
+You can also open `index.html` directly in a Chromium-based browser (Chrome or Edge recommended) for quick testing.
+
+## How it works
+
+The game is configuration-driven: worlds and levels are defined declaratively in `config/worlds.js` and `config/levels.js`, so new content can be added without touching game logic.
+
+Player progress is handled by `ProgressManager` (a singleton stored in `localStorage`) and uses a star rating system based on actual rounds played:
+
+| Stars | Required score |
+|-------|----------------|
+| 3     | ≥ 70 %         |
+| 2     | 40–69 %        |
+| 1     | 10–39 %        |
+| 0     | below 10 % or incomplete |
+
+Points are awarded only after a successful speech or listening exercise — not for collecting items alone.
+
+## Browser support
+
+Speech recognition relies on the Web Speech API. Best supported on Chrome, Edge, and Opera (desktop and Android), and on Safari with limitations. Firefox does not support speech recognition.
+
+## Author
+
+**Bc. Adam Reňak**
+Technical University of Košice — Faculty of Electrical Engineering and Informatics
+Supervisor: Ing. Renát Haluška, PhD.
+
+GitHub: [JojDobre](https://github.com/JojDobre)
